@@ -1,0 +1,158 @@
+name: "代码可视化分析器-开发任务清单"
+version: "1.0.0"
+source:
+  plan: "./speckit.plan"
+
+# 1. 任务总览
+tasks:
+  - id: "T1"
+    wbs: "W1"
+    title: "实现项目扫描器"
+    priority: "P0"
+    deliverables:
+      - "递归扫描项目源文件（支持忽略规则与后缀过滤）"
+      - "扫描进度回调与错误收集"
+      - "文件索引结果（供解析器消费）"
+    done_criteria:
+      - "可稳定扫描 JS/TS 项目并返回文件列表。"
+      - "单个文件异常不会中断流程。"
+
+  - id: "T2"
+    wbs: "W2"
+    title: "实现 JS/TS AST 解析与符号提取"
+    priority: "P0"
+    dependencies: ["T1"]
+    deliverables:
+      - "基于 Babel parser 解析 JS/TS"
+      - "提取函数/类/方法/变量/导入导出符号"
+      - "生成符号表（唯一 ID + 模块归属）"
+    done_criteria:
+      - "核心符号类型可正确提取并落入统一模型。"
+
+  - id: "T3"
+    wbs: "W2"
+    title: "实现依赖边提取"
+    priority: "P0"
+    dependencies: ["T2"]
+    deliverables:
+      - "提取 call/import/inherit/implement/reference 边"
+      - "边去重与无效边过滤"
+      - "diagnostics 输出（不确定依赖标记）"
+    done_criteria:
+      - "能输出可用 edges，并区分 dependency_type。"
+
+  - id: "T4"
+    wbs: "W3"
+    title: "实现统一知识图谱聚合"
+    priority: "P0"
+    dependencies: ["T2", "T3"]
+    deliverables:
+      - "symbol/module/package/project 四层映射"
+      - "modules/symbols/edges 聚合与索引"
+      - "meta 信息（版本、时间、配置、可选哈希）"
+    done_criteria:
+      - "JSON 顶层结构满足 plan/clarify 要求。"
+
+  - id: "T5"
+    wbs: "W5"
+    title: "打通 Electron IPC 分析链路"
+    priority: "P0"
+    dependencies: ["T1", "T4"]
+    deliverables:
+      - "主进程接收分析请求"
+      - "渲染进程订阅进度与结果"
+      - "错误事件与中断处理"
+    done_criteria:
+      - "GUI 可发起分析并收到完整结果。"
+
+  - id: "T6"
+    wbs: "W6"
+    title: "实现工作台 UI（文件树 + 图谱 + 状态栏）"
+    priority: "P0"
+    dependencies: ["T5"]
+    deliverables:
+      - "左侧文件树（搜索/过滤）"
+      - "右侧图谱视图（缩放/拖拽/点击高亮）"
+      - "顶部工具栏与底部状态栏"
+    done_criteria:
+      - "可从 UI 完成导入、分析、查看、筛选。"
+
+  - id: "T7"
+    wbs: "W7"
+    title: "实现 JSON/Mermaid 导出器"
+    priority: "P0"
+    dependencies: ["T4", "T6"]
+    deliverables:
+      - "JSON 导出（稳定字段顺序与版本标识）"
+      - "Mermaid 导出（flowchart TD，层级命名规范）"
+      - "导出失败重试与提示"
+    done_criteria:
+      - "导出结果可被下游直接使用与渲染。"
+
+  - id: "T8"
+    wbs: "W4"
+    title: "实现代码度量指标"
+    priority: "P1"
+    dependencies: ["T4"]
+    deliverables:
+      - "symbol 级：cyclomatic_complexity/fan_in/fan_out/loc"
+      - "module 级：afferent/efferent coupling, instability, cohesion_proxy"
+      - "指标写入 metrics 字段"
+    done_criteria:
+      - "指标在样例项目可计算且结构完整。"
+
+  - id: "T9"
+    wbs: "W8"
+    title: "实现 CLI 并与 GUI 核心对齐"
+    priority: "P1"
+    dependencies: ["T4", "T7"]
+    deliverables:
+      - "命令：codeviz analyze <projectPath> --out <dir> --format json,mermaid"
+      - "参数校验与错误码"
+      - "复用同一分析核心"
+    done_criteria:
+      - "CLI 与 GUI 输出结构一致。"
+
+  - id: "T10"
+    wbs: "W9"
+    title: "实现插件系统基线"
+    priority: "P2"
+    dependencies: ["T4"]
+    deliverables:
+      - "解析器接口定义（language_id/file_patterns/parse）"
+      - "动态注册与回退机制"
+      - "一个占位语言插件示例"
+    done_criteria:
+      - "可加载插件并产出标准化 symbols/edges。"
+
+# 2. 执行顺序
+execution_order:
+  - "阶段 A：T1 -> T2 -> T3 -> T4"
+  - "阶段 B：T5 -> T6 -> T7"
+  - "阶段 C：T8 + T9"
+  - "阶段 D：T10"
+
+# 3. 验收检查点
+checkpoints:
+  - id: "C1"
+    after_tasks: ["T4"]
+    must_pass:
+      - "结构化 JSON 合法且字段完整"
+      - "失败文件不阻断"
+  - id: "C2"
+    after_tasks: ["T7"]
+    must_pass:
+      - "GUI 完成端到端分析与导出"
+      - "Mermaid 可渲染"
+  - id: "C3"
+    after_tasks: ["T9", "T10"]
+    must_pass:
+      - "CLI/GUI 输出一致"
+      - "插件链路可用"
+
+# 4. 任务状态模板
+status_template:
+  - "todo"
+  - "in_progress"
+  - "blocked"
+  - "done"

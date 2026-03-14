@@ -1,0 +1,52 @@
+name: "代码分析协议"
+version: "1.0.0"
+author: "你的名字/组织"
+description: "一个用于统一、结构化、可验证的代码分析流程的协议。"
+
+# 1. 目的
+purpose: """
+定义源代码分析的规则和流程，包括依赖关系检测、知识图谱生成、可维护性分析和可复现报告。
+"""
+
+# 2. 适用范围
+scope: """
+适用于组织内所有代码仓库、模块和包。支持语言：JavaScript、TypeScript、Python、Java、C++（可扩展）。
+"""
+
+# 3. 核心原则
+principles:
+  - "非破坏性：分析过程中不得修改源代码，除非明确授权。"
+  - "可追溯：每个分析结果必须可复现，并能追溯到源文件和符号。"
+  - "层级化：代码元素按 符号(Symbol) → 模块(Module) → 包(Package) → 项目(Project) 表示。"
+  - "可互操作：分析结果必须输出标准化格式(JSON/Mermaid/GraphML)。"
+  - "可扩展：支持插件化语言解析器和自定义度量指标。"
+
+# 4. 核心定义
+definitions:
+  - symbol: "代码的原子单元（函数、类、变量等）。"
+  - module: "由符号组成的文件或逻辑模块。"
+  - dependency: "符号或模块之间的有向依赖关系。"
+  - knowledge_graph: "符号和模块及其依赖关系的结构化表示。"
+
+# 5. 分析流程
+analysis_steps:
+  - "解析源文件，提取符号信息。"
+  - "检测符号间依赖（函数调用、导入、继承等）。"
+  - "生成符号和模块的拓扑图或知识图谱。"
+  - "计算代码度量指标（复杂度、耦合度、内聚度等）。"
+  - "导出结构化报告（JSON、Mermaid、GraphML）。"
+
+# 6. 输出格式
+output_format:
+  type: "JSON / Mermaid / GraphML"
+  required_fields:
+    - "symbol_name"       # 符号名称
+    - "symbol_type"       # 符号类型（函数/类/变量）
+    - "module_name"       # 所在模块
+    - "dependencies"      # 依赖列表
+    - "metrics"           # 度量指标
+
+# 7. 合规要求
+compliance:
+  - "所有代码分析工具必须遵守此协议。"
+  - "自定义扩展必须明确声明与协议的偏差。"

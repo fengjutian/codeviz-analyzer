@@ -1,0 +1,125 @@
+name: "代码可视化分析器-实施计划"
+version: "1.0.0"
+source:
+  constitution: "./speckit.constitution"
+  specify: "./speckit.specify"
+  clarify: "./speckit.clarify"
+
+# 1. 目标
+objective:
+  - "在 v1 交付可运行的 Electron + React 代码可视化分析器。"
+  - "完成 JS/TS 代码解析、依赖关系建模、图谱展示与 JSON/Mermaid 导出。"
+  - "保证分析流程非破坏、可追溯、可复现。"
+
+# 2. 里程碑
+milestones:
+  - id: "M1"
+    name: "分析核心 MVP"
+    deliverables:
+      - "项目扫描器（文件收集、忽略规则、进度回调）"
+      - "JS/TS 解析器（符号提取 + 依赖边提取）"
+      - "统一图谱模型（symbols/modules/edges/metrics/meta）"
+    acceptance:
+      - "对示例项目输出合法 JSON，必含 required_fields。"
+      - "错误文件不阻断整体分析。"
+
+  - id: "M2"
+    name: "可视化与交互"
+    deliverables:
+      - "Electron 主进程 + React 渲染进程联通"
+      - "文件树、图谱面板、工具栏、状态栏"
+      - "图谱交互（缩放/拖拽/高亮上下游/按边类型筛选）"
+    acceptance:
+      - "可在 GUI 导入项目并查看依赖图。"
+      - "搜索与筛选可用，状态栏显示阶段与耗时。"
+
+  - id: "M3"
+    name: "导出与一致性"
+    deliverables:
+      - "导出 JSON"
+      - "导出 Mermaid"
+      - "CLI 命令：codeviz analyze <projectPath> --out <dir> --format json,mermaid"
+    acceptance:
+      - "CLI 与 GUI 使用同一分析核心，输出结构一致。"
+      - "导出文件可被下游工具直接消费。"
+
+  - id: "M4"
+    name: "质量与扩展基线"
+    deliverables:
+      - "度量指标实现（复杂度/fan-in/fan-out/耦合）"
+      - "插件接口定义（language_id/file_patterns/parse）"
+      - "偏差声明机制（meta.deviations）"
+    acceptance:
+      - "指标可在 symbol/module 两层输出。"
+      - "可注册至少 1 个占位语言插件（非 JS/TS）。"
+
+# 3. 工作分解（WBS）
+work_breakdown:
+  - "W1: Core-Scanner：项目扫描、路径过滤、并发调度、错误收集"
+  - "W2: Core-Parser-JSTS：AST 解析、符号表、依赖边构建"
+  - "W3: Core-Graph：图谱聚合、去重、层级映射（symbol/module/package/project）"
+  - "W4: Core-Metrics：复杂度、耦合、内聚代理指标计算"
+  - "W5: App-Bridge：Electron IPC（分析启动、进度推送、结果回传）"
+  - "W6: UI-Workbench：文件树、图谱视图、筛选搜索、状态栏"
+  - "W7: Exporters：JSON/Mermaid 导出器"
+  - "W8: CLI：命令行入口与参数处理"
+  - "W9: Plugin-System：解析器注册、动态加载、回退机制"
+
+# 4. 任务优先级
+priorities:
+  p0:
+    - "W1 W2 W3 W5 W6 W7（形成端到端可用链路）"
+  p1:
+    - "W4 W8（指标与 CLI）"
+  p2:
+    - "W9（多语言扩展）"
+
+# 5. 计划节奏（建议）
+schedule:
+  week_1:
+    - "完成 W1/W2：可对 JS/TS 项目生成基础 symbols/edges"
+  week_2:
+    - "完成 W3/W5：核心模型稳定并接入 Electron IPC"
+  week_3:
+    - "完成 W6/W7：图谱可视化与导出可用"
+  week_4:
+    - "完成 W4/W8：指标与 CLI，对齐 GUI 输出"
+  week_5:
+    - "完成 W9：插件框架与占位插件"
+    - "回归修复与发布准备"
+
+# 6. 验收标准
+acceptance_criteria:
+  functional:
+    - "输入项目路径后可完成扫描、解析、建图、展示、导出。"
+    - "支持函数/类/方法/变量符号与 call/import/inherit 关系。"
+  quality:
+    - "分析流程只读；失败文件可隔离；结果可复现。"
+    - "输出包含 meta（版本、时间、配置、可选哈希）。"
+  compatibility:
+    - "JSON 字段满足 constitution 与 clarify 的 required_fields。"
+    - "Mermaid 可直接在 Markdown/网页渲染。"
+
+# 7. 风险与应对
+risks:
+  - risk: "超大仓库性能与内存压力"
+    mitigation: "分批解析、增量刷新、按需加载图节点"
+  - risk: "动态语言特性导致依赖不完整"
+    mitigation: "标记不确定边类型，提供 diagnostics"
+  - risk: "多语言扩展复杂度高"
+    mitigation: "先稳定插件接口，语言支持分阶段交付"
+
+# 8. 交付清单
+deliverables:
+  - "Desktop App（Electron + React）"
+  - "分析核心模块（可复用给 CLI）"
+  - "JSON/Mermaid 导出产物"
+  - "CLI 可执行入口"
+  - "插件接口与示例插件"
+
+# 9. 完成定义（DoD）
+definition_of_done:
+  - "所有里程碑验收项通过。"
+  - "输出模型与字段符合协议。"
+  - "关键流程在示例仓库和真实仓库均可运行。"
+  - "已记录偏差项与未决项（若有）。"

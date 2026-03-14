@@ -1,0 +1,535 @@
+flowchart TD
+  src_cli_ts___module_["src/cli.ts::(module)"]
+  src_cli_ts__formats["src/cli.ts::formats"]
+  src_cli_ts__graph["src/cli.ts::graph"]
+  src_cli_ts__ignore["src/cli.ts::ignore"]
+  src_cli_ts__jsonPath["src/cli.ts::jsonPath"]
+  src_cli_ts__mermaidPath["src/cli.ts::mermaidPath"]
+  src_cli_ts__outDir["src/cli.ts::outDir"]
+  src_cli_ts__program["src/cli.ts::program"]
+  src_cli_ts__projectPath["src/cli.ts::projectPath"]
+  src_core_analyzer_ts___module_["src/core/analyzer.ts::(module)"]
+  src_core_analyzer_ts__analyzeProject["src/core/analyzer.ts::analyzeProject"]
+  src_core_analyzer_ts__DEFAULT_EXTENSIONS["src/core/analyzer.ts::DEFAULT_EXTENSIONS"]
+  src_core_analyzer_ts__diagnostic["src/core/analyzer.ts::diagnostic"]
+  src_core_analyzer_ts__diagnostics["src/core/analyzer.ts::diagnostics"]
+  src_core_analyzer_ts__edges["src/core/analyzer.ts::edges"]
+  src_core_analyzer_ts__extensions["src/core/analyzer.ts::extensions"]
+  src_core_analyzer_ts__filePath["src/core/analyzer.ts::filePath"]
+  src_core_analyzer_ts__ignore["src/core/analyzer.ts::ignore"]
+  src_core_analyzer_ts__parsed["src/core/analyzer.ts::parsed"]
+  src_core_analyzer_ts__parsedCount["src/core/analyzer.ts::parsedCount"]
+  src_core_analyzer_ts__plugin["src/core/analyzer.ts::plugin"]
+  src_core_analyzer_ts__pluginManager["src/core/analyzer.ts::pluginManager"]
+  src_core_analyzer_ts__relativeModule["src/core/analyzer.ts::relativeModule"]
+  src_core_analyzer_ts__scanned["src/core/analyzer.ts::scanned"]
+  src_core_analyzer_ts__sourceCode["src/core/analyzer.ts::sourceCode"]
+  src_core_analyzer_ts__symbols["src/core/analyzer.ts::symbols"]
+  src_core_graph_ts___module_["src/core/graph.ts::(module)"]
+  src_core_graph_ts__afferent["src/core/graph.ts::afferent"]
+  src_core_graph_ts__aggregateGraph["src/core/graph.ts::aggregateGraph"]
+  src_core_graph_ts__cohesion["src/core/graph.ts::cohesion"]
+  src_core_graph_ts__edge["src/core/graph.ts::edge"]
+  src_core_graph_ts__edgeMap["src/core/graph.ts::edgeMap"]
+  src_core_graph_ts__edges["src/core/graph.ts::edges"]
+  src_core_graph_ts__efferent["src/core/graph.ts::efferent"]
+  src_core_graph_ts__fanInMap["src/core/graph.ts::fanInMap"]
+  src_core_graph_ts__fanOutMap["src/core/graph.ts::fanOutMap"]
+  src_core_graph_ts__fromModule["src/core/graph.ts::fromModule"]
+  src_core_graph_ts__id["src/core/graph.ts::id"]
+  src_core_graph_ts__incoming["src/core/graph.ts::incoming"]
+  src_core_graph_ts__internal["src/core/graph.ts::internal"]
+  src_core_graph_ts__metrics["src/core/graph.ts::metrics"]
+  src_core_graph_ts__module["src/core/graph.ts::module"]
+  src_core_graph_ts__moduleIncoming["src/core/graph.ts::moduleIncoming"]
+  src_core_graph_ts__moduleInnerEdges["src/core/graph.ts::moduleInnerEdges"]
+  src_core_graph_ts__moduleMap["src/core/graph.ts::moduleMap"]
+  src_core_graph_ts__moduleOutgoing["src/core/graph.ts::moduleOutgoing"]
+  src_core_graph_ts__modules["src/core/graph.ts::modules"]
+  src_core_graph_ts__outgoing["src/core/graph.ts::outgoing"]
+  src_core_graph_ts__safeRatio["src/core/graph.ts::safeRatio"]
+  src_core_graph_ts__symbol["src/core/graph.ts::symbol"]
+  src_core_graph_ts__symbolCount["src/core/graph.ts::symbolCount"]
+  src_core_graph_ts__symbolMap["src/core/graph.ts::symbolMap"]
+  src_core_graph_ts__symbols["src/core/graph.ts::symbols"]
+  src_core_graph_ts__theoretical["src/core/graph.ts::theoretical"]
+  src_core_graph_ts__toModule["src/core/graph.ts::toModule"]
+  src_core_graph_ts__uniq["src/core/graph.ts::uniq"]
+  src_core_pluginManager_ts___module_["src/core/pluginManager.ts::(module)"]
+  src_core_pluginManager_ts__exists["src/core/pluginManager.ts::exists"]
+  src_core_pluginManager_ts__ext["src/core/pluginManager.ts::ext"]
+  src_core_pluginManager_ts__fileName["src/core/pluginManager.ts::fileName"]
+  src_core_pluginManager_ts__list["src/core/pluginManager.ts::list"]
+  src_core_pluginManager_ts__matchPattern["src/core/pluginManager.ts::matchPattern"]
+  src_core_pluginManager_ts__p["src/core/pluginManager.ts::p"]
+  src_core_pluginManager_ts__plugin["src/core/pluginManager.ts::plugin"]
+  src_core_pluginManager_ts__PluginManager["src/core/pluginManager.ts::PluginManager"]
+  src_core_pluginManager_ts__register["src/core/pluginManager.ts::register"]
+  src_core_pluginManager_ts__registerMany["src/core/pluginManager.ts::registerMany"]
+  src_core_pluginManager_ts__resolve["src/core/pluginManager.ts::resolve"]
+  src_core_scanner_ts___module_["src/core/scanner.ts::(module)"]
+  src_core_scanner_ts__DEFAULT_EXTENSIONS["src/core/scanner.ts::DEFAULT_EXTENSIONS"]
+  src_core_scanner_ts__DEFAULT_IGNORES["src/core/scanner.ts::DEFAULT_IGNORES"]
+  src_core_scanner_ts__entries["src/core/scanner.ts::entries"]
+  src_core_scanner_ts__errors["src/core/scanner.ts::errors"]
+  src_core_scanner_ts__ext["src/core/scanner.ts::ext"]
+  src_core_scanner_ts__extensions["src/core/scanner.ts::extensions"]
+  src_core_scanner_ts__files["src/core/scanner.ts::files"]
+  src_core_scanner_ts__fullPath["src/core/scanner.ts::fullPath"]
+  src_core_scanner_ts__ignore["src/core/scanner.ts::ignore"]
+  src_core_scanner_ts__normalized["src/core/scanner.ts::normalized"]
+  src_core_scanner_ts__progress["src/core/scanner.ts::progress"]
+  src_core_scanner_ts__scanProjectFiles["src/core/scanner.ts::scanProjectFiles"]
+  src_core_scanner_ts__shouldIgnore["src/core/scanner.ts::shouldIgnore"]
+  src_core_scanner_ts__walk["src/core/scanner.ts::walk"]
+  src_exporters_jsonExporter_ts___module_["src/exporters/jsonExporter.ts::(module)"]
+  src_exporters_jsonExporter_ts__exportJson["src/exporters/jsonExporter.ts::exportJson"]
+  src_exporters_jsonExporter_ts__filePath["src/exporters/jsonExporter.ts::filePath"]
+  src_exporters_jsonExporter_ts__sortGraph["src/exporters/jsonExporter.ts::sortGraph"]
+  src_exporters_jsonExporter_ts__stable["src/exporters/jsonExporter.ts::stable"]
+  src_exporters_mermaidExporter_ts___module_["src/exporters/mermaidExporter.ts::(module)"]
+  src_exporters_mermaidExporter_ts__edge["src/exporters/mermaidExporter.ts::edge"]
+  src_exporters_mermaidExporter_ts__emittedNodes["src/exporters/mermaidExporter.ts::emittedNodes"]
+  src_exporters_mermaidExporter_ts__exportMermaid["src/exporters/mermaidExporter.ts::exportMermaid"]
+  src_exporters_mermaidExporter_ts__filePath["src/exporters/mermaidExporter.ts::filePath"]
+  src_exporters_mermaidExporter_ts__from["src/exporters/mermaidExporter.ts::from"]
+  src_exporters_mermaidExporter_ts__id["src/exporters/mermaidExporter.ts::id"]
+  src_exporters_mermaidExporter_ts__lines["src/exporters/mermaidExporter.ts::lines"]
+  src_exporters_mermaidExporter_ts__nodeId["src/exporters/mermaidExporter.ts::nodeId"]
+  src_exporters_mermaidExporter_ts__symbol["src/exporters/mermaidExporter.ts::symbol"]
+  src_exporters_mermaidExporter_ts__to["src/exporters/mermaidExporter.ts::to"]
+  src_exporters_mermaidExporter_ts__toMermaid["src/exporters/mermaidExporter.ts::toMermaid"]
+  src_index_ts___module_["src/index.ts::(module)"]
+  src_plugins_jsTsPlugin_ts___module_["src/plugins/jsTsPlugin.ts::(module)"]
+  src_plugins_jsTsPlugin_ts__addEdge["src/plugins/jsTsPlugin.ts::addEdge"]
+  src_plugins_jsTsPlugin_ts__addSymbol["src/plugins/jsTsPlugin.ts::addSymbol"]
+  src_plugins_jsTsPlugin_ts__ast["src/plugins/jsTsPlugin.ts::ast"]
+  src_plugins_jsTsPlugin_ts__calleeName["src/plugins/jsTsPlugin.ts::calleeName"]
+  src_plugins_jsTsPlugin_ts__callerName["src/plugins/jsTsPlugin.ts::callerName"]
+  src_plugins_jsTsPlugin_ts__classId["src/plugins/jsTsPlugin.ts::classId"]
+  src_plugins_jsTsPlugin_ts__className["src/plugins/jsTsPlugin.ts::className"]
+  src_plugins_jsTsPlugin_ts__created["src/plugins/jsTsPlugin.ts::created"]
+  src_plugins_jsTsPlugin_ts__edges["src/plugins/jsTsPlugin.ts::edges"]
+  src_plugins_jsTsPlugin_ts__ensureSymbol["src/plugins/jsTsPlugin.ts::ensureSymbol"]
+  src_plugins_jsTsPlugin_ts__existed["src/plugins/jsTsPlugin.ts::existed"]
+  src_plugins_jsTsPlugin_ts__fn["src/plugins/jsTsPlugin.ts::fn"]
+  src_plugins_jsTsPlugin_ts__from["src/plugins/jsTsPlugin.ts::from"]
+  src_plugins_jsTsPlugin_ts__fromNode["src/plugins/jsTsPlugin.ts::fromNode"]
+  src_plugins_jsTsPlugin_ts__getContainerName["src/plugins/jsTsPlugin.ts::getContainerName"]
+  src_plugins_jsTsPlugin_ts__id["src/plugins/jsTsPlugin.ts::id"]
+  src_plugins_jsTsPlugin_ts__impl["src/plugins/jsTsPlugin.ts::impl"]
+  src_plugins_jsTsPlugin_ts__importFrom["src/plugins/jsTsPlugin.ts::importFrom"]
+  src_plugins_jsTsPlugin_ts__jsTsPlugin["src/plugins/jsTsPlugin.ts::jsTsPlugin"]
+  src_plugins_jsTsPlugin_ts__localNameToSymbolId["src/plugins/jsTsPlugin.ts::localNameToSymbolId"]
+  src_plugins_jsTsPlugin_ts__makeEdgeId["src/plugins/jsTsPlugin.ts::makeEdgeId"]
+  src_plugins_jsTsPlugin_ts__moduleAnchorId["src/plugins/jsTsPlugin.ts::moduleAnchorId"]
+  src_plugins_jsTsPlugin_ts__name["src/plugins/jsTsPlugin.ts::name"]
+  src_plugins_jsTsPlugin_ts__node["src/plugins/jsTsPlugin.ts::node"]
+  src_plugins_jsTsPlugin_ts__symbol["src/plugins/jsTsPlugin.ts::symbol"]
+  src_plugins_jsTsPlugin_ts__symbols["src/plugins/jsTsPlugin.ts::symbols"]
+  src_plugins_jsTsPlugin_ts__target["src/plugins/jsTsPlugin.ts::target"]
+  src_plugins_jsTsPlugin_ts__to["src/plugins/jsTsPlugin.ts::to"]
+  src_plugins_placeholderPlugin_ts___module_["src/plugins/placeholderPlugin.ts::(module)"]
+  src_plugins_placeholderPlugin_ts__clz["src/plugins/placeholderPlugin.ts::clz"]
+  src_plugins_placeholderPlugin_ts__fn["src/plugins/placeholderPlugin.ts::fn"]
+  src_plugins_placeholderPlugin_ts__line["src/plugins/placeholderPlugin.ts::line"]
+  src_plugins_placeholderPlugin_ts__lines["src/plugins/placeholderPlugin.ts::lines"]
+  src_plugins_placeholderPlugin_ts__moduleAnchorId["src/plugins/placeholderPlugin.ts::moduleAnchorId"]
+  src_plugins_placeholderPlugin_ts__placeholderPlugin["src/plugins/placeholderPlugin.ts::placeholderPlugin"]
+  src_plugins_placeholderPlugin_ts__symbols["src/plugins/placeholderPlugin.ts::symbols"]
+  src_types_ts___module_["src/types.ts::(module)"]
+  src_types_ts__AnalyzeOptions["src/types.ts::AnalyzeOptions"]
+  src_types_ts__AnalyzerDiagnostic["src/types.ts::AnalyzerDiagnostic"]
+  src_types_ts__AnalyzerMeta["src/types.ts::AnalyzerMeta"]
+  src_types_ts__DependencyType["src/types.ts::DependencyType"]
+  src_types_ts__Edge["src/types.ts::Edge"]
+  src_types_ts__KnowledgeGraph["src/types.ts::KnowledgeGraph"]
+  src_types_ts__MetricMap["src/types.ts::MetricMap"]
+  src_types_ts__ModuleNode["src/types.ts::ModuleNode"]
+  src_types_ts__ParseFileContext["src/types.ts::ParseFileContext"]
+  src_types_ts__ParseResult["src/types.ts::ParseResult"]
+  src_types_ts__ParserPlugin["src/types.ts::ParserPlugin"]
+  src_types_ts__ScanOptions["src/types.ts::ScanOptions"]
+  src_types_ts__ScanProgress["src/types.ts::ScanProgress"]
+  src_types_ts__ScanResult["src/types.ts::ScanResult"]
+  src_types_ts__SymbolNode["src/types.ts::SymbolNode"]
+  src_types_ts__SymbolType["src/types.ts::SymbolType"]
+  src_cli_ts__external__action["src/cli.ts::external::action"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__action
+  src_cli_ts__external__analyzeProject["src/cli.ts::external::analyzeProject"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__analyzeProject
+  src_cli_ts__external__argument["src/cli.ts::external::argument"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__argument
+  src_cli_ts__external__catch["src/cli.ts::external::catch"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__catch
+  src_cli_ts__external__command["src/cli.ts::external::command"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__command
+  src_cli_ts__external__cwd["src/cli.ts::external::cwd"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__cwd
+  src_cli_ts__external__description["src/cli.ts::external::description"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__description
+  src_cli_ts__external__error["src/cli.ts::external::error"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__error
+  src_cli_ts__external__exit["src/cli.ts::external::exit"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__exit
+  src_cli_ts__external__exportJson["src/cli.ts::external::exportJson"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__exportJson
+  src_cli_ts__external__exportMermaid["src/cli.ts::external::exportMermaid"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__exportMermaid
+  src_cli_ts__external__filter["src/cli.ts::external::filter"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__filter
+  src_cli_ts__external__includes["src/cli.ts::external::includes"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__includes
+  src_cli_ts__external__log["src/cli.ts::external::log"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__log
+  src_cli_ts__external__map["src/cli.ts::external::map"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__map
+  src_cli_ts__external__name["src/cli.ts::external::name"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__name
+  src_cli_ts__external__option["src/cli.ts::external::option"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__option
+  src_cli_ts__external__parseAsync["src/cli.ts::external::parseAsync"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__parseAsync
+  src_cli_ts__external__resolve["src/cli.ts::external::resolve"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__resolve
+  src_cli_ts__external__split["src/cli.ts::external::split"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__split
+  src_cli_ts__external__String["src/cli.ts::external::String"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__String
+  src_cli_ts__external__stringify["src/cli.ts::external::stringify"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__stringify
+  src_cli_ts__external__toLowerCase["src/cli.ts::external::toLowerCase"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__toLowerCase
+  src_cli_ts__external__trim["src/cli.ts::external::trim"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__trim
+  src_cli_ts__external__version["src/cli.ts::external::version"]
+  src_cli_ts___module_ -->|call| src_cli_ts__external__version
+  src_cli_ts__import____core_analyzer["src/cli.ts::import::./core/analyzer"]
+  src_cli_ts___module_ -->|import| src_cli_ts__import____core_analyzer
+  src_cli_ts__import____exporters_jsonExporter["src/cli.ts::import::./exporters/jsonExporter"]
+  src_cli_ts___module_ -->|import| src_cli_ts__import____exporters_jsonExporter
+  src_cli_ts__import____exporters_mermaidExporter["src/cli.ts::import::./exporters/mermaidExporter"]
+  src_cli_ts___module_ -->|import| src_cli_ts__import____exporters_mermaidExporter
+  src_cli_ts__import__commander["src/cli.ts::import::commander"]
+  src_cli_ts___module_ -->|import| src_cli_ts__import__commander
+  src_cli_ts__import__node_path["src/cli.ts::import::node:path"]
+  src_cli_ts___module_ -->|import| src_cli_ts__import__node_path
+  src_core_analyzer_ts__import_____plugins_jsTsPlugin["src/core/analyzer.ts::import::../plugins/jsTsPlugin"]
+  src_core_analyzer_ts___module_ -->|import| src_core_analyzer_ts__import_____plugins_jsTsPlugin
+  src_core_analyzer_ts__import_____plugins_placeholderPlugin["src/core/analyzer.ts::import::../plugins/placeholderPlugin"]
+  src_core_analyzer_ts___module_ -->|import| src_core_analyzer_ts__import_____plugins_placeholderPlugin
+  src_core_analyzer_ts__import_____types["src/core/analyzer.ts::import::../types"]
+  src_core_analyzer_ts___module_ -->|import| src_core_analyzer_ts__import_____types
+  src_core_analyzer_ts__import____graph["src/core/analyzer.ts::import::./graph"]
+  src_core_analyzer_ts___module_ -->|import| src_core_analyzer_ts__import____graph
+  src_core_analyzer_ts__import____pluginManager["src/core/analyzer.ts::import::./pluginManager"]
+  src_core_analyzer_ts___module_ -->|import| src_core_analyzer_ts__import____pluginManager
+  src_core_analyzer_ts__import____scanner["src/core/analyzer.ts::import::./scanner"]
+  src_core_analyzer_ts___module_ -->|import| src_core_analyzer_ts__import____scanner
+  src_core_analyzer_ts__import__node_fs_promises["src/core/analyzer.ts::import::node:fs/promises"]
+  src_core_analyzer_ts___module_ -->|import| src_core_analyzer_ts__import__node_fs_promises
+  src_core_analyzer_ts__import__node_path["src/core/analyzer.ts::import::node:path"]
+  src_core_analyzer_ts___module_ -->|import| src_core_analyzer_ts__import__node_path
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__DEFAULT_EXTENSIONS
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__diagnostic
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__diagnostics
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__edges
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__extensions
+  src_core_analyzer_ts__external__aggregateGraph["src/core/analyzer.ts::external::aggregateGraph"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__aggregateGraph
+  src_core_analyzer_ts__external__parse["src/core/analyzer.ts::external::parse"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__parse
+  src_core_analyzer_ts__external__push["src/core/analyzer.ts::external::push"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__push
+  src_core_analyzer_ts__external__readFile["src/core/analyzer.ts::external::readFile"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__readFile
+  src_core_analyzer_ts__external__registerMany["src/core/analyzer.ts::external::registerMany"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__registerMany
+  src_core_analyzer_ts__external__relative["src/core/analyzer.ts::external::relative"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__relative
+  src_core_analyzer_ts__external__replace["src/core/analyzer.ts::external::replace"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__replace
+  src_core_analyzer_ts__external__resolve["src/core/analyzer.ts::external::resolve"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__resolve
+  src_core_analyzer_ts__external__scanProjectFiles["src/core/analyzer.ts::external::scanProjectFiles"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__scanProjectFiles
+  src_core_analyzer_ts__external__String["src/core/analyzer.ts::external::String"]
+  src_core_analyzer_ts__analyzeProject -->|call| src_core_analyzer_ts__external__String
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__filePath
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__ignore
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__parsed
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__parsedCount
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__plugin
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__pluginManager
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__relativeModule
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__scanned
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__sourceCode
+  src_core_analyzer_ts__analyzeProject -->|reference| src_core_analyzer_ts__symbols
+  src_core_graph_ts__import_____types["src/core/graph.ts::import::../types"]
+  src_core_graph_ts___module_ -->|import| src_core_graph_ts__import_____types
+  src_core_graph_ts__import__node_path["src/core/graph.ts::import::node:path"]
+  src_core_graph_ts___module_ -->|import| src_core_graph_ts__import__node_path
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__afferent
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__cohesion
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__edge
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__edgeMap
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__edges
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__efferent
+  src_core_graph_ts__external__basename["src/core/graph.ts::external::basename"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__basename
+  src_core_graph_ts__external__Boolean["src/core/graph.ts::external::Boolean"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__Boolean
+  src_core_graph_ts__external__filter["src/core/graph.ts::external::filter"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__filter
+  src_core_graph_ts__external__get["src/core/graph.ts::external::get"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__get
+  src_core_graph_ts__external__has["src/core/graph.ts::external::has"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__has
+  src_core_graph_ts__external__localeCompare["src/core/graph.ts::external::localeCompare"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__localeCompare
+  src_core_graph_ts__external__map["src/core/graph.ts::external::map"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__map
+  src_core_graph_ts__external__push["src/core/graph.ts::external::push"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__push
+  src_core_graph_ts__external__resolve["src/core/graph.ts::external::resolve"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__resolve
+  src_core_graph_ts__external__set["src/core/graph.ts::external::set"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__set
+  src_core_graph_ts__external__sort["src/core/graph.ts::external::sort"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__sort
+  src_core_graph_ts__external__toISOString["src/core/graph.ts::external::toISOString"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__toISOString
+  src_core_graph_ts__external__values["src/core/graph.ts::external::values"]
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__external__values
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__fanInMap
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__fanOutMap
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__fromModule
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__id
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__incoming
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__internal
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__metrics
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__module
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__moduleIncoming
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__moduleInnerEdges
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__moduleMap
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__moduleOutgoing
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__modules
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__outgoing
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__safeRatio
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__safeRatio
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__symbol
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__symbolCount
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__symbolMap
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__symbols
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__theoretical
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__toModule
+  src_core_graph_ts__aggregateGraph -->|call| src_core_graph_ts__uniq
+  src_core_graph_ts__aggregateGraph -->|reference| src_core_graph_ts__uniq
+  src_core_graph_ts__external__Number["src/core/graph.ts::external::Number"]
+  src_core_graph_ts__safeRatio -->|call| src_core_graph_ts__external__Number
+  src_core_graph_ts__external__toFixed["src/core/graph.ts::external::toFixed"]
+  src_core_graph_ts__safeRatio -->|call| src_core_graph_ts__external__toFixed
+  src_core_pluginManager_ts__import_____types["src/core/pluginManager.ts::import::../types"]
+  src_core_pluginManager_ts___module_ -->|import| src_core_pluginManager_ts__import_____types
+  src_core_pluginManager_ts__import__node_path["src/core/pluginManager.ts::import::node:path"]
+  src_core_pluginManager_ts___module_ -->|import| src_core_pluginManager_ts__import__node_path
+  src_core_pluginManager_ts__matchPattern -->|reference| src_core_pluginManager_ts__ext
+  src_core_pluginManager_ts__external__basename["src/core/pluginManager.ts::external::basename"]
+  src_core_pluginManager_ts__matchPattern -->|call| src_core_pluginManager_ts__external__basename
+  src_core_pluginManager_ts__external__extname["src/core/pluginManager.ts::external::extname"]
+  src_core_pluginManager_ts__matchPattern -->|call| src_core_pluginManager_ts__external__extname
+  src_core_pluginManager_ts__external__slice["src/core/pluginManager.ts::external::slice"]
+  src_core_pluginManager_ts__matchPattern -->|call| src_core_pluginManager_ts__external__slice
+  src_core_pluginManager_ts__external__some["src/core/pluginManager.ts::external::some"]
+  src_core_pluginManager_ts__matchPattern -->|call| src_core_pluginManager_ts__external__some
+  src_core_pluginManager_ts__external__startsWith["src/core/pluginManager.ts::external::startsWith"]
+  src_core_pluginManager_ts__matchPattern -->|call| src_core_pluginManager_ts__external__startsWith
+  src_core_pluginManager_ts__external__toLowerCase["src/core/pluginManager.ts::external::toLowerCase"]
+  src_core_pluginManager_ts__matchPattern -->|call| src_core_pluginManager_ts__external__toLowerCase
+  src_core_pluginManager_ts__external__trim["src/core/pluginManager.ts::external::trim"]
+  src_core_pluginManager_ts__matchPattern -->|call| src_core_pluginManager_ts__external__trim
+  src_core_pluginManager_ts__matchPattern -->|reference| src_core_pluginManager_ts__fileName
+  src_core_pluginManager_ts__matchPattern -->|reference| src_core_pluginManager_ts__p
+  src_core_pluginManager_ts__register -->|reference| src_core_pluginManager_ts__exists
+  src_core_pluginManager_ts__external__push["src/core/pluginManager.ts::external::push"]
+  src_core_pluginManager_ts__register -->|call| src_core_pluginManager_ts__external__push
+  src_core_pluginManager_ts__register -->|call| src_core_pluginManager_ts__external__some
+  src_core_pluginManager_ts__register -->|reference| src_core_pluginManager_ts__p
+  src_core_pluginManager_ts__registerMany -->|reference| src_core_pluginManager_ts__plugin
+  src_core_pluginManager_ts__registerMany -->|call| src_core_pluginManager_ts__register
+  src_core_pluginManager_ts__external__find["src/core/pluginManager.ts::external::find"]
+  src_core_pluginManager_ts__resolve -->|call| src_core_pluginManager_ts__external__find
+  src_core_pluginManager_ts__resolve -->|call| src_core_pluginManager_ts__matchPattern
+  src_core_pluginManager_ts__resolve -->|reference| src_core_pluginManager_ts__matchPattern
+  src_core_pluginManager_ts__resolve -->|reference| src_core_pluginManager_ts__plugin
+  src_core_scanner_ts__import_____types["src/core/scanner.ts::import::../types"]
+  src_core_scanner_ts___module_ -->|import| src_core_scanner_ts__import_____types
+  src_core_scanner_ts__import__node_fs_promises["src/core/scanner.ts::import::node:fs/promises"]
+  src_core_scanner_ts___module_ -->|import| src_core_scanner_ts__import__node_fs_promises
+  src_core_scanner_ts__import__node_fs["src/core/scanner.ts::import::node:fs"]
+  src_core_scanner_ts___module_ -->|import| src_core_scanner_ts__import__node_fs
+  src_core_scanner_ts__import__node_path["src/core/scanner.ts::import::node:path"]
+  src_core_scanner_ts___module_ -->|import| src_core_scanner_ts__import__node_path
+  src_core_scanner_ts__scanProjectFiles -->|reference| src_core_scanner_ts__DEFAULT_EXTENSIONS
+  src_core_scanner_ts__scanProjectFiles -->|reference| src_core_scanner_ts__DEFAULT_IGNORES
+  src_core_scanner_ts__scanProjectFiles -->|reference| src_core_scanner_ts__errors
+  src_core_scanner_ts__external__sort["src/core/scanner.ts::external::sort"]
+  src_core_scanner_ts__scanProjectFiles -->|call| src_core_scanner_ts__external__sort
+  src_core_scanner_ts__scanProjectFiles -->|reference| src_core_scanner_ts__files
+  src_core_scanner_ts__scanProjectFiles -->|call| src_core_scanner_ts__walk
+  src_core_scanner_ts__scanProjectFiles -->|reference| src_core_scanner_ts__walk
+  src_core_scanner_ts__external__includes["src/core/scanner.ts::external::includes"]
+  src_core_scanner_ts__shouldIgnore -->|call| src_core_scanner_ts__external__includes
+  src_core_scanner_ts__external__replace["src/core/scanner.ts::external::replace"]
+  src_core_scanner_ts__shouldIgnore -->|call| src_core_scanner_ts__external__replace
+  src_core_scanner_ts__external__some["src/core/scanner.ts::external::some"]
+  src_core_scanner_ts__shouldIgnore -->|call| src_core_scanner_ts__external__some
+  src_core_scanner_ts__shouldIgnore -->|reference| src_core_scanner_ts__normalized
+  src_core_scanner_ts__walk -->|reference| src_core_scanner_ts__entries
+  src_core_scanner_ts__walk -->|reference| src_core_scanner_ts__errors
+  src_core_scanner_ts__walk -->|reference| src_core_scanner_ts__ext
+  src_core_scanner_ts__walk -->|reference| src_core_scanner_ts__extensions
+  src_core_scanner_ts__external__all["src/core/scanner.ts::external::all"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__all
+  src_core_scanner_ts__external__extname["src/core/scanner.ts::external::extname"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__extname
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__includes
+  src_core_scanner_ts__external__isDirectory["src/core/scanner.ts::external::isDirectory"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__isDirectory
+  src_core_scanner_ts__external__isFile["src/core/scanner.ts::external::isFile"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__isFile
+  src_core_scanner_ts__external__join["src/core/scanner.ts::external::join"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__join
+  src_core_scanner_ts__external__map["src/core/scanner.ts::external::map"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__map
+  src_core_scanner_ts__external__push["src/core/scanner.ts::external::push"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__push
+  src_core_scanner_ts__external__readdir["src/core/scanner.ts::external::readdir"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__readdir
+  src_core_scanner_ts__external__String["src/core/scanner.ts::external::String"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__String
+  src_core_scanner_ts__external__toLowerCase["src/core/scanner.ts::external::toLowerCase"]
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__external__toLowerCase
+  src_core_scanner_ts__walk -->|reference| src_core_scanner_ts__files
+  src_core_scanner_ts__walk -->|reference| src_core_scanner_ts__fullPath
+  src_core_scanner_ts__walk -->|reference| src_core_scanner_ts__ignore
+  src_core_scanner_ts__walk -->|reference| src_core_scanner_ts__progress
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__shouldIgnore
+  src_core_scanner_ts__walk -->|reference| src_core_scanner_ts__shouldIgnore
+  src_core_scanner_ts__walk -->|call| src_core_scanner_ts__walk
+  src_exporters_jsonExporter_ts__import_____types["src/exporters/jsonExporter.ts::import::../types"]
+  src_exporters_jsonExporter_ts___module_ -->|import| src_exporters_jsonExporter_ts__import_____types
+  src_exporters_jsonExporter_ts__import__node_fs_promises["src/exporters/jsonExporter.ts::import::node:fs/promises"]
+  src_exporters_jsonExporter_ts___module_ -->|import| src_exporters_jsonExporter_ts__import__node_fs_promises
+  src_exporters_jsonExporter_ts__import__node_path["src/exporters/jsonExporter.ts::import::node:path"]
+  src_exporters_jsonExporter_ts___module_ -->|import| src_exporters_jsonExporter_ts__import__node_path
+  src_exporters_jsonExporter_ts__external__join["src/exporters/jsonExporter.ts::external::join"]
+  src_exporters_jsonExporter_ts__exportJson -->|call| src_exporters_jsonExporter_ts__external__join
+  src_exporters_jsonExporter_ts__external__mkdir["src/exporters/jsonExporter.ts::external::mkdir"]
+  src_exporters_jsonExporter_ts__exportJson -->|call| src_exporters_jsonExporter_ts__external__mkdir
+  src_exporters_jsonExporter_ts__external__stringify["src/exporters/jsonExporter.ts::external::stringify"]
+  src_exporters_jsonExporter_ts__exportJson -->|call| src_exporters_jsonExporter_ts__external__stringify
+  src_exporters_jsonExporter_ts__external__writeFile["src/exporters/jsonExporter.ts::external::writeFile"]
+  src_exporters_jsonExporter_ts__exportJson -->|call| src_exporters_jsonExporter_ts__external__writeFile
+  src_exporters_jsonExporter_ts__exportJson -->|reference| src_exporters_jsonExporter_ts__filePath
+  src_exporters_jsonExporter_ts__exportJson -->|call| src_exporters_jsonExporter_ts__sortGraph
+  src_exporters_jsonExporter_ts__exportJson -->|reference| src_exporters_jsonExporter_ts__sortGraph
+  src_exporters_jsonExporter_ts__exportJson -->|reference| src_exporters_jsonExporter_ts__stable
+  src_exporters_jsonExporter_ts__external__localeCompare["src/exporters/jsonExporter.ts::external::localeCompare"]
+  src_exporters_jsonExporter_ts__sortGraph -->|call| src_exporters_jsonExporter_ts__external__localeCompare
+  src_exporters_jsonExporter_ts__external__sort["src/exporters/jsonExporter.ts::external::sort"]
+  src_exporters_jsonExporter_ts__sortGraph -->|call| src_exporters_jsonExporter_ts__external__sort
+  src_exporters_mermaidExporter_ts__import_____types["src/exporters/mermaidExporter.ts::import::../types"]
+  src_exporters_mermaidExporter_ts___module_ -->|import| src_exporters_mermaidExporter_ts__import_____types
+  src_exporters_mermaidExporter_ts__import__node_fs_promises["src/exporters/mermaidExporter.ts::import::node:fs/promises"]
+  src_exporters_mermaidExporter_ts___module_ -->|import| src_exporters_mermaidExporter_ts__import__node_fs_promises
+  src_exporters_mermaidExporter_ts__import__node_path["src/exporters/mermaidExporter.ts::import::node:path"]
+  src_exporters_mermaidExporter_ts___module_ -->|import| src_exporters_mermaidExporter_ts__import__node_path
+  src_exporters_mermaidExporter_ts__external__join["src/exporters/mermaidExporter.ts::external::join"]
+  src_exporters_mermaidExporter_ts__exportMermaid -->|call| src_exporters_mermaidExporter_ts__external__join
+  src_exporters_mermaidExporter_ts__external__mkdir["src/exporters/mermaidExporter.ts::external::mkdir"]
+  src_exporters_mermaidExporter_ts__exportMermaid -->|call| src_exporters_mermaidExporter_ts__external__mkdir
+  src_exporters_mermaidExporter_ts__external__writeFile["src/exporters/mermaidExporter.ts::external::writeFile"]
+  src_exporters_mermaidExporter_ts__exportMermaid -->|call| src_exporters_mermaidExporter_ts__external__writeFile
+  src_exporters_mermaidExporter_ts__exportMermaid -->|reference| src_exporters_mermaidExporter_ts__filePath
+  src_exporters_mermaidExporter_ts__exportMermaid -->|call| src_exporters_mermaidExporter_ts__toMermaid
+  src_exporters_mermaidExporter_ts__exportMermaid -->|reference| src_exporters_mermaidExporter_ts__toMermaid
+  src_exporters_mermaidExporter_ts__external__replace["src/exporters/mermaidExporter.ts::external::replace"]
+  src_exporters_mermaidExporter_ts__nodeId -->|call| src_exporters_mermaidExporter_ts__external__replace
+  src_exporters_mermaidExporter_ts__toMermaid -->|reference| src_exporters_mermaidExporter_ts__edge
+  src_exporters_mermaidExporter_ts__toMermaid -->|reference| src_exporters_mermaidExporter_ts__emittedNodes
+  src_exporters_mermaidExporter_ts__external__add["src/exporters/mermaidExporter.ts::external::add"]
+  src_exporters_mermaidExporter_ts__toMermaid -->|call| src_exporters_mermaidExporter_ts__external__add
+  src_exporters_mermaidExporter_ts__external__has["src/exporters/mermaidExporter.ts::external::has"]
+  src_exporters_mermaidExporter_ts__toMermaid -->|call| src_exporters_mermaidExporter_ts__external__has
+  src_exporters_mermaidExporter_ts__toMermaid -->|call| src_exporters_mermaidExporter_ts__external__join
+  src_exporters_mermaidExporter_ts__external__push["src/exporters/mermaidExporter.ts::external::push"]
+  src_exporters_mermaidExporter_ts__toMermaid -->|call| src_exporters_mermaidExporter_ts__external__push
+  src_exporters_mermaidExporter_ts__toMermaid -->|reference| src_exporters_mermaidExporter_ts__from
+  src_exporters_mermaidExporter_ts__toMermaid -->|reference| src_exporters_mermaidExporter_ts__id
+  src_exporters_mermaidExporter_ts__toMermaid -->|reference| src_exporters_mermaidExporter_ts__lines
+  src_exporters_mermaidExporter_ts__toMermaid -->|call| src_exporters_mermaidExporter_ts__nodeId
+  src_exporters_mermaidExporter_ts__toMermaid -->|reference| src_exporters_mermaidExporter_ts__nodeId
+  src_exporters_mermaidExporter_ts__toMermaid -->|reference| src_exporters_mermaidExporter_ts__symbol
+  src_exporters_mermaidExporter_ts__toMermaid -->|reference| src_exporters_mermaidExporter_ts__to
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__addEdge
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__addSymbol
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__ensureSymbol
+  src_plugins_jsTsPlugin_ts__external__get["src/plugins/jsTsPlugin.ts::external::get"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__get
+  src_plugins_jsTsPlugin_ts__external__has["src/plugins/jsTsPlugin.ts::external::has"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__has
+  src_plugins_jsTsPlugin_ts__external__includes["src/plugins/jsTsPlugin.ts::external::includes"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__includes
+  src_plugins_jsTsPlugin_ts__external__isIdentifier["src/plugins/jsTsPlugin.ts::external::isIdentifier"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__isIdentifier
+  src_plugins_jsTsPlugin_ts__external__isMemberExpression["src/plugins/jsTsPlugin.ts::external::isMemberExpression"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__isMemberExpression
+  src_plugins_jsTsPlugin_ts__external__isReferencedIdentifier["src/plugins/jsTsPlugin.ts::external::isReferencedIdentifier"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__isReferencedIdentifier
+  src_plugins_jsTsPlugin_ts__external__isTSExpressionWithTypeArguments["src/plugins/jsTsPlugin.ts::external::isTSExpressionWithTypeArguments"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__isTSExpressionWithTypeArguments
+  src_plugins_jsTsPlugin_ts__external__parse["src/plugins/jsTsPlugin.ts::external::parse"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__parse
+  src_plugins_jsTsPlugin_ts__external__push["src/plugins/jsTsPlugin.ts::external::push"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__push
+  src_plugins_jsTsPlugin_ts__external__set["src/plugins/jsTsPlugin.ts::external::set"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__set
+  src_plugins_jsTsPlugin_ts__external__String["src/plugins/jsTsPlugin.ts::external::String"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__String
+  src_plugins_jsTsPlugin_ts__external__traverse["src/plugins/jsTsPlugin.ts::external::traverse"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__traverse
+  src_plugins_jsTsPlugin_ts__external__values["src/plugins/jsTsPlugin.ts::external::values"]
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__external__values
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__getContainerName
+  src_plugins_jsTsPlugin_ts__import_____types["src/plugins/jsTsPlugin.ts::import::../types"]
+  src_plugins_jsTsPlugin_ts___module_ -->|import| src_plugins_jsTsPlugin_ts__import_____types
+  src_plugins_jsTsPlugin_ts__import___babel_parser["src/plugins/jsTsPlugin.ts::import::@babel/parser"]
+  src_plugins_jsTsPlugin_ts___module_ -->|import| src_plugins_jsTsPlugin_ts__import___babel_parser
+  src_plugins_jsTsPlugin_ts__import___babel_traverse["src/plugins/jsTsPlugin.ts::import::@babel/traverse"]
+  src_plugins_jsTsPlugin_ts___module_ -->|import| src_plugins_jsTsPlugin_ts__import___babel_traverse
+  src_plugins_jsTsPlugin_ts__import___babel_types["src/plugins/jsTsPlugin.ts::import::@babel/types"]
+  src_plugins_jsTsPlugin_ts___module_ -->|import| src_plugins_jsTsPlugin_ts__import___babel_types
+  src_plugins_jsTsPlugin_ts___module_ -->|call| src_plugins_jsTsPlugin_ts__makeEdgeId
+  src_plugins_jsTsPlugin_ts__ensureSymbol -->|reference| src_plugins_jsTsPlugin_ts__created
+  src_plugins_jsTsPlugin_ts__ensureSymbol -->|reference| src_plugins_jsTsPlugin_ts__existed
+  src_plugins_jsTsPlugin_ts__ensureSymbol -->|call| src_plugins_jsTsPlugin_ts__external__get
+  src_plugins_jsTsPlugin_ts__ensureSymbol -->|call| src_plugins_jsTsPlugin_ts__external__set
+  src_plugins_jsTsPlugin_ts__external__findParent["src/plugins/jsTsPlugin.ts::external::findParent"]
+  src_plugins_jsTsPlugin_ts__getContainerName -->|call| src_plugins_jsTsPlugin_ts__external__findParent
+  src_plugins_jsTsPlugin_ts__external__isClassMethod["src/plugins/jsTsPlugin.ts::external::isClassMethod"]
+  src_plugins_jsTsPlugin_ts__getContainerName -->|call| src_plugins_jsTsPlugin_ts__external__isClassMethod
+  src_plugins_jsTsPlugin_ts__external__isFunctionDeclaration["src/plugins/jsTsPlugin.ts::external::isFunctionDeclaration"]
+  src_plugins_jsTsPlugin_ts__getContainerName -->|call| src_plugins_jsTsPlugin_ts__external__isFunctionDeclaration
+  src_plugins_jsTsPlugin_ts__getContainerName -->|call| src_plugins_jsTsPlugin_ts__external__isIdentifier
+  src_plugins_jsTsPlugin_ts__external__isObjectMethod["src/plugins/jsTsPlugin.ts::external::isObjectMethod"]
+  src_plugins_jsTsPlugin_ts__getContainerName -->|call| src_plugins_jsTsPlugin_ts__external__isObjectMethod
+  src_plugins_jsTsPlugin_ts__getContainerName -->|reference| src_plugins_jsTsPlugin_ts__fn
+  src_plugins_placeholderPlugin_ts__external__match["src/plugins/placeholderPlugin.ts::external::match"]
+  src_plugins_placeholderPlugin_ts___module_ -->|call| src_plugins_placeholderPlugin_ts__external__match
+  src_plugins_placeholderPlugin_ts__external__push["src/plugins/placeholderPlugin.ts::external::push"]
+  src_plugins_placeholderPlugin_ts___module_ -->|call| src_plugins_placeholderPlugin_ts__external__push
+  src_plugins_placeholderPlugin_ts__external__split["src/plugins/placeholderPlugin.ts::external::split"]
+  src_plugins_placeholderPlugin_ts___module_ -->|call| src_plugins_placeholderPlugin_ts__external__split
+  src_plugins_placeholderPlugin_ts__import_____types["src/plugins/placeholderPlugin.ts::import::../types"]
+  src_plugins_placeholderPlugin_ts___module_ -->|import| src_plugins_placeholderPlugin_ts__import_____types

@@ -1,0 +1,38 @@
+{
+  "name": "codeviz-analyzer",
+  "version": "1.0.0",
+  "description": "Code visualization analyzer core + CLI + Electron GUI",
+  "main": "dist/electron/main.js",
+  "bin": {
+    "codeviz": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/cli.js",
+    "app": "npm run build && electron ."
+  },
+  "keywords": [
+    "code-analysis",
+    "ast",
+    "mermaid",
+    "cli",
+    "electron",
+    "react"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
+    "commander": "^14.0.1",
+    "mermaid": "^11.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "^7.28.0",
+    "@types/node": "^22.15.21",
+    "electron": "^37.2.0",
+    "typescript": "^5.8.3"
+  }
+}

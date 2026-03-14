@@ -1,0 +1,112 @@
+name: "代码可视化分析器-澄清说明"
+version: "1.0.0"
+source:
+  constitution: "./speckit.constitution"
+  specify: "./speckit.specify"
+
+# 1. 范围澄清（MVP）
+mvp_scope:
+  included:
+    - "桌面端 Electron + React 应用（单机本地分析）。"
+    - "首版完整支持 JavaScript/TypeScript。"
+    - "解析符号：函数、类、方法、变量、导入导出。"
+    - "依赖关系：调用(call)、导入(import)、继承(extends/implements)。"
+    - "输出：JSON + Mermaid；GUI 中提供导出。"
+  deferred:
+    - "Python/Java/C++ 作为插件扩展（非首版必交付）。"
+    - "SVG/PNG 由 Mermaid 渲染后导出（首版可选）。"
+
+# 2. 非功能澄清
+non_functional:
+  performance:
+    - "默认支持 1 万文件以内项目扫描；进度可视化。"
+    - "增量刷新：按文件变更重新解析，避免全量重跑。"
+  reliability:
+    - "解析失败文件不阻断整体流程；记录错误并继续。"
+    - "分析过程只读，不修改用户源代码。"
+  reproducibility:
+    - "报告包含分析时间、工具版本、配置快照、文件哈希（可选）。"
+
+# 3. 数据模型澄清
+data_model:
+  levels: ["symbol", "module", "package", "project"]
+  symbol_types: ["function", "class", "method", "variable", "interface", "type_alias"]
+  dependency_types: ["call", "import", "inherit", "implement", "reference"]
+  required_fields:
+    - "id"
+    - "symbol_name"
+    - "symbol_type"
+    - "module_name"
+    - "dependencies"
+    - "metrics"
+
+# 4. 输出规范澄清
+outputs:
+  json:
+    required_top_level:
+      - "project"
+      - "modules"
+      - "symbols"
+      - "edges"
+      - "metrics"
+      - "meta"
+  mermaid:
+    graph_type: "flowchart TD"
+    node_rule: "模块与符号分层命名，避免重名冲突（module::symbol）。"
+  graphml:
+    status: "预留接口，首版可选实现。"
+
+# 5. 指标澄清
+metrics:
+  symbol_level:
+    - "cyclomatic_complexity"
+    - "fan_in"
+    - "fan_out"
+    - "loc"
+  module_level:
+    - "afferent_coupling"
+    - "efferent_coupling"
+    - "instability"
+    - "cohesion_proxy"
+
+# 6. UI 交互澄清
+ui:
+  left_panel:
+    - "文件树支持关键词搜索与后缀过滤。"
+  right_panel:
+    - "图谱支持缩放、拖拽、节点点击高亮上下游依赖。"
+    - "支持按依赖类型筛选（call/import/inherit）。"
+  top_toolbar:
+    - "导入项目"
+    - "刷新分析"
+    - "导出 JSON"
+    - "导出 Mermaid"
+  status_bar:
+    - "显示阶段（扫描/解析/建图/完成）与耗时。"
+
+# 7. 插件机制澄清
+plugin_architecture:
+  parser_interface:
+    - "language_id"
+    - "file_patterns"
+    - "parse(file)->symbols,edges,diagnostics"
+  loading:
+    - "按语言动态注册解析器；未命中语言回退到基础扫描。"
+
+# 8. CLI 与 GUI 同步澄清
+cli_gui_consistency:
+  cli:
+    command: "codeviz analyze <projectPath> --out <dir> --format json,mermaid"
+  consistency_rule:
+    - "CLI 与 GUI 共享同一分析核心与输出模型。"
+
+# 9. 合规与偏差声明
+compliance_statement:
+  - "遵循 speckit.constitution 的非破坏性、可追溯、层级化、可互操作原则。"
+  - "若启用自定义指标或语言插件，需在 meta.deviations 中声明。"
+
+# 10. 待后续确认（不阻塞首版）
+open_points:
+  - "SQLite 是否作为默认持久化（当前默认 JSON 文件）。"
+  - "GraphML 首版是否强制交付。"
+  - "跨仓库依赖分析是否纳入 v1。"

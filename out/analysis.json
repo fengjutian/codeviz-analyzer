@@ -1,0 +1,5711 @@
+{
+  "project": {
+    "name": "see-code",
+    "path": "c:\\Users\\26401\\Desktop\\see-code\\see-code"
+  },
+  "modules": [
+    {
+      "id": "src/cli.ts",
+      "module_name": "src/cli.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\cli.ts",
+      "symbols": [
+        "src/cli.ts::(module)",
+        "src/cli.ts::formats",
+        "src/cli.ts::graph",
+        "src/cli.ts::ignore",
+        "src/cli.ts::jsonPath",
+        "src/cli.ts::mermaidPath",
+        "src/cli.ts::outDir",
+        "src/cli.ts::program",
+        "src/cli.ts::projectPath"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts",
+      "module_name": "src/core/analyzer.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\core\\analyzer.ts",
+      "symbols": [
+        "src/core/analyzer.ts::(module)",
+        "src/core/analyzer.ts::analyzeProject",
+        "src/core/analyzer.ts::DEFAULT_EXTENSIONS",
+        "src/core/analyzer.ts::diagnostic",
+        "src/core/analyzer.ts::diagnostics",
+        "src/core/analyzer.ts::edges",
+        "src/core/analyzer.ts::extensions",
+        "src/core/analyzer.ts::filePath",
+        "src/core/analyzer.ts::ignore",
+        "src/core/analyzer.ts::parsed",
+        "src/core/analyzer.ts::parsedCount",
+        "src/core/analyzer.ts::plugin",
+        "src/core/analyzer.ts::pluginManager",
+        "src/core/analyzer.ts::relativeModule",
+        "src/core/analyzer.ts::scanned",
+        "src/core/analyzer.ts::sourceCode",
+        "src/core/analyzer.ts::symbols"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0.1103
+      }
+    },
+    {
+      "id": "src/core/graph.ts",
+      "module_name": "src/core/graph.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\core\\graph.ts",
+      "symbols": [
+        "src/core/graph.ts::(module)",
+        "src/core/graph.ts::afferent",
+        "src/core/graph.ts::aggregateGraph",
+        "src/core/graph.ts::cohesion",
+        "src/core/graph.ts::edge",
+        "src/core/graph.ts::edgeMap",
+        "src/core/graph.ts::edges",
+        "src/core/graph.ts::efferent",
+        "src/core/graph.ts::fanInMap",
+        "src/core/graph.ts::fanOutMap",
+        "src/core/graph.ts::fromModule",
+        "src/core/graph.ts::id",
+        "src/core/graph.ts::incoming",
+        "src/core/graph.ts::internal",
+        "src/core/graph.ts::metrics",
+        "src/core/graph.ts::module",
+        "src/core/graph.ts::moduleIncoming",
+        "src/core/graph.ts::moduleInnerEdges",
+        "src/core/graph.ts::moduleMap",
+        "src/core/graph.ts::moduleOutgoing",
+        "src/core/graph.ts::modules",
+        "src/core/graph.ts::outgoing",
+        "src/core/graph.ts::safeRatio",
+        "src/core/graph.ts::symbol",
+        "src/core/graph.ts::symbolCount",
+        "src/core/graph.ts::symbolMap",
+        "src/core/graph.ts::symbols",
+        "src/core/graph.ts::theoretical",
+        "src/core/graph.ts::toModule",
+        "src/core/graph.ts::uniq"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0.069
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts",
+      "module_name": "src/core/pluginManager.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\core\\pluginManager.ts",
+      "symbols": [
+        "src/core/pluginManager.ts::(module)",
+        "src/core/pluginManager.ts::exists",
+        "src/core/pluginManager.ts::ext",
+        "src/core/pluginManager.ts::fileName",
+        "src/core/pluginManager.ts::list",
+        "src/core/pluginManager.ts::matchPattern",
+        "src/core/pluginManager.ts::p",
+        "src/core/pluginManager.ts::plugin",
+        "src/core/pluginManager.ts::PluginManager",
+        "src/core/pluginManager.ts::register",
+        "src/core/pluginManager.ts::registerMany",
+        "src/core/pluginManager.ts::resolve"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0.1515
+      }
+    },
+    {
+      "id": "src/core/scanner.ts",
+      "module_name": "src/core/scanner.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\core\\scanner.ts",
+      "symbols": [
+        "src/core/scanner.ts::(module)",
+        "src/core/scanner.ts::DEFAULT_EXTENSIONS",
+        "src/core/scanner.ts::DEFAULT_IGNORES",
+        "src/core/scanner.ts::entries",
+        "src/core/scanner.ts::errors",
+        "src/core/scanner.ts::ext",
+        "src/core/scanner.ts::extensions",
+        "src/core/scanner.ts::files",
+        "src/core/scanner.ts::fullPath",
+        "src/core/scanner.ts::ignore",
+        "src/core/scanner.ts::normalized",
+        "src/core/scanner.ts::progress",
+        "src/core/scanner.ts::scanProjectFiles",
+        "src/core/scanner.ts::shouldIgnore",
+        "src/core/scanner.ts::walk"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0.1714
+      }
+    },
+    {
+      "id": "src/electron/main.ts",
+      "module_name": "src/electron/main.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\electron\\main.ts",
+      "symbols": [
+        "src/electron/main.ts::(module)",
+        "src/electron/main.ts::createMainWindow",
+        "src/electron/main.ts::formats",
+        "src/electron/main.ts::graph",
+        "src/electron/main.ts::htmlPath",
+        "src/electron/main.ts::latestGraph",
+        "src/electron/main.ts::mainWindow",
+        "src/electron/main.ts::outDir",
+        "src/electron/main.ts::outputs",
+        "src/electron/main.ts::result",
+        "src/electron/main.ts::win"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0.0545
+      }
+    },
+    {
+      "id": "src/electron/preload.ts",
+      "module_name": "src/electron/preload.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\electron\\preload.ts",
+      "symbols": [
+        "src/electron/preload.ts::(module)",
+        "src/electron/preload.ts::api",
+        "src/electron/preload.ts::ProgressEventPayload",
+        "src/electron/preload.ts::wrapped"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0
+      }
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts",
+      "module_name": "src/exporters/jsonExporter.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\exporters\\jsonExporter.ts",
+      "symbols": [
+        "src/exporters/jsonExporter.ts::(module)",
+        "src/exporters/jsonExporter.ts::exportJson",
+        "src/exporters/jsonExporter.ts::filePath",
+        "src/exporters/jsonExporter.ts::sortGraph",
+        "src/exporters/jsonExporter.ts::stable"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0.4
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\exporters\\mermaidExporter.ts",
+      "symbols": [
+        "src/exporters/mermaidExporter.ts::(module)",
+        "src/exporters/mermaidExporter.ts::edge",
+        "src/exporters/mermaidExporter.ts::emittedNodes",
+        "src/exporters/mermaidExporter.ts::exportMermaid",
+        "src/exporters/mermaidExporter.ts::filePath",
+        "src/exporters/mermaidExporter.ts::from",
+        "src/exporters/mermaidExporter.ts::id",
+        "src/exporters/mermaidExporter.ts::lines",
+        "src/exporters/mermaidExporter.ts::nodeId",
+        "src/exporters/mermaidExporter.ts::symbol",
+        "src/exporters/mermaidExporter.ts::to",
+        "src/exporters/mermaidExporter.ts::toMermaid"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0.1818
+      }
+    },
+    {
+      "id": "src/index.ts",
+      "module_name": "src/index.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\index.ts",
+      "symbols": [
+        "src/index.ts::(module)"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\plugins\\jsTsPlugin.ts",
+      "symbols": [
+        "src/plugins/jsTsPlugin.ts::(module)",
+        "src/plugins/jsTsPlugin.ts::addEdge",
+        "src/plugins/jsTsPlugin.ts::addSymbol",
+        "src/plugins/jsTsPlugin.ts::ast",
+        "src/plugins/jsTsPlugin.ts::calleeName",
+        "src/plugins/jsTsPlugin.ts::callerName",
+        "src/plugins/jsTsPlugin.ts::classId",
+        "src/plugins/jsTsPlugin.ts::className",
+        "src/plugins/jsTsPlugin.ts::created",
+        "src/plugins/jsTsPlugin.ts::edges",
+        "src/plugins/jsTsPlugin.ts::ensureSymbol",
+        "src/plugins/jsTsPlugin.ts::existed",
+        "src/plugins/jsTsPlugin.ts::fn",
+        "src/plugins/jsTsPlugin.ts::from",
+        "src/plugins/jsTsPlugin.ts::fromNode",
+        "src/plugins/jsTsPlugin.ts::getContainerName",
+        "src/plugins/jsTsPlugin.ts::id",
+        "src/plugins/jsTsPlugin.ts::impl",
+        "src/plugins/jsTsPlugin.ts::importFrom",
+        "src/plugins/jsTsPlugin.ts::jsTsPlugin",
+        "src/plugins/jsTsPlugin.ts::localNameToSymbolId",
+        "src/plugins/jsTsPlugin.ts::makeEdgeId",
+        "src/plugins/jsTsPlugin.ts::moduleAnchorId",
+        "src/plugins/jsTsPlugin.ts::name",
+        "src/plugins/jsTsPlugin.ts::node",
+        "src/plugins/jsTsPlugin.ts::symbol",
+        "src/plugins/jsTsPlugin.ts::symbols",
+        "src/plugins/jsTsPlugin.ts::target",
+        "src/plugins/jsTsPlugin.ts::to"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0.0197
+      }
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts",
+      "module_name": "src/plugins/placeholderPlugin.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\plugins\\placeholderPlugin.ts",
+      "symbols": [
+        "src/plugins/placeholderPlugin.ts::(module)",
+        "src/plugins/placeholderPlugin.ts::clz",
+        "src/plugins/placeholderPlugin.ts::fn",
+        "src/plugins/placeholderPlugin.ts::line",
+        "src/plugins/placeholderPlugin.ts::lines",
+        "src/plugins/placeholderPlugin.ts::moduleAnchorId",
+        "src/plugins/placeholderPlugin.ts::placeholderPlugin",
+        "src/plugins/placeholderPlugin.ts::symbols"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js",
+      "module_name": "src/renderer/app.js",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\renderer\\app.js",
+      "symbols": [
+        "src/renderer/app.js::(module)",
+        "src/renderer/app.js::App",
+        "src/renderer/app.js::code",
+        "src/renderer/app.js::currentModule",
+        "src/renderer/app.js::currentModuleEdges",
+        "src/renderer/app.js::doExport",
+        "src/renderer/app.js::e",
+        "src/renderer/app.js::edge",
+        "src/renderer/app.js::from",
+        "src/renderer/app.js::hit",
+        "src/renderer/app.js::lines",
+        "src/renderer/app.js::mermaidRef",
+        "src/renderer/app.js::modules",
+        "src/renderer/app.js::normalize",
+        "src/renderer/app.js::outputs",
+        "src/renderer/app.js::pickProject",
+        "src/renderer/app.js::result",
+        "src/renderer/app.js::root",
+        "src/renderer/app.js::runAnalyze",
+        "src/renderer/app.js::selected",
+        "src/renderer/app.js::startTimeRef",
+        "src/renderer/app.js::to",
+        "src/renderer/app.js::toMermaid",
+        "src/renderer/app.js::typePass",
+        "src/renderer/app.js::unsubscribe"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0.1
+      }
+    },
+    {
+      "id": "src/types.ts",
+      "module_name": "src/types.ts",
+      "file_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code\\src\\types.ts",
+      "symbols": [
+        "src/types.ts::(module)",
+        "src/types.ts::AnalyzeOptions",
+        "src/types.ts::AnalyzerDiagnostic",
+        "src/types.ts::AnalyzerMeta",
+        "src/types.ts::DependencyType",
+        "src/types.ts::Edge",
+        "src/types.ts::KnowledgeGraph",
+        "src/types.ts::MetricMap",
+        "src/types.ts::ModuleNode",
+        "src/types.ts::ParseFileContext",
+        "src/types.ts::ParseResult",
+        "src/types.ts::ParserPlugin",
+        "src/types.ts::ScanOptions",
+        "src/types.ts::ScanProgress",
+        "src/types.ts::ScanResult",
+        "src/types.ts::SymbolNode",
+        "src/types.ts::SymbolType"
+      ],
+      "dependencies": [],
+      "metrics": {
+        "afferent_coupling": 0,
+        "efferent_coupling": 0,
+        "instability": 0,
+        "cohesion_proxy": 0
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": "src/cli.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/cli.ts",
+      "dependencies": [
+        "src/cli.ts::external::action",
+        "src/cli.ts::external::analyzeProject",
+        "src/cli.ts::external::argument",
+        "src/cli.ts::external::catch",
+        "src/cli.ts::external::command",
+        "src/cli.ts::external::cwd",
+        "src/cli.ts::external::description",
+        "src/cli.ts::external::error",
+        "src/cli.ts::external::exit",
+        "src/cli.ts::external::exportJson",
+        "src/cli.ts::external::exportMermaid",
+        "src/cli.ts::external::filter",
+        "src/cli.ts::external::includes",
+        "src/cli.ts::external::log",
+        "src/cli.ts::external::map",
+        "src/cli.ts::external::name",
+        "src/cli.ts::external::option",
+        "src/cli.ts::external::parseAsync",
+        "src/cli.ts::external::resolve",
+        "src/cli.ts::external::split",
+        "src/cli.ts::external::String",
+        "src/cli.ts::external::stringify",
+        "src/cli.ts::external::toLowerCase",
+        "src/cli.ts::external::trim",
+        "src/cli.ts::external::version",
+        "src/cli.ts::import::./core/analyzer",
+        "src/cli.ts::import::./exporters/jsonExporter",
+        "src/cli.ts::import::./exporters/mermaidExporter",
+        "src/cli.ts::import::commander",
+        "src/cli.ts::import::node:path"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 30,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/cli.ts::formats",
+      "symbol_name": "formats",
+      "symbol_type": "variable",
+      "module_name": "src/cli.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/cli.ts::graph",
+      "symbol_name": "graph",
+      "symbol_type": "variable",
+      "module_name": "src/cli.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/cli.ts::ignore",
+      "symbol_name": "ignore",
+      "symbol_type": "variable",
+      "module_name": "src/cli.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/cli.ts::jsonPath",
+      "symbol_name": "jsonPath",
+      "symbol_type": "variable",
+      "module_name": "src/cli.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/cli.ts::mermaidPath",
+      "symbol_name": "mermaidPath",
+      "symbol_type": "variable",
+      "module_name": "src/cli.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/cli.ts::outDir",
+      "symbol_name": "outDir",
+      "symbol_type": "variable",
+      "module_name": "src/cli.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/cli.ts::program",
+      "symbol_name": "program",
+      "symbol_type": "variable",
+      "module_name": "src/cli.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/cli.ts::projectPath",
+      "symbol_name": "projectPath",
+      "symbol_type": "variable",
+      "module_name": "src/cli.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [
+        "src/core/analyzer.ts::import::../plugins/jsTsPlugin",
+        "src/core/analyzer.ts::import::../plugins/placeholderPlugin",
+        "src/core/analyzer.ts::import::../types",
+        "src/core/analyzer.ts::import::./graph",
+        "src/core/analyzer.ts::import::./pluginManager",
+        "src/core/analyzer.ts::import::./scanner",
+        "src/core/analyzer.ts::import::node:fs/promises",
+        "src/core/analyzer.ts::import::node:path"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 8,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject",
+      "symbol_name": "analyzeProject",
+      "symbol_type": "function",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [
+        "src/core/analyzer.ts::DEFAULT_EXTENSIONS",
+        "src/core/analyzer.ts::diagnostic",
+        "src/core/analyzer.ts::diagnostics",
+        "src/core/analyzer.ts::edges",
+        "src/core/analyzer.ts::extensions",
+        "src/core/analyzer.ts::external::aggregateGraph",
+        "src/core/analyzer.ts::external::parse",
+        "src/core/analyzer.ts::external::push",
+        "src/core/analyzer.ts::external::readFile",
+        "src/core/analyzer.ts::external::registerMany",
+        "src/core/analyzer.ts::external::relative",
+        "src/core/analyzer.ts::external::replace",
+        "src/core/analyzer.ts::external::resolve",
+        "src/core/analyzer.ts::external::scanProjectFiles",
+        "src/core/analyzer.ts::external::String",
+        "src/core/analyzer.ts::filePath",
+        "src/core/analyzer.ts::ignore",
+        "src/core/analyzer.ts::parsed",
+        "src/core/analyzer.ts::parsedCount",
+        "src/core/analyzer.ts::plugin",
+        "src/core/analyzer.ts::pluginManager",
+        "src/core/analyzer.ts::relativeModule",
+        "src/core/analyzer.ts::scanned",
+        "src/core/analyzer.ts::sourceCode",
+        "src/core/analyzer.ts::symbols"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 25,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::DEFAULT_EXTENSIONS",
+      "symbol_name": "DEFAULT_EXTENSIONS",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::diagnostic",
+      "symbol_name": "diagnostic",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::diagnostics",
+      "symbol_name": "diagnostics",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::edges",
+      "symbol_name": "edges",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::extensions",
+      "symbol_name": "extensions",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::filePath",
+      "symbol_name": "filePath",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::ignore",
+      "symbol_name": "ignore",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::parsed",
+      "symbol_name": "parsed",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::parsedCount",
+      "symbol_name": "parsedCount",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::plugin",
+      "symbol_name": "plugin",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::pluginManager",
+      "symbol_name": "pluginManager",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::relativeModule",
+      "symbol_name": "relativeModule",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::scanned",
+      "symbol_name": "scanned",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::sourceCode",
+      "symbol_name": "sourceCode",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/analyzer.ts::symbols",
+      "symbol_name": "symbols",
+      "symbol_type": "variable",
+      "module_name": "src/core/analyzer.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [
+        "src/core/graph.ts::import::../types",
+        "src/core/graph.ts::import::node:path"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 2,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::afferent",
+      "symbol_name": "afferent",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph",
+      "symbol_name": "aggregateGraph",
+      "symbol_type": "function",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [
+        "src/core/graph.ts::afferent",
+        "src/core/graph.ts::cohesion",
+        "src/core/graph.ts::edge",
+        "src/core/graph.ts::edgeMap",
+        "src/core/graph.ts::edges",
+        "src/core/graph.ts::efferent",
+        "src/core/graph.ts::external::basename",
+        "src/core/graph.ts::external::Boolean",
+        "src/core/graph.ts::external::filter",
+        "src/core/graph.ts::external::get",
+        "src/core/graph.ts::external::has",
+        "src/core/graph.ts::external::localeCompare",
+        "src/core/graph.ts::external::map",
+        "src/core/graph.ts::external::push",
+        "src/core/graph.ts::external::resolve",
+        "src/core/graph.ts::external::set",
+        "src/core/graph.ts::external::sort",
+        "src/core/graph.ts::external::toISOString",
+        "src/core/graph.ts::external::values",
+        "src/core/graph.ts::fanInMap",
+        "src/core/graph.ts::fanOutMap",
+        "src/core/graph.ts::fromModule",
+        "src/core/graph.ts::id",
+        "src/core/graph.ts::incoming",
+        "src/core/graph.ts::internal",
+        "src/core/graph.ts::metrics",
+        "src/core/graph.ts::module",
+        "src/core/graph.ts::moduleIncoming",
+        "src/core/graph.ts::moduleInnerEdges",
+        "src/core/graph.ts::moduleMap",
+        "src/core/graph.ts::moduleOutgoing",
+        "src/core/graph.ts::modules",
+        "src/core/graph.ts::outgoing",
+        "src/core/graph.ts::safeRatio",
+        "src/core/graph.ts::symbol",
+        "src/core/graph.ts::symbolCount",
+        "src/core/graph.ts::symbolMap",
+        "src/core/graph.ts::symbols",
+        "src/core/graph.ts::theoretical",
+        "src/core/graph.ts::toModule",
+        "src/core/graph.ts::uniq"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 43,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::cohesion",
+      "symbol_name": "cohesion",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::edge",
+      "symbol_name": "edge",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::edgeMap",
+      "symbol_name": "edgeMap",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::edges",
+      "symbol_name": "edges",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::efferent",
+      "symbol_name": "efferent",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::fanInMap",
+      "symbol_name": "fanInMap",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::fanOutMap",
+      "symbol_name": "fanOutMap",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::fromModule",
+      "symbol_name": "fromModule",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::id",
+      "symbol_name": "id",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::incoming",
+      "symbol_name": "incoming",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::internal",
+      "symbol_name": "internal",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::metrics",
+      "symbol_name": "metrics",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::module",
+      "symbol_name": "module",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::moduleIncoming",
+      "symbol_name": "moduleIncoming",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::moduleInnerEdges",
+      "symbol_name": "moduleInnerEdges",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::moduleMap",
+      "symbol_name": "moduleMap",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::moduleOutgoing",
+      "symbol_name": "moduleOutgoing",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::modules",
+      "symbol_name": "modules",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::outgoing",
+      "symbol_name": "outgoing",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::safeRatio",
+      "symbol_name": "safeRatio",
+      "symbol_type": "function",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [
+        "src/core/graph.ts::external::Number",
+        "src/core/graph.ts::external::toFixed"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 2,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::symbol",
+      "symbol_name": "symbol",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::symbolCount",
+      "symbol_name": "symbolCount",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::symbolMap",
+      "symbol_name": "symbolMap",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::symbols",
+      "symbol_name": "symbols",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::theoretical",
+      "symbol_name": "theoretical",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::toModule",
+      "symbol_name": "toModule",
+      "symbol_type": "variable",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/graph.ts::uniq",
+      "symbol_name": "uniq",
+      "symbol_type": "function",
+      "module_name": "src/core/graph.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [
+        "src/core/pluginManager.ts::import::../types",
+        "src/core/pluginManager.ts::import::node:path"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 2,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::exists",
+      "symbol_name": "exists",
+      "symbol_type": "variable",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::ext",
+      "symbol_name": "ext",
+      "symbol_type": "variable",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::fileName",
+      "symbol_name": "fileName",
+      "symbol_type": "variable",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::list",
+      "symbol_name": "list",
+      "symbol_type": "method",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern",
+      "symbol_name": "matchPattern",
+      "symbol_type": "function",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [
+        "src/core/pluginManager.ts::ext",
+        "src/core/pluginManager.ts::external::basename",
+        "src/core/pluginManager.ts::external::extname",
+        "src/core/pluginManager.ts::external::slice",
+        "src/core/pluginManager.ts::external::some",
+        "src/core/pluginManager.ts::external::startsWith",
+        "src/core/pluginManager.ts::external::toLowerCase",
+        "src/core/pluginManager.ts::external::trim",
+        "src/core/pluginManager.ts::fileName",
+        "src/core/pluginManager.ts::p"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 10,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::p",
+      "symbol_name": "p",
+      "symbol_type": "variable",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::plugin",
+      "symbol_name": "plugin",
+      "symbol_type": "variable",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::PluginManager",
+      "symbol_name": "PluginManager",
+      "symbol_type": "class",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::register",
+      "symbol_name": "register",
+      "symbol_type": "method",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [
+        "src/core/pluginManager.ts::exists",
+        "src/core/pluginManager.ts::external::push",
+        "src/core/pluginManager.ts::external::some",
+        "src/core/pluginManager.ts::p"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 4,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::registerMany",
+      "symbol_name": "registerMany",
+      "symbol_type": "method",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [
+        "src/core/pluginManager.ts::plugin",
+        "src/core/pluginManager.ts::register"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 2,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/pluginManager.ts::resolve",
+      "symbol_name": "resolve",
+      "symbol_type": "method",
+      "module_name": "src/core/pluginManager.ts",
+      "dependencies": [
+        "src/core/pluginManager.ts::external::find",
+        "src/core/pluginManager.ts::matchPattern",
+        "src/core/pluginManager.ts::plugin"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 4,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [
+        "src/core/scanner.ts::import::../types",
+        "src/core/scanner.ts::import::node:fs",
+        "src/core/scanner.ts::import::node:fs/promises",
+        "src/core/scanner.ts::import::node:path"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 4,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::DEFAULT_EXTENSIONS",
+      "symbol_name": "DEFAULT_EXTENSIONS",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::DEFAULT_IGNORES",
+      "symbol_name": "DEFAULT_IGNORES",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::entries",
+      "symbol_name": "entries",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::errors",
+      "symbol_name": "errors",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::ext",
+      "symbol_name": "ext",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::extensions",
+      "symbol_name": "extensions",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::files",
+      "symbol_name": "files",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::fullPath",
+      "symbol_name": "fullPath",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::ignore",
+      "symbol_name": "ignore",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::normalized",
+      "symbol_name": "normalized",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::progress",
+      "symbol_name": "progress",
+      "symbol_type": "variable",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::scanProjectFiles",
+      "symbol_name": "scanProjectFiles",
+      "symbol_type": "function",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [
+        "src/core/scanner.ts::DEFAULT_EXTENSIONS",
+        "src/core/scanner.ts::DEFAULT_IGNORES",
+        "src/core/scanner.ts::errors",
+        "src/core/scanner.ts::external::sort",
+        "src/core/scanner.ts::files",
+        "src/core/scanner.ts::walk"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 7,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::shouldIgnore",
+      "symbol_name": "shouldIgnore",
+      "symbol_type": "function",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [
+        "src/core/scanner.ts::external::includes",
+        "src/core/scanner.ts::external::replace",
+        "src/core/scanner.ts::external::some",
+        "src/core/scanner.ts::normalized"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 4,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/core/scanner.ts::walk",
+      "symbol_name": "walk",
+      "symbol_type": "function",
+      "module_name": "src/core/scanner.ts",
+      "dependencies": [
+        "src/core/scanner.ts::entries",
+        "src/core/scanner.ts::errors",
+        "src/core/scanner.ts::ext",
+        "src/core/scanner.ts::extensions",
+        "src/core/scanner.ts::external::all",
+        "src/core/scanner.ts::external::extname",
+        "src/core/scanner.ts::external::includes",
+        "src/core/scanner.ts::external::isDirectory",
+        "src/core/scanner.ts::external::isFile",
+        "src/core/scanner.ts::external::join",
+        "src/core/scanner.ts::external::map",
+        "src/core/scanner.ts::external::push",
+        "src/core/scanner.ts::external::readdir",
+        "src/core/scanner.ts::external::String",
+        "src/core/scanner.ts::external::toLowerCase",
+        "src/core/scanner.ts::files",
+        "src/core/scanner.ts::fullPath",
+        "src/core/scanner.ts::ignore",
+        "src/core/scanner.ts::progress",
+        "src/core/scanner.ts::shouldIgnore",
+        "src/core/scanner.ts::walk"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 3,
+        "fan_out": 22,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [
+        "src/electron/main.ts::createMainWindow",
+        "src/electron/main.ts::external::analyzeProject",
+        "src/electron/main.ts::external::exportJson",
+        "src/electron/main.ts::external::exportMermaid",
+        "src/electron/main.ts::external::getAllWindows",
+        "src/electron/main.ts::external::handle",
+        "src/electron/main.ts::external::includes",
+        "src/electron/main.ts::external::map",
+        "src/electron/main.ts::external::on",
+        "src/electron/main.ts::external::push",
+        "src/electron/main.ts::external::quit",
+        "src/electron/main.ts::external::send",
+        "src/electron/main.ts::external::showOpenDialog",
+        "src/electron/main.ts::external::then",
+        "src/electron/main.ts::external::toLowerCase",
+        "src/electron/main.ts::external::whenReady",
+        "src/electron/main.ts::import::../core/analyzer",
+        "src/electron/main.ts::import::../exporters/jsonExporter",
+        "src/electron/main.ts::import::../exporters/mermaidExporter",
+        "src/electron/main.ts::import::../types",
+        "src/electron/main.ts::import::electron",
+        "src/electron/main.ts::import::node:path"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 22,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::createMainWindow",
+      "symbol_name": "createMainWindow",
+      "symbol_type": "function",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [
+        "src/electron/main.ts::external::join",
+        "src/electron/main.ts::external::loadFile",
+        "src/electron/main.ts::external::resolve",
+        "src/electron/main.ts::htmlPath",
+        "src/electron/main.ts::win"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 5,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::formats",
+      "symbol_name": "formats",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::graph",
+      "symbol_name": "graph",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::htmlPath",
+      "symbol_name": "htmlPath",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::latestGraph",
+      "symbol_name": "latestGraph",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::mainWindow",
+      "symbol_name": "mainWindow",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::outDir",
+      "symbol_name": "outDir",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::outputs",
+      "symbol_name": "outputs",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::result",
+      "symbol_name": "result",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/main.ts::win",
+      "symbol_name": "win",
+      "symbol_type": "variable",
+      "module_name": "src/electron/main.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/preload.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/electron/preload.ts",
+      "dependencies": [
+        "src/electron/preload.ts::external::exposeInMainWorld",
+        "src/electron/preload.ts::external::invoke",
+        "src/electron/preload.ts::external::listener",
+        "src/electron/preload.ts::external::on",
+        "src/electron/preload.ts::external::removeListener",
+        "src/electron/preload.ts::import::../types",
+        "src/electron/preload.ts::import::electron"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 7,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/preload.ts::api",
+      "symbol_name": "api",
+      "symbol_type": "variable",
+      "module_name": "src/electron/preload.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/preload.ts::ProgressEventPayload",
+      "symbol_name": "ProgressEventPayload",
+      "symbol_type": "type_alias",
+      "module_name": "src/electron/preload.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/electron/preload.ts::wrapped",
+      "symbol_name": "wrapped",
+      "symbol_type": "variable",
+      "module_name": "src/electron/preload.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/jsonExporter.ts",
+      "dependencies": [
+        "src/exporters/jsonExporter.ts::import::../types",
+        "src/exporters/jsonExporter.ts::import::node:fs/promises",
+        "src/exporters/jsonExporter.ts::import::node:path"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 3,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::exportJson",
+      "symbol_name": "exportJson",
+      "symbol_type": "function",
+      "module_name": "src/exporters/jsonExporter.ts",
+      "dependencies": [
+        "src/exporters/jsonExporter.ts::external::join",
+        "src/exporters/jsonExporter.ts::external::mkdir",
+        "src/exporters/jsonExporter.ts::external::stringify",
+        "src/exporters/jsonExporter.ts::external::writeFile",
+        "src/exporters/jsonExporter.ts::filePath",
+        "src/exporters/jsonExporter.ts::sortGraph",
+        "src/exporters/jsonExporter.ts::stable"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 8,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::filePath",
+      "symbol_name": "filePath",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/jsonExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::sortGraph",
+      "symbol_name": "sortGraph",
+      "symbol_type": "function",
+      "module_name": "src/exporters/jsonExporter.ts",
+      "dependencies": [
+        "src/exporters/jsonExporter.ts::external::localeCompare",
+        "src/exporters/jsonExporter.ts::external::sort"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 2,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::stable",
+      "symbol_name": "stable",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/jsonExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [
+        "src/exporters/mermaidExporter.ts::import::../types",
+        "src/exporters/mermaidExporter.ts::import::node:fs/promises",
+        "src/exporters/mermaidExporter.ts::import::node:path"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 3,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::edge",
+      "symbol_name": "edge",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::emittedNodes",
+      "symbol_name": "emittedNodes",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::exportMermaid",
+      "symbol_name": "exportMermaid",
+      "symbol_type": "function",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [
+        "src/exporters/mermaidExporter.ts::external::join",
+        "src/exporters/mermaidExporter.ts::external::mkdir",
+        "src/exporters/mermaidExporter.ts::external::writeFile",
+        "src/exporters/mermaidExporter.ts::filePath",
+        "src/exporters/mermaidExporter.ts::toMermaid"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 6,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::filePath",
+      "symbol_name": "filePath",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::from",
+      "symbol_name": "from",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::id",
+      "symbol_name": "id",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::lines",
+      "symbol_name": "lines",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::nodeId",
+      "symbol_name": "nodeId",
+      "symbol_type": "function",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [
+        "src/exporters/mermaidExporter.ts::external::replace"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 1,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::symbol",
+      "symbol_name": "symbol",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::to",
+      "symbol_name": "to",
+      "symbol_type": "variable",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid",
+      "symbol_name": "toMermaid",
+      "symbol_type": "function",
+      "module_name": "src/exporters/mermaidExporter.ts",
+      "dependencies": [
+        "src/exporters/mermaidExporter.ts::edge",
+        "src/exporters/mermaidExporter.ts::emittedNodes",
+        "src/exporters/mermaidExporter.ts::external::add",
+        "src/exporters/mermaidExporter.ts::external::has",
+        "src/exporters/mermaidExporter.ts::external::join",
+        "src/exporters/mermaidExporter.ts::external::push",
+        "src/exporters/mermaidExporter.ts::from",
+        "src/exporters/mermaidExporter.ts::id",
+        "src/exporters/mermaidExporter.ts::lines",
+        "src/exporters/mermaidExporter.ts::nodeId",
+        "src/exporters/mermaidExporter.ts::symbol",
+        "src/exporters/mermaidExporter.ts::to"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 13,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/index.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/index.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [
+        "src/plugins/jsTsPlugin.ts::addEdge",
+        "src/plugins/jsTsPlugin.ts::addSymbol",
+        "src/plugins/jsTsPlugin.ts::ensureSymbol",
+        "src/plugins/jsTsPlugin.ts::external::get",
+        "src/plugins/jsTsPlugin.ts::external::has",
+        "src/plugins/jsTsPlugin.ts::external::includes",
+        "src/plugins/jsTsPlugin.ts::external::isIdentifier",
+        "src/plugins/jsTsPlugin.ts::external::isMemberExpression",
+        "src/plugins/jsTsPlugin.ts::external::isReferencedIdentifier",
+        "src/plugins/jsTsPlugin.ts::external::isTSExpressionWithTypeArguments",
+        "src/plugins/jsTsPlugin.ts::external::parse",
+        "src/plugins/jsTsPlugin.ts::external::push",
+        "src/plugins/jsTsPlugin.ts::external::set",
+        "src/plugins/jsTsPlugin.ts::external::String",
+        "src/plugins/jsTsPlugin.ts::external::traverse",
+        "src/plugins/jsTsPlugin.ts::external::values",
+        "src/plugins/jsTsPlugin.ts::getContainerName",
+        "src/plugins/jsTsPlugin.ts::import::../types",
+        "src/plugins/jsTsPlugin.ts::import::@babel/parser",
+        "src/plugins/jsTsPlugin.ts::import::@babel/traverse",
+        "src/plugins/jsTsPlugin.ts::import::@babel/types",
+        "src/plugins/jsTsPlugin.ts::makeEdgeId"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 22,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::addEdge",
+      "symbol_name": "addEdge",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::addSymbol",
+      "symbol_name": "addSymbol",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::ast",
+      "symbol_name": "ast",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::calleeName",
+      "symbol_name": "calleeName",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::callerName",
+      "symbol_name": "callerName",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::classId",
+      "symbol_name": "classId",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::className",
+      "symbol_name": "className",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::created",
+      "symbol_name": "created",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::edges",
+      "symbol_name": "edges",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::ensureSymbol",
+      "symbol_name": "ensureSymbol",
+      "symbol_type": "function",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [
+        "src/plugins/jsTsPlugin.ts::created",
+        "src/plugins/jsTsPlugin.ts::existed",
+        "src/plugins/jsTsPlugin.ts::external::get",
+        "src/plugins/jsTsPlugin.ts::external::set"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 4,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::existed",
+      "symbol_name": "existed",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::fn",
+      "symbol_name": "fn",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::from",
+      "symbol_name": "from",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::fromNode",
+      "symbol_name": "fromNode",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::getContainerName",
+      "symbol_name": "getContainerName",
+      "symbol_type": "function",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [
+        "src/plugins/jsTsPlugin.ts::external::findParent",
+        "src/plugins/jsTsPlugin.ts::external::isClassMethod",
+        "src/plugins/jsTsPlugin.ts::external::isFunctionDeclaration",
+        "src/plugins/jsTsPlugin.ts::external::isIdentifier",
+        "src/plugins/jsTsPlugin.ts::external::isObjectMethod",
+        "src/plugins/jsTsPlugin.ts::fn"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 6,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::id",
+      "symbol_name": "id",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::impl",
+      "symbol_name": "impl",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::importFrom",
+      "symbol_name": "importFrom",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::jsTsPlugin",
+      "symbol_name": "jsTsPlugin",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::localNameToSymbolId",
+      "symbol_name": "localNameToSymbolId",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::makeEdgeId",
+      "symbol_name": "makeEdgeId",
+      "symbol_type": "function",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::moduleAnchorId",
+      "symbol_name": "moduleAnchorId",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::name",
+      "symbol_name": "name",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::node",
+      "symbol_name": "node",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::symbol",
+      "symbol_name": "symbol",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::symbols",
+      "symbol_name": "symbols",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::target",
+      "symbol_name": "target",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::to",
+      "symbol_name": "to",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/jsTsPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/placeholderPlugin.ts",
+      "dependencies": [
+        "src/plugins/placeholderPlugin.ts::external::match",
+        "src/plugins/placeholderPlugin.ts::external::push",
+        "src/plugins/placeholderPlugin.ts::external::split",
+        "src/plugins/placeholderPlugin.ts::import::../types"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 4,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::clz",
+      "symbol_name": "clz",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/placeholderPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::fn",
+      "symbol_name": "fn",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/placeholderPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::line",
+      "symbol_name": "line",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/placeholderPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::lines",
+      "symbol_name": "lines",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/placeholderPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::moduleAnchorId",
+      "symbol_name": "moduleAnchorId",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/placeholderPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::placeholderPlugin",
+      "symbol_name": "placeholderPlugin",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/placeholderPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::symbols",
+      "symbol_name": "symbols",
+      "symbol_type": "variable",
+      "module_name": "src/plugins/placeholderPlugin.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [
+        "src/renderer/app.js::e",
+        "src/renderer/app.js::external::createRoot",
+        "src/renderer/app.js::external::getElementById",
+        "src/renderer/app.js::external::render"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 4,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::App",
+      "symbol_name": "App",
+      "symbol_type": "function",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [
+        "src/renderer/app.js::code",
+        "src/renderer/app.js::currentModule",
+        "src/renderer/app.js::currentModuleEdges",
+        "src/renderer/app.js::doExport",
+        "src/renderer/app.js::e",
+        "src/renderer/app.js::edge",
+        "src/renderer/app.js::external::analyzeProject",
+        "src/renderer/app.js::external::catch",
+        "src/renderer/app.js::external::exportGraph",
+        "src/renderer/app.js::external::filter",
+        "src/renderer/app.js::external::find",
+        "src/renderer/app.js::external::includes",
+        "src/renderer/app.js::external::initialize",
+        "src/renderer/app.js::external::join",
+        "src/renderer/app.js::external::map",
+        "src/renderer/app.js::external::now",
+        "src/renderer/app.js::external::onAnalysisProgress",
+        "src/renderer/app.js::external::openProjectDialog",
+        "src/renderer/app.js::external::render",
+        "src/renderer/app.js::external::setBusy",
+        "src/renderer/app.js::external::setEdgeTypeFilter",
+        "src/renderer/app.js::external::setElapsed",
+        "src/renderer/app.js::external::setFileKeyword",
+        "src/renderer/app.js::external::setGraph",
+        "src/renderer/app.js::external::setOutDir",
+        "src/renderer/app.js::external::setProjectPath",
+        "src/renderer/app.js::external::setSelectedModule",
+        "src/renderer/app.js::external::setStatus",
+        "src/renderer/app.js::external::slice",
+        "src/renderer/app.js::external::String",
+        "src/renderer/app.js::external::stringify",
+        "src/renderer/app.js::external::then",
+        "src/renderer/app.js::external::toLowerCase",
+        "src/renderer/app.js::external::useEffect",
+        "src/renderer/app.js::external::useRef",
+        "src/renderer/app.js::external::useState",
+        "src/renderer/app.js::from",
+        "src/renderer/app.js::hit",
+        "src/renderer/app.js::mermaidRef",
+        "src/renderer/app.js::modules",
+        "src/renderer/app.js::outputs",
+        "src/renderer/app.js::pickProject",
+        "src/renderer/app.js::result",
+        "src/renderer/app.js::runAnalyze",
+        "src/renderer/app.js::selected",
+        "src/renderer/app.js::startTimeRef",
+        "src/renderer/app.js::to",
+        "src/renderer/app.js::toMermaid",
+        "src/renderer/app.js::typePass",
+        "src/renderer/app.js::unsubscribe"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 53,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::code",
+      "symbol_name": "code",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::currentModule",
+      "symbol_name": "currentModule",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::currentModuleEdges",
+      "symbol_name": "currentModuleEdges",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::doExport",
+      "symbol_name": "doExport",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::e",
+      "symbol_name": "e",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 3,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::edge",
+      "symbol_name": "edge",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::from",
+      "symbol_name": "from",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::hit",
+      "symbol_name": "hit",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::lines",
+      "symbol_name": "lines",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::mermaidRef",
+      "symbol_name": "mermaidRef",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::modules",
+      "symbol_name": "modules",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::normalize",
+      "symbol_name": "normalize",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::outputs",
+      "symbol_name": "outputs",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::pickProject",
+      "symbol_name": "pickProject",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::result",
+      "symbol_name": "result",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::root",
+      "symbol_name": "root",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::runAnalyze",
+      "symbol_name": "runAnalyze",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::selected",
+      "symbol_name": "selected",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::startTimeRef",
+      "symbol_name": "startTimeRef",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::to",
+      "symbol_name": "to",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid",
+      "symbol_name": "toMermaid",
+      "symbol_type": "function",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [
+        "src/renderer/app.js::edge",
+        "src/renderer/app.js::external::join",
+        "src/renderer/app.js::external::push",
+        "src/renderer/app.js::external::replace",
+        "src/renderer/app.js::from",
+        "src/renderer/app.js::lines",
+        "src/renderer/app.js::normalize",
+        "src/renderer/app.js::to"
+      ],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 2,
+        "fan_out": 9,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::typePass",
+      "symbol_name": "typePass",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/renderer/app.js::unsubscribe",
+      "symbol_name": "unsubscribe",
+      "symbol_type": "variable",
+      "module_name": "src/renderer/app.js",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 1,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::(module)",
+      "symbol_name": "(module)",
+      "symbol_type": "variable",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::AnalyzeOptions",
+      "symbol_name": "AnalyzeOptions",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::AnalyzerDiagnostic",
+      "symbol_name": "AnalyzerDiagnostic",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::AnalyzerMeta",
+      "symbol_name": "AnalyzerMeta",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::DependencyType",
+      "symbol_name": "DependencyType",
+      "symbol_type": "type_alias",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::Edge",
+      "symbol_name": "Edge",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::KnowledgeGraph",
+      "symbol_name": "KnowledgeGraph",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::MetricMap",
+      "symbol_name": "MetricMap",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::ModuleNode",
+      "symbol_name": "ModuleNode",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::ParseFileContext",
+      "symbol_name": "ParseFileContext",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::ParseResult",
+      "symbol_name": "ParseResult",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::ParserPlugin",
+      "symbol_name": "ParserPlugin",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::ScanOptions",
+      "symbol_name": "ScanOptions",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::ScanProgress",
+      "symbol_name": "ScanProgress",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::ScanResult",
+      "symbol_name": "ScanResult",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::SymbolNode",
+      "symbol_name": "SymbolNode",
+      "symbol_type": "interface",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    },
+    {
+      "id": "src/types.ts::SymbolType",
+      "symbol_name": "SymbolType",
+      "symbol_type": "type_alias",
+      "module_name": "src/types.ts",
+      "dependencies": [],
+      "metrics": {
+        "cyclomatic_complexity": 1,
+        "fan_in": 0,
+        "fan_out": 0,
+        "loc": 0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::action#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::action",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::analyzeProject#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::analyzeProject",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::argument#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::argument",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::catch#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::catch",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::command#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::command",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::cwd#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::cwd",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::description#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::description",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::error#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::error",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::exit#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::exit",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::exportJson#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::exportJson",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::exportMermaid#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::exportMermaid",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::filter#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::filter",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::includes#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::includes",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::log#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::log",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::map#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::map",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::name#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::name",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::option#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::option",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::parseAsync#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::parseAsync",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::resolve#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::resolve",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::split#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::split",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::String#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::String",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::stringify#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::stringify",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::toLowerCase#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::toLowerCase",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::trim#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::trim",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::external::version#call",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::external::version",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::import::./core/analyzer#import",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::import::./core/analyzer",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::import::./exporters/jsonExporter#import",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::import::./exporters/jsonExporter",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::import::./exporters/mermaidExporter#import",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::import::./exporters/mermaidExporter",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::import::commander#import",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::import::commander",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/cli.ts::(module)=>src/cli.ts::import::node:path#import",
+      "from": "src/cli.ts::(module)",
+      "to": "src/cli.ts::import::node:path",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::(module)=>src/core/analyzer.ts::import::../plugins/jsTsPlugin#import",
+      "from": "src/core/analyzer.ts::(module)",
+      "to": "src/core/analyzer.ts::import::../plugins/jsTsPlugin",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::(module)=>src/core/analyzer.ts::import::../plugins/placeholderPlugin#import",
+      "from": "src/core/analyzer.ts::(module)",
+      "to": "src/core/analyzer.ts::import::../plugins/placeholderPlugin",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::(module)=>src/core/analyzer.ts::import::../types#import",
+      "from": "src/core/analyzer.ts::(module)",
+      "to": "src/core/analyzer.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::(module)=>src/core/analyzer.ts::import::./graph#import",
+      "from": "src/core/analyzer.ts::(module)",
+      "to": "src/core/analyzer.ts::import::./graph",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::(module)=>src/core/analyzer.ts::import::./pluginManager#import",
+      "from": "src/core/analyzer.ts::(module)",
+      "to": "src/core/analyzer.ts::import::./pluginManager",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::(module)=>src/core/analyzer.ts::import::./scanner#import",
+      "from": "src/core/analyzer.ts::(module)",
+      "to": "src/core/analyzer.ts::import::./scanner",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::(module)=>src/core/analyzer.ts::import::node:fs/promises#import",
+      "from": "src/core/analyzer.ts::(module)",
+      "to": "src/core/analyzer.ts::import::node:fs/promises",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::(module)=>src/core/analyzer.ts::import::node:path#import",
+      "from": "src/core/analyzer.ts::(module)",
+      "to": "src/core/analyzer.ts::import::node:path",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::DEFAULT_EXTENSIONS#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::DEFAULT_EXTENSIONS",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::diagnostic#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::diagnostic",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::diagnostics#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::diagnostics",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::edges#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::edges",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::extensions#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::extensions",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::aggregateGraph#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::aggregateGraph",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::parse#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::parse",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::push#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::push",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::readFile#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::readFile",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::registerMany#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::registerMany",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::relative#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::relative",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::replace#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::replace",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::resolve#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::resolve",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::scanProjectFiles#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::scanProjectFiles",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::external::String#call",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::external::String",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::filePath#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::filePath",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::ignore#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::ignore",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::parsed#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::parsed",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::parsedCount#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::parsedCount",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::plugin#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::plugin",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::pluginManager#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::pluginManager",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::relativeModule#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::relativeModule",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::scanned#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::scanned",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::sourceCode#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::sourceCode",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/analyzer.ts::analyzeProject=>src/core/analyzer.ts::symbols#reference",
+      "from": "src/core/analyzer.ts::analyzeProject",
+      "to": "src/core/analyzer.ts::symbols",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::(module)=>src/core/graph.ts::import::../types#import",
+      "from": "src/core/graph.ts::(module)",
+      "to": "src/core/graph.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::(module)=>src/core/graph.ts::import::node:path#import",
+      "from": "src/core/graph.ts::(module)",
+      "to": "src/core/graph.ts::import::node:path",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::afferent#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::afferent",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::cohesion#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::cohesion",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::edge#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::edge",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::edgeMap#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::edgeMap",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::edges#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::edges",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::efferent#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::efferent",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::basename#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::basename",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::Boolean#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::Boolean",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::filter#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::filter",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::get#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::get",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::has#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::has",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::localeCompare#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::localeCompare",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::map#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::map",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::push#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::push",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::resolve#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::resolve",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::set#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::set",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::sort#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::sort",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::toISOString#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::toISOString",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::external::values#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::external::values",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::fanInMap#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::fanInMap",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::fanOutMap#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::fanOutMap",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::fromModule#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::fromModule",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::id#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::id",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::incoming#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::incoming",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::internal#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::internal",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::metrics#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::metrics",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::module#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::module",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::moduleIncoming#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::moduleIncoming",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::moduleInnerEdges#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::moduleInnerEdges",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::moduleMap#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::moduleMap",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::moduleOutgoing#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::moduleOutgoing",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::modules#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::modules",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::outgoing#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::outgoing",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::safeRatio#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::safeRatio",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::safeRatio#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::safeRatio",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::symbol#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::symbol",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::symbolCount#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::symbolCount",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::symbolMap#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::symbolMap",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::symbols#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::symbols",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::theoretical#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::theoretical",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::toModule#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::toModule",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::uniq#call",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::uniq",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::aggregateGraph=>src/core/graph.ts::uniq#reference",
+      "from": "src/core/graph.ts::aggregateGraph",
+      "to": "src/core/graph.ts::uniq",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/graph.ts::safeRatio=>src/core/graph.ts::external::Number#call",
+      "from": "src/core/graph.ts::safeRatio",
+      "to": "src/core/graph.ts::external::Number",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/graph.ts::safeRatio=>src/core/graph.ts::external::toFixed#call",
+      "from": "src/core/graph.ts::safeRatio",
+      "to": "src/core/graph.ts::external::toFixed",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::(module)=>src/core/pluginManager.ts::import::../types#import",
+      "from": "src/core/pluginManager.ts::(module)",
+      "to": "src/core/pluginManager.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::(module)=>src/core/pluginManager.ts::import::node:path#import",
+      "from": "src/core/pluginManager.ts::(module)",
+      "to": "src/core/pluginManager.ts::import::node:path",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::ext#reference",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::ext",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::external::basename#call",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::external::basename",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::external::extname#call",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::external::extname",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::external::slice#call",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::external::slice",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::external::some#call",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::external::some",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::external::startsWith#call",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::external::startsWith",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::external::toLowerCase#call",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::external::toLowerCase",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::external::trim#call",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::external::trim",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::fileName#reference",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::fileName",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/pluginManager.ts::matchPattern=>src/core/pluginManager.ts::p#reference",
+      "from": "src/core/pluginManager.ts::matchPattern",
+      "to": "src/core/pluginManager.ts::p",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/pluginManager.ts::register=>src/core/pluginManager.ts::exists#reference",
+      "from": "src/core/pluginManager.ts::register",
+      "to": "src/core/pluginManager.ts::exists",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/pluginManager.ts::register=>src/core/pluginManager.ts::external::push#call",
+      "from": "src/core/pluginManager.ts::register",
+      "to": "src/core/pluginManager.ts::external::push",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::register=>src/core/pluginManager.ts::external::some#call",
+      "from": "src/core/pluginManager.ts::register",
+      "to": "src/core/pluginManager.ts::external::some",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::register=>src/core/pluginManager.ts::p#reference",
+      "from": "src/core/pluginManager.ts::register",
+      "to": "src/core/pluginManager.ts::p",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/pluginManager.ts::registerMany=>src/core/pluginManager.ts::plugin#reference",
+      "from": "src/core/pluginManager.ts::registerMany",
+      "to": "src/core/pluginManager.ts::plugin",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/pluginManager.ts::registerMany=>src/core/pluginManager.ts::register#call",
+      "from": "src/core/pluginManager.ts::registerMany",
+      "to": "src/core/pluginManager.ts::register",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/pluginManager.ts::resolve=>src/core/pluginManager.ts::external::find#call",
+      "from": "src/core/pluginManager.ts::resolve",
+      "to": "src/core/pluginManager.ts::external::find",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/pluginManager.ts::resolve=>src/core/pluginManager.ts::matchPattern#call",
+      "from": "src/core/pluginManager.ts::resolve",
+      "to": "src/core/pluginManager.ts::matchPattern",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/pluginManager.ts::resolve=>src/core/pluginManager.ts::matchPattern#reference",
+      "from": "src/core/pluginManager.ts::resolve",
+      "to": "src/core/pluginManager.ts::matchPattern",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/pluginManager.ts::resolve=>src/core/pluginManager.ts::plugin#reference",
+      "from": "src/core/pluginManager.ts::resolve",
+      "to": "src/core/pluginManager.ts::plugin",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::(module)=>src/core/scanner.ts::import::../types#import",
+      "from": "src/core/scanner.ts::(module)",
+      "to": "src/core/scanner.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::(module)=>src/core/scanner.ts::import::node:fs/promises#import",
+      "from": "src/core/scanner.ts::(module)",
+      "to": "src/core/scanner.ts::import::node:fs/promises",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::(module)=>src/core/scanner.ts::import::node:fs#import",
+      "from": "src/core/scanner.ts::(module)",
+      "to": "src/core/scanner.ts::import::node:fs",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::(module)=>src/core/scanner.ts::import::node:path#import",
+      "from": "src/core/scanner.ts::(module)",
+      "to": "src/core/scanner.ts::import::node:path",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::scanProjectFiles=>src/core/scanner.ts::DEFAULT_EXTENSIONS#reference",
+      "from": "src/core/scanner.ts::scanProjectFiles",
+      "to": "src/core/scanner.ts::DEFAULT_EXTENSIONS",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::scanProjectFiles=>src/core/scanner.ts::DEFAULT_IGNORES#reference",
+      "from": "src/core/scanner.ts::scanProjectFiles",
+      "to": "src/core/scanner.ts::DEFAULT_IGNORES",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::scanProjectFiles=>src/core/scanner.ts::errors#reference",
+      "from": "src/core/scanner.ts::scanProjectFiles",
+      "to": "src/core/scanner.ts::errors",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::scanProjectFiles=>src/core/scanner.ts::external::sort#call",
+      "from": "src/core/scanner.ts::scanProjectFiles",
+      "to": "src/core/scanner.ts::external::sort",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::scanProjectFiles=>src/core/scanner.ts::files#reference",
+      "from": "src/core/scanner.ts::scanProjectFiles",
+      "to": "src/core/scanner.ts::files",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::scanProjectFiles=>src/core/scanner.ts::walk#call",
+      "from": "src/core/scanner.ts::scanProjectFiles",
+      "to": "src/core/scanner.ts::walk",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::scanProjectFiles=>src/core/scanner.ts::walk#reference",
+      "from": "src/core/scanner.ts::scanProjectFiles",
+      "to": "src/core/scanner.ts::walk",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::shouldIgnore=>src/core/scanner.ts::external::includes#call",
+      "from": "src/core/scanner.ts::shouldIgnore",
+      "to": "src/core/scanner.ts::external::includes",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::shouldIgnore=>src/core/scanner.ts::external::replace#call",
+      "from": "src/core/scanner.ts::shouldIgnore",
+      "to": "src/core/scanner.ts::external::replace",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::shouldIgnore=>src/core/scanner.ts::external::some#call",
+      "from": "src/core/scanner.ts::shouldIgnore",
+      "to": "src/core/scanner.ts::external::some",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::shouldIgnore=>src/core/scanner.ts::normalized#reference",
+      "from": "src/core/scanner.ts::shouldIgnore",
+      "to": "src/core/scanner.ts::normalized",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::entries#reference",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::entries",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::errors#reference",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::errors",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::ext#reference",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::ext",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::extensions#reference",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::extensions",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::all#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::all",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::extname#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::extname",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::includes#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::includes",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::isDirectory#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::isDirectory",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::isFile#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::isFile",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::join#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::join",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::map#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::map",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::push#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::push",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::readdir#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::readdir",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::String#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::String",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::external::toLowerCase#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::external::toLowerCase",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::files#reference",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::files",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::fullPath#reference",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::fullPath",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::ignore#reference",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::ignore",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::progress#reference",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::progress",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::shouldIgnore#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::shouldIgnore",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::shouldIgnore#reference",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::shouldIgnore",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/core/scanner.ts::walk=>src/core/scanner.ts::walk#call",
+      "from": "src/core/scanner.ts::walk",
+      "to": "src/core/scanner.ts::walk",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::createMainWindow#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::createMainWindow",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::analyzeProject#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::analyzeProject",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::exportJson#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::exportJson",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::exportMermaid#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::exportMermaid",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::getAllWindows#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::getAllWindows",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::handle#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::handle",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::includes#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::includes",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::map#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::map",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::on#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::on",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::push#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::push",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::quit#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::quit",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::send#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::send",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::showOpenDialog#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::showOpenDialog",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::then#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::then",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::toLowerCase#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::toLowerCase",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::external::whenReady#call",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::external::whenReady",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::import::../core/analyzer#import",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::import::../core/analyzer",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::import::../exporters/jsonExporter#import",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::import::../exporters/jsonExporter",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::import::../exporters/mermaidExporter#import",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::import::../exporters/mermaidExporter",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::import::../types#import",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::import::electron#import",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::import::electron",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::(module)=>src/electron/main.ts::import::node:path#import",
+      "from": "src/electron/main.ts::(module)",
+      "to": "src/electron/main.ts::import::node:path",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::createMainWindow=>src/electron/main.ts::external::join#call",
+      "from": "src/electron/main.ts::createMainWindow",
+      "to": "src/electron/main.ts::external::join",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::createMainWindow=>src/electron/main.ts::external::loadFile#call",
+      "from": "src/electron/main.ts::createMainWindow",
+      "to": "src/electron/main.ts::external::loadFile",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::createMainWindow=>src/electron/main.ts::external::resolve#call",
+      "from": "src/electron/main.ts::createMainWindow",
+      "to": "src/electron/main.ts::external::resolve",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/main.ts::createMainWindow=>src/electron/main.ts::htmlPath#reference",
+      "from": "src/electron/main.ts::createMainWindow",
+      "to": "src/electron/main.ts::htmlPath",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/electron/main.ts::createMainWindow=>src/electron/main.ts::win#reference",
+      "from": "src/electron/main.ts::createMainWindow",
+      "to": "src/electron/main.ts::win",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/electron/preload.ts::(module)=>src/electron/preload.ts::external::exposeInMainWorld#call",
+      "from": "src/electron/preload.ts::(module)",
+      "to": "src/electron/preload.ts::external::exposeInMainWorld",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/preload.ts::(module)=>src/electron/preload.ts::external::invoke#call",
+      "from": "src/electron/preload.ts::(module)",
+      "to": "src/electron/preload.ts::external::invoke",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/preload.ts::(module)=>src/electron/preload.ts::external::listener#call",
+      "from": "src/electron/preload.ts::(module)",
+      "to": "src/electron/preload.ts::external::listener",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/preload.ts::(module)=>src/electron/preload.ts::external::on#call",
+      "from": "src/electron/preload.ts::(module)",
+      "to": "src/electron/preload.ts::external::on",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/preload.ts::(module)=>src/electron/preload.ts::external::removeListener#call",
+      "from": "src/electron/preload.ts::(module)",
+      "to": "src/electron/preload.ts::external::removeListener",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/preload.ts::(module)=>src/electron/preload.ts::import::../types#import",
+      "from": "src/electron/preload.ts::(module)",
+      "to": "src/electron/preload.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/electron/preload.ts::(module)=>src/electron/preload.ts::import::electron#import",
+      "from": "src/electron/preload.ts::(module)",
+      "to": "src/electron/preload.ts::import::electron",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::(module)=>src/exporters/jsonExporter.ts::import::../types#import",
+      "from": "src/exporters/jsonExporter.ts::(module)",
+      "to": "src/exporters/jsonExporter.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::(module)=>src/exporters/jsonExporter.ts::import::node:fs/promises#import",
+      "from": "src/exporters/jsonExporter.ts::(module)",
+      "to": "src/exporters/jsonExporter.ts::import::node:fs/promises",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::(module)=>src/exporters/jsonExporter.ts::import::node:path#import",
+      "from": "src/exporters/jsonExporter.ts::(module)",
+      "to": "src/exporters/jsonExporter.ts::import::node:path",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::exportJson=>src/exporters/jsonExporter.ts::external::join#call",
+      "from": "src/exporters/jsonExporter.ts::exportJson",
+      "to": "src/exporters/jsonExporter.ts::external::join",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::exportJson=>src/exporters/jsonExporter.ts::external::mkdir#call",
+      "from": "src/exporters/jsonExporter.ts::exportJson",
+      "to": "src/exporters/jsonExporter.ts::external::mkdir",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::exportJson=>src/exporters/jsonExporter.ts::external::stringify#call",
+      "from": "src/exporters/jsonExporter.ts::exportJson",
+      "to": "src/exporters/jsonExporter.ts::external::stringify",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::exportJson=>src/exporters/jsonExporter.ts::external::writeFile#call",
+      "from": "src/exporters/jsonExporter.ts::exportJson",
+      "to": "src/exporters/jsonExporter.ts::external::writeFile",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::exportJson=>src/exporters/jsonExporter.ts::filePath#reference",
+      "from": "src/exporters/jsonExporter.ts::exportJson",
+      "to": "src/exporters/jsonExporter.ts::filePath",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::exportJson=>src/exporters/jsonExporter.ts::sortGraph#call",
+      "from": "src/exporters/jsonExporter.ts::exportJson",
+      "to": "src/exporters/jsonExporter.ts::sortGraph",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::exportJson=>src/exporters/jsonExporter.ts::sortGraph#reference",
+      "from": "src/exporters/jsonExporter.ts::exportJson",
+      "to": "src/exporters/jsonExporter.ts::sortGraph",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::exportJson=>src/exporters/jsonExporter.ts::stable#reference",
+      "from": "src/exporters/jsonExporter.ts::exportJson",
+      "to": "src/exporters/jsonExporter.ts::stable",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::sortGraph=>src/exporters/jsonExporter.ts::external::localeCompare#call",
+      "from": "src/exporters/jsonExporter.ts::sortGraph",
+      "to": "src/exporters/jsonExporter.ts::external::localeCompare",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/jsonExporter.ts::sortGraph=>src/exporters/jsonExporter.ts::external::sort#call",
+      "from": "src/exporters/jsonExporter.ts::sortGraph",
+      "to": "src/exporters/jsonExporter.ts::external::sort",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::(module)=>src/exporters/mermaidExporter.ts::import::../types#import",
+      "from": "src/exporters/mermaidExporter.ts::(module)",
+      "to": "src/exporters/mermaidExporter.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::(module)=>src/exporters/mermaidExporter.ts::import::node:fs/promises#import",
+      "from": "src/exporters/mermaidExporter.ts::(module)",
+      "to": "src/exporters/mermaidExporter.ts::import::node:fs/promises",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::(module)=>src/exporters/mermaidExporter.ts::import::node:path#import",
+      "from": "src/exporters/mermaidExporter.ts::(module)",
+      "to": "src/exporters/mermaidExporter.ts::import::node:path",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::exportMermaid=>src/exporters/mermaidExporter.ts::external::join#call",
+      "from": "src/exporters/mermaidExporter.ts::exportMermaid",
+      "to": "src/exporters/mermaidExporter.ts::external::join",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::exportMermaid=>src/exporters/mermaidExporter.ts::external::mkdir#call",
+      "from": "src/exporters/mermaidExporter.ts::exportMermaid",
+      "to": "src/exporters/mermaidExporter.ts::external::mkdir",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::exportMermaid=>src/exporters/mermaidExporter.ts::external::writeFile#call",
+      "from": "src/exporters/mermaidExporter.ts::exportMermaid",
+      "to": "src/exporters/mermaidExporter.ts::external::writeFile",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::exportMermaid=>src/exporters/mermaidExporter.ts::filePath#reference",
+      "from": "src/exporters/mermaidExporter.ts::exportMermaid",
+      "to": "src/exporters/mermaidExporter.ts::filePath",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::exportMermaid=>src/exporters/mermaidExporter.ts::toMermaid#call",
+      "from": "src/exporters/mermaidExporter.ts::exportMermaid",
+      "to": "src/exporters/mermaidExporter.ts::toMermaid",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::exportMermaid=>src/exporters/mermaidExporter.ts::toMermaid#reference",
+      "from": "src/exporters/mermaidExporter.ts::exportMermaid",
+      "to": "src/exporters/mermaidExporter.ts::toMermaid",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::nodeId=>src/exporters/mermaidExporter.ts::external::replace#call",
+      "from": "src/exporters/mermaidExporter.ts::nodeId",
+      "to": "src/exporters/mermaidExporter.ts::external::replace",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::edge#reference",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::edge",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::emittedNodes#reference",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::emittedNodes",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::external::add#call",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::external::add",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::external::has#call",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::external::has",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::external::join#call",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::external::join",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::external::push#call",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::external::push",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::from#reference",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::from",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::id#reference",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::id",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::lines#reference",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::lines",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::nodeId#call",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::nodeId",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::nodeId#reference",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::nodeId",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::symbol#reference",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::symbol",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/exporters/mermaidExporter.ts::toMermaid=>src/exporters/mermaidExporter.ts::to#reference",
+      "from": "src/exporters/mermaidExporter.ts::toMermaid",
+      "to": "src/exporters/mermaidExporter.ts::to",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::addEdge#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::addEdge",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::addSymbol#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::addSymbol",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::ensureSymbol#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::ensureSymbol",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::get#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::get",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::has#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::has",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::includes#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::includes",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::isIdentifier#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::isIdentifier",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::isMemberExpression#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::isMemberExpression",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::isReferencedIdentifier#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::isReferencedIdentifier",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::isTSExpressionWithTypeArguments#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::isTSExpressionWithTypeArguments",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::parse#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::parse",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::push#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::push",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::set#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::set",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::String#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::String",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::traverse#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::traverse",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::external::values#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::external::values",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::getContainerName#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::getContainerName",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::import::../types#import",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::import::@babel/parser#import",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::import::@babel/parser",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::import::@babel/traverse#import",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::import::@babel/traverse",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::import::@babel/types#import",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::import::@babel/types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::(module)=>src/plugins/jsTsPlugin.ts::makeEdgeId#call",
+      "from": "src/plugins/jsTsPlugin.ts::(module)",
+      "to": "src/plugins/jsTsPlugin.ts::makeEdgeId",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::ensureSymbol=>src/plugins/jsTsPlugin.ts::created#reference",
+      "from": "src/plugins/jsTsPlugin.ts::ensureSymbol",
+      "to": "src/plugins/jsTsPlugin.ts::created",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::ensureSymbol=>src/plugins/jsTsPlugin.ts::existed#reference",
+      "from": "src/plugins/jsTsPlugin.ts::ensureSymbol",
+      "to": "src/plugins/jsTsPlugin.ts::existed",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::ensureSymbol=>src/plugins/jsTsPlugin.ts::external::get#call",
+      "from": "src/plugins/jsTsPlugin.ts::ensureSymbol",
+      "to": "src/plugins/jsTsPlugin.ts::external::get",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::ensureSymbol=>src/plugins/jsTsPlugin.ts::external::set#call",
+      "from": "src/plugins/jsTsPlugin.ts::ensureSymbol",
+      "to": "src/plugins/jsTsPlugin.ts::external::set",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::getContainerName=>src/plugins/jsTsPlugin.ts::external::findParent#call",
+      "from": "src/plugins/jsTsPlugin.ts::getContainerName",
+      "to": "src/plugins/jsTsPlugin.ts::external::findParent",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::getContainerName=>src/plugins/jsTsPlugin.ts::external::isClassMethod#call",
+      "from": "src/plugins/jsTsPlugin.ts::getContainerName",
+      "to": "src/plugins/jsTsPlugin.ts::external::isClassMethod",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::getContainerName=>src/plugins/jsTsPlugin.ts::external::isFunctionDeclaration#call",
+      "from": "src/plugins/jsTsPlugin.ts::getContainerName",
+      "to": "src/plugins/jsTsPlugin.ts::external::isFunctionDeclaration",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::getContainerName=>src/plugins/jsTsPlugin.ts::external::isIdentifier#call",
+      "from": "src/plugins/jsTsPlugin.ts::getContainerName",
+      "to": "src/plugins/jsTsPlugin.ts::external::isIdentifier",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::getContainerName=>src/plugins/jsTsPlugin.ts::external::isObjectMethod#call",
+      "from": "src/plugins/jsTsPlugin.ts::getContainerName",
+      "to": "src/plugins/jsTsPlugin.ts::external::isObjectMethod",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/jsTsPlugin.ts::getContainerName=>src/plugins/jsTsPlugin.ts::fn#reference",
+      "from": "src/plugins/jsTsPlugin.ts::getContainerName",
+      "to": "src/plugins/jsTsPlugin.ts::fn",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::(module)=>src/plugins/placeholderPlugin.ts::external::match#call",
+      "from": "src/plugins/placeholderPlugin.ts::(module)",
+      "to": "src/plugins/placeholderPlugin.ts::external::match",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::(module)=>src/plugins/placeholderPlugin.ts::external::push#call",
+      "from": "src/plugins/placeholderPlugin.ts::(module)",
+      "to": "src/plugins/placeholderPlugin.ts::external::push",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::(module)=>src/plugins/placeholderPlugin.ts::external::split#call",
+      "from": "src/plugins/placeholderPlugin.ts::(module)",
+      "to": "src/plugins/placeholderPlugin.ts::external::split",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/plugins/placeholderPlugin.ts::(module)=>src/plugins/placeholderPlugin.ts::import::../types#import",
+      "from": "src/plugins/placeholderPlugin.ts::(module)",
+      "to": "src/plugins/placeholderPlugin.ts::import::../types",
+      "dependency_type": "import",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::(module)=>src/renderer/app.js::e#call",
+      "from": "src/renderer/app.js::(module)",
+      "to": "src/renderer/app.js::e",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::(module)=>src/renderer/app.js::external::createRoot#call",
+      "from": "src/renderer/app.js::(module)",
+      "to": "src/renderer/app.js::external::createRoot",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::(module)=>src/renderer/app.js::external::getElementById#call",
+      "from": "src/renderer/app.js::(module)",
+      "to": "src/renderer/app.js::external::getElementById",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::(module)=>src/renderer/app.js::external::render#call",
+      "from": "src/renderer/app.js::(module)",
+      "to": "src/renderer/app.js::external::render",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::code#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::code",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::currentModule#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::currentModule",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::currentModuleEdges#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::currentModuleEdges",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::doExport#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::doExport",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::doExport#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::doExport",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::e#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::e",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::e#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::e",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::edge#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::edge",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::analyzeProject#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::analyzeProject",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::catch#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::catch",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::exportGraph#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::exportGraph",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::filter#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::filter",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::find#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::find",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::includes#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::includes",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::initialize#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::initialize",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::join#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::join",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::map#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::map",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::now#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::now",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::onAnalysisProgress#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::onAnalysisProgress",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::openProjectDialog#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::openProjectDialog",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::render#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::render",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::setBusy#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::setBusy",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::setEdgeTypeFilter#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::setEdgeTypeFilter",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::setElapsed#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::setElapsed",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::setFileKeyword#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::setFileKeyword",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::setGraph#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::setGraph",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::setOutDir#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::setOutDir",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::setProjectPath#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::setProjectPath",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::setSelectedModule#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::setSelectedModule",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::setStatus#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::setStatus",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::slice#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::slice",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::String#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::String",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::stringify#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::stringify",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::then#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::then",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::toLowerCase#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::toLowerCase",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::useEffect#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::useEffect",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::useRef#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::useRef",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::external::useState#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::external::useState",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::from#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::from",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::hit#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::hit",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::mermaidRef#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::mermaidRef",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::modules#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::modules",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::outputs#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::outputs",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::pickProject#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::pickProject",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::result#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::result",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::runAnalyze#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::runAnalyze",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::selected#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::selected",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::startTimeRef#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::startTimeRef",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::to#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::to",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::toMermaid#call",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::toMermaid",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::toMermaid#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::toMermaid",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::typePass#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::typePass",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::App=>src/renderer/app.js::unsubscribe#reference",
+      "from": "src/renderer/app.js::App",
+      "to": "src/renderer/app.js::unsubscribe",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid=>src/renderer/app.js::edge#reference",
+      "from": "src/renderer/app.js::toMermaid",
+      "to": "src/renderer/app.js::edge",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid=>src/renderer/app.js::external::join#call",
+      "from": "src/renderer/app.js::toMermaid",
+      "to": "src/renderer/app.js::external::join",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid=>src/renderer/app.js::external::push#call",
+      "from": "src/renderer/app.js::toMermaid",
+      "to": "src/renderer/app.js::external::push",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid=>src/renderer/app.js::external::replace#call",
+      "from": "src/renderer/app.js::toMermaid",
+      "to": "src/renderer/app.js::external::replace",
+      "dependency_type": "call",
+      "uncertain": true
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid=>src/renderer/app.js::from#reference",
+      "from": "src/renderer/app.js::toMermaid",
+      "to": "src/renderer/app.js::from",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid=>src/renderer/app.js::lines#reference",
+      "from": "src/renderer/app.js::toMermaid",
+      "to": "src/renderer/app.js::lines",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid=>src/renderer/app.js::normalize#call",
+      "from": "src/renderer/app.js::toMermaid",
+      "to": "src/renderer/app.js::normalize",
+      "dependency_type": "call",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid=>src/renderer/app.js::normalize#reference",
+      "from": "src/renderer/app.js::toMermaid",
+      "to": "src/renderer/app.js::normalize",
+      "dependency_type": "reference",
+      "uncertain": false
+    },
+    {
+      "id": "src/renderer/app.js::toMermaid=>src/renderer/app.js::to#reference",
+      "from": "src/renderer/app.js::toMermaid",
+      "to": "src/renderer/app.js::to",
+      "dependency_type": "reference",
+      "uncertain": false
+    }
+  ],
+  "metrics": {
+    "total_modules": 14,
+    "total_symbols": 195,
+    "total_edges": 341,
+    "uncertain_edges": 211
+  },
+  "meta": {
+    "version": "1.0.0",
+    "analyzed_at": "2026-03-14T10:19:18.995Z",
+    "config": {
+      "project_path": "c:\\Users\\26401\\Desktop\\see-code\\see-code",
+      "ignore": [],
+      "extensions": [
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".mjs",
+        ".cjs",
+        ".py"
+      ]
+    },
+    "deviations": []
+  },
+  "diagnostics": []
+}
