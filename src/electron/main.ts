@@ -4,8 +4,10 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { analyzeProject } from "../core/analyzer";
+import { runWithTrace } from "../core/executionTracer";
 import { exportJson } from "../exporters/jsonExporter";
 import { exportMermaid } from "../exporters/mermaidExporter";
+import { exportExecutionGraph } from "../exporters/executionGraph";
 import { KnowledgeGraph } from "../types";
 
 let mainWindow: BrowserWindow | null = null;
@@ -232,3 +234,86 @@ ipcMain.handle(
     }
   }
 );
+
+// 存储最新的执行追踪结果
+let latestExecutionGraph: Awaited<ReturnType<typeof runWithTrace>> | null = null;
+
+// 执行追踪 IPC 处理
+ipcMain.handle("run-execution-trace", async (_event, payload: {
+  projectPath: string;
+  entryScript: string;
+  timeout?: number;
+  maxDepth?: number;
+}) => {
+  const { projectPath, entryScript, timeout = 30000, maxDepth = 100 } = payload;
+
+  if (!projectPath || !entryScript) {
+    throw new Error("projectPath 和 entryScript 不能为空");
+  }
+
+  debugLog("IPC run-execution-trace start", { projectPath, entryScript, timeout, maxDepth });
+  const startedAt = Date.now();
+
+  try {
+    // 动态加载入口脚本
+    const scriptPath = path.resolve(projectPath, entryScript);
+    const module = await import(pathToFileURL(scriptPath).href);
+
+    const result = await runWithTrace(
+      async () => {
+        if (typeof module.default === "function") {
+          return module.default();
+        }
+        return module.default;
+      },
+      projectPath,
+      {
+        entry_point: entryScript,
+        timeout,
+        max_depth: maxDepth,
+        capture_params: true,
+        capture_return: true,
+      }
+    );
+
+    latestExecutionGraph = result;
+
+    debugLog("IPC run-execution-trace done", {
+      elapsedMs: Date.now() - startedAt,
+      success: result.success,
+      entries: result.graph?.traces[0]?.entries.length ?? 0,
+    });
+
+    return result;
+  } catch (error) {
+    debugLog("IPC run-execution-trace error", String(error));
+    return {
+      success: false,
+      error: String(error),
+    };
+  }
+});
+
+// 导出执行图 IPC 处理
+ipcMain.handle("export-execution-graph", async (_event, payload: {
+  outDir: string;
+  format: "sequence" | "heatmap" | "json";
+}) => {
+  const { outDir, format } = payload;
+
+  if (!latestExecutionGraph?.graph) {
+    throw new Error("没有可导出的执行追踪结果，请先运行追踪");
+  }
+
+  debugLog("IPC export-execution-graph", { outDir, format });
+
+  const outputPath = await exportExecutionGraph(latestExecutionGraph.graph, outDir, format);
+  debugLog("export execution graph completed", outputPath);
+
+  return outputPath;
+});
+
+// 获取最新执行追踪结果
+ipcMain.handle("get-latest-execution-graph", async () => {
+  return latestExecutionGraph;
+});

@@ -26,7 +26,8 @@
           onChange: (ev) => ctx.setOutDir(ev.target.value),
           placeholder: "导出目录",
         }),
-        e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setDrawerOpen(true), disabled: !ctx.graph }, "打开 Mermaid 抽屉"),
+        e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setDrawerOpen(true), disabled: !ctx.graph }, "Mermaid"),
+        e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setTraceDrawerOpen(true), disabled: !ctx.graph }, "执行追踪"),
         e("input", {
           style: { width: 260 },
           value: ctx.nodeKeyword,
@@ -188,7 +189,7 @@
             e(
               "div",
               { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8, gap: 8 } },
-              e("strong", null, "依赖图谱"),
+              e("strong", null, ""),
               e(
                 "div",
                 { style: { display: "flex", alignItems: "center", gap: 8 } },
@@ -346,6 +347,103 @@
                   style: { transform: `translate(${ctx.mermaidViewport.x}px, ${ctx.mermaidViewport.y}px) scale(${ctx.mermaidViewport.scale})` },
                   dangerouslySetInnerHTML: { __html: ctx.mermaidSvg || "<div class='small'>渲染中...</div>" },
                 })
+              )
+            )
+          )
+        : null,
+      // 执行追踪抽屉
+      ctx.traceDrawerOpen
+        ? e(
+            "div",
+            { className: "drawer-mask", onClick: () => ctx.setTraceDrawerOpen(false) },
+            e(
+              "div",
+              {
+                className: "drawer",
+                style: { width: 500 },
+                onClick: (ev) => ev.stopPropagation(),
+              },
+              e(
+                "div",
+                { className: "drawer-header" },
+                e("strong", null, "执行追踪"),
+                e(
+                  "div",
+                  { className: "drawer-actions" },
+                  e(SButton, { theme: "solid", type: "danger", onClick: () => ctx.setTraceDrawerOpen(false) }, "关闭")
+                )
+              ),
+              // 追踪配置
+              e("div", { style: { padding: "12px", borderBottom: "1px solid var(--border)" } },
+                e("div", { style: { marginBottom: 8 } }, "入口脚本 (相对于项目根目录):"),
+                e("input", {
+                  style: { width: "100%", marginBottom: 8 },
+                  value: ctx.entryScript,
+                  onChange: (ev) => ctx.setEntryScript(ev.target.value),
+                  placeholder: "例如: src/index.js",
+                }),
+                e("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
+                  e("div", { style: { flex: 1 } },
+                    e("div", { className: "small", style: { marginBottom: 4 } }, "超时 (ms):"),
+                    e("input", {
+                      style: { width: "100%" },
+                      value: ctx.traceTimeout,
+                      onChange: (ev) => ctx.setTraceTimeout(ev.target.value),
+                      placeholder: "30000",
+                    })
+                  ),
+                  e("div", { style: { flex: 1 } },
+                    e("div", { className: "small", style: { marginBottom: 4 } }, "最大深度:"),
+                    e("input", {
+                      style: { width: "100%" },
+                      value: ctx.traceMaxDepth,
+                      onChange: (ev) => ctx.setTraceMaxDepth(ev.target.value),
+                      placeholder: "100",
+                    })
+                  )
+                ),
+                e(SButton, { theme: "solid", type: "primary", onClick: ctx.runTrace, disabled: ctx.tracing || !ctx.entryScript }, ctx.tracing ? "追踪中..." : "开始追踪")
+              ),
+              // 追踪结果
+              e(
+                "div",
+                { className: "trace-results", style: { overflow: "auto", flex: 1, padding: 12 } },
+                ctx.traceResult
+                  ? e(
+                      "div",
+                      null,
+                      e("div", { style: { marginBottom: 8 } },
+                        e("strong", null, "执行记录 "),
+                        e("span", { className: "badge" }, `${ctx.traceResult.graph?.traces[0]?.entries.length || 0}`)
+                      ),
+                      e(
+                        "div",
+                        { style: { fontSize: 12 } },
+                        ctx.traceResult.graph?.traces[0]?.entries.slice(0, 100).map((entry, idx) =>
+                          e(
+                            "div",
+                            {
+                              key: idx,
+                              style: {
+                                padding: "2px 0",
+                                paddingLeft: entry.depth * 16,
+                                color: entry.event === "enter" ? "var(--text)" : "var(--text-secondary)",
+                              },
+                            },
+                            entry.event === "enter" ? "▶ " : "◀ ",
+                            e("span", { style: { fontWeight: entry.event === "enter" ? 500 : 400 } }, entry.symbol_name),
+                            entry.event === "enter" && entry.parameters ? e("span", { style: { color: "var(--text-secondary)", marginLeft: 4 } }, `(${JSON.stringify(entry.parameters).slice(0, 30)}...)`) : null,
+                            entry.event === "return" && entry.return_value !== undefined ? e("span", { style: { color: "var(--text-secondary)", marginLeft: 4 } }, `=> ${JSON.stringify(entry.return_value).slice(0, 30)}`) : null
+                          )
+                        )
+                      ),
+                      ctx.traceResult.graph?.traces[0]?.entries.length > 100
+                        ? e("div", { className: "small", style: { marginTop: 8 } }, `... 还有 ${ctx.traceResult.graph.traces[0].entries.length - 100} 条记录`)
+                        : null
+                    )
+                  : ctx.traceError
+                    ? e("div", { style: { color: "var(--danger)" } }, `追踪失败: ${ctx.traceError}`)
+                    : e("div", { className: "small" }, "点击「开始追踪」运行代码并捕获执行轨迹")
               )
             )
           )

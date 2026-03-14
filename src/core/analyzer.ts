@@ -9,7 +9,7 @@ import { placeholderPlugin } from "../plugins/placeholderPlugin";
 
 export async function analyzeProject(projectPath: string, options: AnalyzeOptions = {}): Promise<KnowledgeGraph> {
   const ignore = options.ignore ?? [];
-  const extensions = options.extensions?.map((ext) => ext.toLowerCase()).filter(Boolean);
+  const extensions = options.extensions?.map((ext: string) => ext.toLowerCase()).filter(Boolean);
 
   options.onProgress?.("scan", { projectPath });
   const scanned = await scanProjectFiles(projectPath, {

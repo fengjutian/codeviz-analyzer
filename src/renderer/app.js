@@ -28,6 +28,15 @@
     const [mermaidSvg, setMermaidSvg] = React.useState("");
     const [mermaidViewport, setMermaidViewport] = React.useState({ x: 0, y: 0, scale: 1 });
     const [mermaidDragging, setMermaidDragging] = React.useState(false);
+    // 执行追踪相关状态
+    const [traceDrawerOpen, setTraceDrawerOpen] = React.useState(false);
+    const [entryScript, setEntryScript] = React.useState("");
+    const [traceTimeout, setTraceTimeout] = React.useState("30000");
+    const [traceMaxDepth, setTraceMaxDepth] = React.useState("100");
+    const [tracing, setTracing] = React.useState(false);
+    const [traceResult, setTraceResult] = React.useState(null);
+    const [traceError, setTraceError] = React.useState("");
+
     const [sourceModule, setSourceModule] = React.useState("");
     const [sourceFilePath, setSourceFilePath] = React.useState("");
     const [sourceCode, setSourceCode] = React.useState("");
@@ -88,6 +97,12 @@
         paths: {
           vs: "../../node_modules/monaco-editor/min/vs",
         },
+        // 禁用 worker，使用主线程
+        "vs/editor/editor.worker": "empty:",
+        "vs/json/json.worker": "empty:",
+        "vs/css/css.worker": "empty:",
+        "vs/html/html.worker": "empty:",
+        "vs/typescript/ts.worker": "empty:",
       });
 
       const createEditor = () => {
@@ -105,6 +120,11 @@
           readOnly: true,
           scrollBeyondLastLine: false,
           theme: theme === "dark" ? "vs-dark" : "vs",
+          // 禁用某些可能导致问题的功能
+          folding: false,
+          glyphMargin: false,
+          links: false,
+          contextmenu: true,
         });
         setEditorStatus("编辑器已就绪");
       };
@@ -249,6 +269,40 @@
         setProjectPath(selected);
         setOutDir(`${selected}\\out`);
         await runAnalyze(selected);
+      }
+    };
+
+    // 执行追踪
+    const runTrace = async () => {
+      if (!projectPath || !entryScript || !window.codeviz) {
+        setTraceError("请先选择项目并输入入口脚本");
+        return;
+      }
+
+      setTracing(true);
+      setTraceError("");
+      setTraceResult(null);
+
+      try {
+        const result = await window.codeviz.runExecutionTrace({
+          projectPath,
+          entryScript,
+          timeout: parseInt(traceTimeout, 10) || 30000,
+          maxDepth: parseInt(traceMaxDepth, 10) || 100,
+        });
+
+        if (result.success) {
+          setTraceResult(result);
+          setStatus(`追踪完成：${result.graph?.traces[0]?.entries.length || 0} 条记录`);
+        } else {
+          setTraceError(result.error || "追踪失败");
+          setStatus(`追踪失败: ${result.error}`);
+        }
+      } catch (err) {
+        setTraceError(String(err));
+        setStatus(`追踪失败: ${String(err)}`);
+      } finally {
+        setTracing(false);
       }
     };
 
@@ -614,6 +668,8 @@
       projectPath,
       reach,
       runAnalyze,
+      // 执行追踪相关
+      runTrace,
       selectNode,
       selectedModule,
       selectedNodeId,
@@ -627,6 +683,7 @@
       setProjectPath,
       setSelectedModule,
       setTheme,
+      setTraceDrawerOpen,
       setViewport,
       sourceEditorContainerRef,
       sourceFilePath,
@@ -636,6 +693,16 @@
       status,
       theme,
       topModules,
+      traceDrawerOpen,
+      traceError,
+      traceMaxDepth,
+      traceResult,
+      traceTimeout,
+      tracing,
+      entryScript,
+      setEntryScript,
+      setTraceTimeout,
+      setTraceMaxDepth,
       view,
       viewport,
     });

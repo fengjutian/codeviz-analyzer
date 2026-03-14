@@ -1,5 +1,11 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { KnowledgeGraph } from "../types";
+import { ExecutionGraph, KnowledgeGraph } from "../types";
+
+type TraceResult = {
+  success: boolean;
+  graph?: ExecutionGraph;
+  error?: string;
+};
 
 type ProgressEventPayload = {
   phase: "scan" | "parse" | "graph";
@@ -14,6 +20,16 @@ const api = {
     ipcRenderer.invoke("open-source-location", payload),
   exportGraph: (outDir: string, formats: string[]): Promise<string[]> =>
     ipcRenderer.invoke("export-graph", { outDir, formats }),
+  // 执行追踪 API
+  runExecutionTrace: (payload: {
+    projectPath: string;
+    entryScript: string;
+    timeout?: number;
+    maxDepth?: number;
+  }): Promise<TraceResult> => ipcRenderer.invoke("run-execution-trace", payload),
+  exportExecutionGraph: (outDir: string, format: "sequence" | "heatmap" | "json"): Promise<string> =>
+    ipcRenderer.invoke("export-execution-graph", { outDir, format }),
+  getLatestExecutionGraph: (): Promise<TraceResult | null> => ipcRenderer.invoke("get-latest-execution-graph"),
   onAnalysisProgress: (listener: (event: ProgressEventPayload) => void) => {
     const wrapped = (_event: Electron.IpcRendererEvent, data: ProgressEventPayload) => listener(data);
     ipcRenderer.on("analysis-progress", wrapped);

@@ -112,9 +112,75 @@ export interface ParserPlugin {
   parse: (ctx: ParseFileContext) => ParseResult;
 }
 
-export interface AnalyzeOptions {
+export interface AnalyzerAnalyzeOptions {
   ignore?: string[];
   extensions?: string[];
   onProgress?: (phase: "scan" | "parse" | "graph", payload: unknown) => void;
   plugins?: ParserPlugin[];
+}
+
+export type AnalyzeOptions = AnalyzerAnalyzeOptions;
+
+// ============== 执行追踪相关类型 ==============
+
+export type TraceEventType = "enter" | "exit" | "throw" | "return";
+
+export interface TraceEntry {
+  symbol_id: string;
+  symbol_name: string;
+  event: TraceEventType;
+  timestamp: number;
+  depth: number;
+  parameters?: unknown[];
+  return_value?: unknown;
+  error?: string;
+}
+
+export interface ExecutionTrace {
+  execution_id: string;
+  project_path: string;
+  started_at: string;
+  ended_at?: string;
+  entries: TraceEntry[];
+}
+
+export interface ExecutionStats {
+  symbol_id: string;
+  call_count: number;
+  total_duration: number;
+  avg_duration: number;
+  min_duration: number;
+  max_duration: number;
+}
+
+export interface ExecutionEdge {
+  from: string;
+  to: string;
+  call_count: number;
+  total_duration: number;
+  path: string[];
+}
+
+export interface ExecutionGraph {
+  project_path: string;
+  execution_id: string;
+  started_at: string;
+  ended_at: string;
+  traces: ExecutionTrace[];
+  stats: ExecutionStats[];
+  edges: ExecutionEdge[];
+}
+
+export interface TraceOptions {
+  entry_point: string;
+  timeout?: number;
+  max_depth?: number;
+  capture_params?: boolean;
+  capture_return?: boolean;
+}
+
+export interface TraceResult {
+  success: boolean;
+  graph?: ExecutionGraph;
+  error?: string;
 }
