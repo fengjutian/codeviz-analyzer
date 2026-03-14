@@ -220,6 +220,32 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 .file-item:hover { background: var(--hover-bg); }
 .file-item.active { background: var(--active-bg); border-color: var(--active-border); }
 
+.file-tree {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-bg);
+  padding: 6px;
+}
+
+.tree-folder-label {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tree-file-node {
+  min-width: 0;
+}
+
+.tree-file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-file-meta {
+  margin-top: 2px;
+}
+
 .status {
   border-top: 1px solid var(--border);
   background: var(--status-bg);

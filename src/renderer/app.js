@@ -1,290 +1,16 @@
 (function () {
   const e = React.createElement;
-  const Semi = window.SemiUI || {};
-  const SButton = Semi.Button || "button";
-  const STag = Semi.Tag || "span";
-
-  function uniq(arr) {
-
-    return [...new Set(arr)];
-  }
-
-  function buildView(graph, selectedModule, edgeTypeFilter, selectedNodeId) {
-    if (!graph) {
-      return { nodes: [], edges: [] };
-    }
-
-    const typeFilteredEdges = graph.edges.filter((edge) => edgeTypeFilter === "all" || edge.dependency_type === edgeTypeFilter);
-    const maxNodes = 180;
-
-    const moduleSymbols = selectedModule
-      ? graph.symbols.filter((s) => s.module_name === selectedModule).map((s) => s.id)
-      : graph.symbols.slice(0, 60).map((s) => s.id);
-
-    const seedIds = selectedNodeId ? [selectedNodeId] : moduleSymbols.slice(0, 20);
-    const adjacency = new Map();
-    for (const edge of typeFilteredEdges) {
-      if (!adjacency.has(edge.from)) adjacency.set(edge.from, []);
-      if (!adjacency.has(edge.to)) adjacency.set(edge.to, []);
-      adjacency.get(edge.from).push(edge.to);
-      adjacency.get(edge.to).push(edge.from);
-    }
-
-    const distance = new Map();
-    const queue = [];
-    for (const seed of seedIds) {
-      distance.set(seed, 0);
-      queue.push(seed);
-    }
-
-    while (queue.length) {
-      const cur = queue.shift();
-      const curDist = distance.get(cur);
-      if (curDist >= 4) continue;
-      const next = adjacency.get(cur) || [];
-      for (const n of next) {
-        if (!distance.has(n)) {
-          distance.set(n, curDist + 1);
-          queue.push(n);
-        }
-      }
-    }
-
-    const moduleSet = new Set(moduleSymbols);
-    const ranked = graph.symbols
-      .filter((s) => moduleSet.has(s.id) || distance.has(s.id))
-      .sort((a, b) => {
-        const da = distance.has(a.id) ? distance.get(a.id) : Number.POSITIVE_INFINITY;
-        const db = distance.has(b.id) ? distance.get(b.id) : Number.POSITIVE_INFINITY;
-        const ma = moduleSet.has(a.id) ? 0 : 1;
-        const mb = moduleSet.has(b.id) ? 0 : 1;
-        if (ma !== mb) return ma - mb;
-        if (da !== db) return da - db;
-        return a.id.localeCompare(b.id);
-      });
-
-    const prioritized = selectedNodeId ? [selectedNodeId, ...moduleSymbols, ...ranked.map((s) => s.id)] : [...moduleSymbols, ...ranked.map((s) => s.id)];
-    const visibleNodeIds = uniq(prioritized).slice(0, maxNodes);
-    const nodeSet = new Set(visibleNodeIds);
-
-    const nodes = graph.symbols.filter((s) => nodeSet.has(s.id)).map((s) => ({
-      id: s.id,
-      label: `${s.module_name}::${s.symbol_name}`,
-      module: s.module_name,
-      type: s.symbol_type,
-    }));
-
-    const edges = typeFilteredEdges.filter((edge) => nodeSet.has(edge.from) && nodeSet.has(edge.to));
-
-    return { nodes, edges };
-  }
-
-  function layout(nodes, edges, width, height) {
-    if (nodes.length === 0) {
-      return new Map();
-    }
-
-    const fallback = () => {
-      const map = new Map();
-      const cols = Math.max(3, Math.ceil(Math.sqrt(nodes.length * 1.6)));
-      const rows = Math.max(2, Math.ceil(nodes.length / cols));
-      const cellW = Math.max(160, Math.floor(width / cols));
-      const cellH = Math.max(90, Math.floor(height / rows));
-
-      nodes.forEach((node, index) => {
-        const col = index % cols;
-        const row = Math.floor(index / cols);
-        const jitterX = (index % 5) * 7;
-        const jitterY = (index % 3) * 9;
-        map.set(node.id, {
-          x: col * cellW + 80 + jitterX,
-          y: row * cellH + 55 + jitterY,
-        });
-      });
-
-      return map;
-    };
-
-    if (!window.d3 || typeof window.d3.forceSimulation !== "function") {
-      return fallback();
-    }
-
-    const d3 = window.d3;
-    const simNodes = nodes.map((n, index) => {
-      const angle = (index / Math.max(1, nodes.length)) * Math.PI * 2;
-      const radius = 260 + (index % 8) * 14;
-      return {
-        ...n,
-        x: width / 2 + Math.cos(angle) * radius,
-        y: height / 2 + Math.sin(angle) * radius,
-      };
-    });
-
-    const nodeIdSet = new Set(simNodes.map((n) => n.id));
-    const simEdges = edges
-      .filter((edge) => nodeIdSet.has(edge.from) && nodeIdSet.has(edge.to))
-      .map((edge) => ({ source: edge.from, target: edge.to }));
-
-    const simulation = d3
-      .forceSimulation(simNodes)
-      .force("link", d3.forceLink(simEdges).id((d) => d.id).distance(95).strength(0.18))
-      .force("charge", d3.forceManyBody().strength(Math.max(-460, -85 - simNodes.length * 1.2)))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collide", d3.forceCollide(26).iterations(2))
-      .alpha(1)
-      .stop();
-
-    const iterations = Math.min(360, Math.max(140, simNodes.length * 2));
-    for (let i = 0; i < iterations; i += 1) {
-      simulation.tick();
-    }
-    simulation.stop();
-
-    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-    const map = new Map();
-    for (const node of simNodes) {
-      map.set(node.id, {
-        x: clamp(node.x || width / 2, 40, width - 40),
-        y: clamp(node.y || height / 2, 35, height - 35),
-      });
-    }
-
-    return map;
-  }
-
-  function collectReachability(edges, selectedNodeId) {
-    if (!selectedNodeId) {
-      return { upstream: new Set(), downstream: new Set() };
-    }
-
-    const inMap = new Map();
-    const outMap = new Map();
-
-    for (const edge of edges) {
-      if (!outMap.has(edge.from)) outMap.set(edge.from, []);
-      if (!inMap.has(edge.to)) inMap.set(edge.to, []);
-      outMap.get(edge.from).push(edge.to);
-      inMap.get(edge.to).push(edge.from);
-    }
-
-    const walk = (start, map) => {
-      const visited = new Set();
-      const queue = [start];
-      while (queue.length) {
-        const current = queue.shift();
-        const next = map.get(current) || [];
-        for (const n of next) {
-          if (!visited.has(n)) {
-            visited.add(n);
-            queue.push(n);
-          }
-        }
-      }
-      return visited;
-    };
-
-    return {
-      upstream: walk(selectedNodeId, inMap),
-      downstream: walk(selectedNodeId, outMap),
-    };
-  }
-
-  function edgeStrokeWidth(type) {
-    if (type === "inherit" || type === "implement") return 2.6;
-    if (type === "call") return 2.2;
-    if (type === "import") return 1.9;
-    return 1.6;
-  }
-
-  function escapeMermaidLabel(text) {
-    return String(text || "").replace(/"/g, "'").replace(/\n/g, " ").trim();
-  }
-
-  function toMermaidFromView(nodes, edges) {
-    if (!nodes.length) {
-      return "graph TD\n  Empty[\"暂无可渲染节点\"]";
-    }
-
-    const nodeMap = new Map(nodes.map((n) => [n.id, n]));
-    const lines = ["graph TD"];
-    const used = new Set();
-    const aliasMap = new Map(nodes.map((node, idx) => [node.id, `N${idx}`]));
-
-    const pushNode = (id) => {
-      if (used.has(id)) return;
-      const node = nodeMap.get(id);
-      const alias = aliasMap.get(id);
-      if (!node || !alias) return;
-      lines.push(`  ${alias}[\"${escapeMermaidLabel(node.label)}\"]`);
-      used.add(id);
-    };
-
-    edges.forEach((edge) => {
-      const fromAlias = aliasMap.get(edge.from);
-      const toAlias = aliasMap.get(edge.to);
-      if (!fromAlias || !toAlias) return;
-      pushNode(edge.from);
-      pushNode(edge.to);
-      lines.push(`  ${fromAlias} -->|${escapeMermaidLabel(edge.dependency_type)}| ${toAlias}`);
-    });
-
-    nodes.forEach((node) => pushNode(node.id));
-    return lines.join("\n");
-  }
-
-  function getEditorLanguage(moduleName) {
-    const normalized = String(moduleName || "").toLowerCase();
-    if (normalized.endsWith(".ts")) return "typescript";
-    if (normalized.endsWith(".tsx")) return "typescript";
-    if (normalized.endsWith(".js")) return "javascript";
-    if (normalized.endsWith(".jsx")) return "javascript";
-    if (normalized.endsWith(".mjs")) return "javascript";
-    if (normalized.endsWith(".cjs")) return "javascript";
-    if (normalized.endsWith(".json")) return "json";
-    if (normalized.endsWith(".py")) return "python";
-    if (normalized.endsWith(".css")) return "css";
-    if (normalized.endsWith(".html")) return "html";
-    if (normalized.endsWith(".md")) return "markdown";
-    return "plaintext";
-  }
-
-  function suppressEnumerablePrototypeKeys() {
-    const changed = [];
-    const prototypes = [
-      Object.prototype,
-      Function.prototype,
-      Array.prototype,
-      String.prototype,
-      Number.prototype,
-      Boolean.prototype,
-      RegExp.prototype,
-      Date.prototype,
-    ];
-
-    for (const proto of prototypes) {
-      if (!proto) continue;
-      for (const key in proto) {
-        if (!Object.prototype.hasOwnProperty.call(proto, key)) {
-          continue;
-        }
-        const desc = Object.getOwnPropertyDescriptor(proto, key);
-        if (!desc || !desc.enumerable || !desc.configurable) {
-          continue;
-        }
-        Object.defineProperty(proto, key, { ...desc, enumerable: false });
-        changed.push([proto, key, desc]);
-      }
-    }
-
-    return () => {
-      for (const [proto, key, desc] of changed) {
-        try {
-          Object.defineProperty(proto, key, desc);
-        } catch {
-        }
-      }
-    };
-  }
+  const helpers = window.CodeVizRendererHelpers || {};
+  const viewRenderer = window.CodeVizRendererView || {};
+  const buildModuleTreeData = helpers.buildModuleTreeData;
+  const buildView = helpers.buildView;
+  const collectReachability = helpers.collectReachability;
+  const edgeStrokeWidth = helpers.edgeStrokeWidth;
+  const getEditorLanguage = helpers.getEditorLanguage;
+  const layout = helpers.layout;
+  const renderAppView = viewRenderer.renderAppView;
+  const suppressEnumerablePrototypeKeys = helpers.suppressEnumerablePrototypeKeys;
+  const toMermaidFromView = helpers.toMermaidFromView;
 
 
   function App() {
@@ -563,6 +289,7 @@
     const modules = graph
       ? graph.modules.filter((m) => m.module_name.toLowerCase().includes(fileKeyword.toLowerCase()))
       : [];
+    const moduleTreeData = React.useMemo(() => buildModuleTreeData(modules), [modules]);
     const leftMenus = [
       { id: "explorer", icon: "📁", label: "资源管理器" },
       { id: "search", icon: "🔎", label: "搜索" },
@@ -842,364 +569,108 @@
       }
     };
 
-    return e(
+    const openModuleFromExplorer = (moduleName) => {
+      if (!moduleName) return;
+      setSelectedModule(moduleName);
+      setSelectedNodeId("");
+      setNodeKeyword("");
+      void openModuleInEditor(moduleName, 1, 1);
+    };
 
-      "div",
-      { className: `app theme-${theme}` },
-      e(
-        "div",
-        { className: "toolbar" },
-        e(SButton, { theme: "solid", type: "tertiary", onClick: () => setTheme((prev) => (prev === "light" ? "dark" : "light")) }, theme === "light" ? "切换暗色" : "切换亮色"),
-        e(SButton, { theme: "solid", type: "primary", onClick: pickProject, disabled: busy }, "导入项目"),
+    const onExplorerTreeSelect = (selected, selectedNode, selectedNodeExtra) => {
+      let moduleName = "";
+      if (typeof selected === "string") {
+        moduleName = selected;
+      } else if (Array.isArray(selected) && selected[0]) {
+        moduleName = String(selected[0]);
+      }
+      const candidates = [selectedNodeExtra, selectedNode];
+      for (const candidate of candidates) {
+        if (!candidate) continue;
+        if (candidate.moduleName) {
+          moduleName = candidate.moduleName;
+          break;
+        }
+        if (candidate.data && candidate.data.moduleName) {
+          moduleName = candidate.data.moduleName;
+          break;
+        }
+        if (!moduleName && candidate.isLeaf && typeof candidate.key === "string") {
+          moduleName = candidate.key;
+        }
+      }
+      if (!moduleName || String(moduleName).startsWith("dir:")) {
+        return;
+      }
+      openModuleFromExplorer(moduleName);
+    };
 
-        e("input", {
-          style: { width: 330 },
-          value: projectPath,
-          onChange: (ev) => setProjectPath(ev.target.value),
-          placeholder: "项目路径",
-        }),
-        e("button", { onClick: runAnalyze, disabled: busy }, busy ? "分析中..." : "刷新分析"),
-        e("input", {
-          style: { width: 300 },
-          value: outDir,
-          onChange: (ev) => setOutDir(ev.target.value),
-          placeholder: "导出目录",
-        }),
-        e(SButton, { theme: "solid", type: "secondary", onClick: () => setDrawerOpen(true), disabled: !graph }, "打开 Mermaid 抽屉"),
-
-
-        e("input", {
-          style: { width: 260 },
-          value: nodeKeyword,
-          onChange: (ev) => setNodeKeyword(ev.target.value),
-          placeholder: "搜索节点（symbol）",
-        }),
-        e(
-          "button",
-          {
-            disabled: nodeMatches.length === 0,
-            onClick: () => {
-              if (nodeMatches[0]) {
-                selectNode(nodeMatches[0].id);
-              }
-            },
-          },
-          nodeMatches.length > 0 ? `定位 ${nodeMatches.length} 个候选` : "无匹配"
-        )
-
-      ),
-      e(
-        "div",
-        {
-          className: "workspace",
-          style: { gridTemplateColumns: `56px ${leftPaneWidth}px 6px minmax(420px, 1fr)` },
-        },
-
-        e(
-          "div",
-          { className: "activity-bar" },
-          leftMenus.map((item) =>
-            e(
-              "button",
-              {
-                key: item.id,
-                className: `activity-item ${leftMenu === item.id ? "active" : ""}`,
-                onClick: () => setLeftMenu(item.id),
-                title: item.label,
-              },
-              e("span", { className: "activity-icon" }, item.icon)
-            )
-          )
-        ),
-        e(
-          "div",
-          { className: "left" },
-          leftMenu === "explorer"
-            ? e(
-                React.Fragment,
-                null,
-                e("div", null, "文件树", graph ? e("span", { className: "badge" }, `${modules.length}`) : null),
-                e("input", {
-                  style: { width: "100%", marginTop: 10, marginBottom: 10 },
-                  value: fileKeyword,
-                  onChange: (ev) => setFileKeyword(ev.target.value),
-                  placeholder: "搜索模块",
-                }),
-                e(
-                  "div",
-                  null,
-                  modules.map((m) =>
-                    e(
-                      "div",
-                      {
-                        key: m.id,
-                        className: `file-item ${selectedModule === m.module_name ? "active" : ""}`,
-                        onClick: () => {
-                          setSelectedModule(m.module_name);
-                          setSelectedNodeId("");
-                          setNodeKeyword("");
-                          void openModuleInEditor(m.module_name, 1, 1);
-                        },
-                      },
-                      e("div", null, m.module_name),
-                      e("div", { className: "small" }, `symbols: ${m.symbols.length} | instability: ${m.metrics.instability}`)
-                    )
-                  )
-                )
-              )
-            : null,
-          leftMenu === "search"
-            ? e(
-                React.Fragment,
-                null,
-                e("div", null, "节点搜索", graph ? e("span", { className: "badge" }, `${nodeMatches.length}`) : null),
-                e("input", {
-                  style: { width: "100%", marginTop: 10, marginBottom: 10 },
-                  value: nodeKeyword,
-                  onChange: (ev) => setNodeKeyword(ev.target.value),
-                  placeholder: "输入 symbol 关键字",
-                }),
-                e(
-                  "div",
-                  null,
-                  nodeMatches.length === 0
-                    ? e("div", { className: "small" }, "没有匹配结果")
-                    : nodeMatches.map((node) =>
-                        e(
-                          "div",
-                          {
-                            key: node.id,
-                            className: `file-item ${selectedNodeId === node.id ? "active" : ""}`,
-                            onClick: () => selectNode(node.id),
-                          },
-                          e("div", null, node.label),
-                          e("div", { className: "small" }, node.id)
-                        )
-                      )
-                )
-              )
-            : null,
-          leftMenu === "insights"
-            ? e(
-                React.Fragment,
-                null,
-                e("div", null, "工作区概览"),
-                graph
-                  ? e(
-                      "div",
-                      { style: { marginTop: 10 } },
-                      e("div", { className: "small" }, `modules: ${graph.modules.length}`),
-                      e("div", { className: "small" }, `symbols: ${graph.symbols.length}`),
-                      e("div", { className: "small" }, `edges: ${graph.edges.length}`),
-                      e("div", { className: "small", style: { marginTop: 8, marginBottom: 8 } }, "Top 模块"),
-                      topModules.map((m) =>
-                        e(
-                          "div",
-                          {
-                            key: m.id,
-                            className: `file-item ${selectedModule === m.module_name ? "active" : ""}`,
-                            onClick: () => {
-                              setSelectedModule(m.module_name);
-                              setLeftMenu("explorer");
-                              void openModuleInEditor(m.module_name, 1, 1);
-                            },
-                          },
-                          e("div", null, m.module_name),
-                          e("div", { className: "small" }, `symbols: ${m.symbols.length}`)
-                        )
-                      )
-                    )
-                  : e("div", { className: "small", style: { marginTop: 8 } }, "请先导入并分析项目")
-              )
-            : null
-        ),
-        e("div", { className: "workspace-splitter workspace-splitter-col", onMouseDown: startResizeLeftCol }),
-        e(
-          "div",
-          {
-            className: "right",
-            style: { gridTemplateColumns: `${sourcePaneWidth}px 6px minmax(420px, 1fr)` },
-          },
-
-          e(
-            "div",
-            { className: "panel", style: { gridColumn: 3, gridRow: 1, display: "grid", gridTemplateRows: "auto 1fr", minWidth: 0, minHeight: 0 } },
-            e(
-              "div",
-              { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8, gap: 8 } },
-              e("strong", null, "依赖图谱"),
-              e(
-                "div",
-                { style: { display: "flex", alignItems: "center", gap: 8 } },
-                e(
-                  "select",
-                  {
-                    value: edgeTypeFilter,
-                    onChange: (ev) => setEdgeTypeFilter(ev.target.value),
-                  },
-                  e("option", { value: "all" }, "全部边类型"),
-                  e("option", { value: "call" }, "call"),
-                  e("option", { value: "import" }, "import"),
-                  e("option", { value: "inherit" }, "inherit"),
-                  e("option", { value: "implement" }, "implement"),
-                  e("option", { value: "reference" }, "reference")
-                ),
-                e("button", { onClick: () => setViewport({ x: 0, y: 0, scale: 1 }) }, "重置视图")
-              )
-            ),
-            e(
-              "div",
-              {
-                className: "graph-wrap",
-                onWheel,
-                onMouseDown,
-                onMouseMove,
-                onMouseUp,
-                onMouseLeave: onMouseUp,
-              },
-              e(
-                "svg",
-                { className: "graph-svg", viewBox: "0 0 2200 1400" },
-                e(
-                  "defs",
-                  null,
-                  e("marker", { id: "arrow-active", viewBox: "0 -5 10 10", refX: 18, refY: 0, markerWidth: 7, markerHeight: 7, orient: "auto" }, e("path", { d: "M0,-5L10,0L0,5", fill: "var(--edge-active)" })),
-                  e("marker", { id: "arrow-dim", viewBox: "0 -5 10 10", refX: 18, refY: 0, markerWidth: 7, markerHeight: 7, orient: "auto" }, e("path", { d: "M0,-5L10,0L0,5", fill: "var(--edge-dim)" }))
-                ),
-                e(
-                  "g",
-                  { transform: `translate(${viewport.x}, ${viewport.y}) scale(${viewport.scale})` },
-                  view.edges.map((edge) => {
-                    const p1 = positions.get(edge.from);
-                    const p2 = positions.get(edge.to);
-                    if (!p1 || !p2) return null;
-                    const active = !selectedNodeId || edge.from === selectedNodeId || edge.to === selectedNodeId || (reach.upstream.has(edge.from) && reach.upstream.has(edge.to)) || (reach.downstream.has(edge.from) && reach.downstream.has(edge.to));
-                    return e("line", {
-                      key: edge.id,
-                      x1: p1.x,
-                      y1: p1.y,
-                      x2: p2.x,
-                      y2: p2.y,
-                      markerEnd: active ? "url(#arrow-active)" : "url(#arrow-dim)",
-                      className: `graph-edge type-${edge.dependency_type} ${active ? "active" : "dim"}`,
-                      style: { strokeWidth: edgeStrokeWidth(edge.dependency_type) },
-                    });
-                  }),
-                  view.nodes.map((node) => {
-                    const p = positions.get(node.id);
-                    if (!p) return null;
-                    const selected = node.id === selectedNodeId;
-                    const upstream = reach.upstream.has(node.id);
-                    const downstream = reach.downstream.has(node.id);
-                    const className = selected ? "selected" : upstream ? "upstream" : downstream ? "downstream" : selectedNodeId ? "dim" : "normal";
-                    return e(
-                      "g",
-                      {
-                        key: node.id,
-                        className: "graph-node-handle",
-                        transform: `translate(${p.x}, ${p.y})`,
-                        onMouseDown: (ev) => onNodeMouseDown(ev, node.id),
-                        onClick: () => {
-                          if (dragMovedRef.current) {
-                            dragMovedRef.current = false;
-                            return;
-                          }
-                          selectNode(node.id);
-                        },
-                      },
-
-                      e("circle", { r: 20, className: `graph-node ${className}` }),
-                      e("text", { x: 28, y: 4, className: "graph-text" }, node.label)
-                    );
-                  })
-                )
-              )
-            )
-          ),
-          e("div", { className: "workspace-splitter workspace-splitter-col", style: { gridColumn: 2, gridRow: 1 }, onMouseDown: startResizeRightCol }),
-          e(
-            "div",
-            { className: "panel source-panel", style: { gridColumn: 1, gridRow: 1, minWidth: 0, minHeight: 0 } },
-
-            e("strong", null, "源码编辑器（Monaco Editor）"),
-            sourceFilePath
-              ? e(
-                  "div",
-                  { className: "source-actions" },
-                  e("div", { className: "source-path", title: sourceFilePath }, sourceFilePath),
-                  e(
-                    "div",
-                    { className: "source-actions-right" },
-                    e("button", { onClick: () => currentSymbol && selectNode(currentSymbol.id), disabled: !currentSymbol }, "定位符号"),
-                    e("button", { onClick: openInVSCode }, "在 VSCode 打开")
-                  )
-                )
-              : e("div", { className: "small" }, "请选择模块或节点"),
-            e("div", { className: "source-editor", ref: sourceEditorContainerRef }),
-            currentModule
-              ? e(
-                  "div",
-                  null,
-                  e("div", { className: "small" }, `module: ${currentModule.module_name}`),
-                  e("div", { className: "small" }, `symbols: ${currentModule.symbols.length}, edges: ${currentModuleEdges.length}`),
-                  e("div", { className: "small" }, selectedNodeId ? `selected: ${selectedNodeId}` : "selected: 无"),
-                  e("div", { className: "small" }, currentSymbol && currentSymbol.location ? `line: ${currentSymbol.location.start_line}, column: ${currentSymbol.location.start_column}` : "line: -"),
-                  e("div", { className: "small" }, `编辑器状态: ${editorStatus}`)
-                )
-              : e("div", { className: "small", style: { marginTop: 8 } }, "请选择模块")
-          )
-        )
-      ),
-      drawerOpen
-        ? e(
-            "div",
-            { className: "drawer-mask", onClick: () => setDrawerOpen(false) },
-            e(
-              "div",
-              {
-                className: "drawer",
-                onClick: (ev) => ev.stopPropagation(),
-              },
-              e(
-                "div",
-                { className: "drawer-header" },
-                e("strong", null, "Mermaid 预览"),
-                e(
-                  "div",
-                  { className: "drawer-actions" },
-                  e("span", { className: "small" }, `缩放 ${(mermaidViewport.scale * 100).toFixed(0)}%`),
-                  e(SButton, { theme: "light", type: "tertiary", onClick: () => setMermaidViewport((prev) => ({ ...prev, scale: Math.max(0.35, Number((prev.scale * 0.9).toFixed(3)) ) })) }, "缩小"),
-                  e(SButton, { theme: "light", type: "tertiary", onClick: () => setMermaidViewport((prev) => ({ ...prev, scale: Math.min(3.2, Number((prev.scale * 1.1).toFixed(3)) ) })) }, "放大"),
-                  e(SButton, { theme: "light", type: "secondary", onClick: () => setMermaidViewport({ x: 0, y: 0, scale: 1 }) }, "重置"),
-                  e(SButton, { theme: "solid", type: "danger", onClick: () => setDrawerOpen(false) }, "关闭")
-
-                )
-              ),
-              e(
-                "div",
-                {
-                  ref: mermaidRenderRef,
-                  className: `mermaid-preview ${mermaidDragging ? "dragging" : ""}`,
-                  onWheel: onMermaidWheel,
-                  onMouseDown: onMermaidMouseDown,
-                },
-                e("div", {
-                  className: "mermaid-canvas",
-                  style: { transform: `translate(${mermaidViewport.x}px, ${mermaidViewport.y}px) scale(${mermaidViewport.scale})` },
-                  dangerouslySetInnerHTML: { __html: mermaidSvg || "<div class='small'>渲染中...</div>" },
-                })
-              )
-
-            )
-          )
-        : null,
-      e(
-        "div",
-        { className: "status" },
-        e("div", null, `状态: ${status}`),
-        e("div", null, `耗时: ${elapsed} ms | 缩放: ${viewport.scale.toFixed(2)}`)
-      )
-    );
+    return renderAppView({
+      busy,
+      currentModule,
+      currentModuleEdges,
+      currentSymbol,
+      dragMovedRef,
+      drawerOpen,
+      edgeStrokeWidth,
+      edgeTypeFilter,
+      editorStatus,
+      elapsed,
+      fileKeyword,
+      graph,
+      leftMenu,
+      leftMenus,
+      leftPaneWidth,
+      mermaidDragging,
+      mermaidRenderRef,
+      mermaidSvg,
+      mermaidViewport,
+      moduleTreeData,
+      modules,
+      nodeKeyword,
+      nodeMatches,
+      onExplorerTreeSelect,
+      onMermaidMouseDown,
+      onMermaidWheel,
+      onMouseDown,
+      onMouseMove,
+      onMouseUp,
+      onNodeMouseDown,
+      onWheel,
+      openInVSCode,
+      openModuleFromExplorer,
+      openModuleInEditor,
+      outDir,
+      pickProject,
+      positions,
+      projectPath,
+      reach,
+      runAnalyze,
+      selectNode,
+      selectedModule,
+      selectedNodeId,
+      setDrawerOpen,
+      setEdgeTypeFilter,
+      setFileKeyword,
+      setLeftMenu,
+      setMermaidViewport,
+      setNodeKeyword,
+      setOutDir,
+      setProjectPath,
+      setSelectedModule,
+      setTheme,
+      setViewport,
+      sourceEditorContainerRef,
+      sourceFilePath,
+      sourcePaneWidth,
+      startResizeLeftCol,
+      startResizeRightCol,
+      status,
+      theme,
+      topModules,
+      view,
+      viewport,
+    });
 
   }
 
