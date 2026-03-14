@@ -11,6 +11,13 @@ export interface SymbolNode {
     dependencies: string[];
     metrics: MetricMap;
     loc?: number;
+    location?: SourceLocation;
+}
+export interface SourceLocation {
+    start_line: number;
+    start_column: number;
+    end_line: number;
+    end_column: number;
 }
 export interface Edge {
     id: string;

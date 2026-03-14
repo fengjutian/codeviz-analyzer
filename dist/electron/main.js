@@ -4,7 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
+const promises_1 = require("node:fs/promises");
+const node_child_process_1 = require("node:child_process");
 const node_path_1 = __importDefault(require("node:path"));
+const node_url_1 = require("node:url");
 const analyzer_1 = require("../core/analyzer");
 const jsonExporter_1 = require("../exporters/jsonExporter");
 const mermaidExporter_1 = require("../exporters/mermaidExporter");
@@ -19,6 +22,67 @@ function debugLog(message, payload) {
         return;
     }
     console.log(`[codeviz] ${message}`, payload);
+}
+function launchDetached(command, args, useShell = false) {
+    return new Promise((resolve) => {
+        const cp = (0, node_child_process_1.spawn)(command, args, {
+            detached: true,
+            stdio: "ignore",
+            windowsHide: true,
+            shell: useShell,
+        });
+        let settled = false;
+        cp.once("error", () => {
+            if (!settled) {
+                settled = true;
+                resolve(false);
+            }
+        });
+        cp.once("spawn", () => {
+            if (!settled) {
+                settled = true;
+                cp.unref();
+                resolve(true);
+            }
+        });
+    });
+}
+function getWindowsCodeExecutableCandidates() {
+    const localAppData = process.env.LOCALAPPDATA;
+    const programFiles = process.env.ProgramFiles;
+    const programFilesX86 = process.env["ProgramFiles(x86)"];
+    const candidates = [
+        localAppData ? node_path_1.default.join(localAppData, "Programs", "Microsoft VS Code", "Code.exe") : "",
+        localAppData ? node_path_1.default.join(localAppData, "Programs", "VS Code Insiders", "Code - Insiders.exe") : "",
+        programFiles ? node_path_1.default.join(programFiles, "Microsoft VS Code", "Code.exe") : "",
+        programFilesX86 ? node_path_1.default.join(programFilesX86, "Microsoft VS Code", "Code.exe") : "",
+    ];
+    return candidates.filter(Boolean);
+}
+async function openInVSCodeByCommand(filePath, line, column) {
+    const target = `${filePath}:${line}:${column}`;
+    const args = ["-g", target, "--reuse-window"];
+    if (process.platform === "win32") {
+        if (await launchDetached("code", args, true)) {
+            return true;
+        }
+        if (await launchDetached("cmd.exe", ["/c", "code", ...args])) {
+            return true;
+        }
+    }
+    else if (await launchDetached("code", args)) {
+        return true;
+    }
+    if (process.platform !== "win32") {
+        return false;
+    }
+    const candidates = getWindowsCodeExecutableCandidates();
+    for (const executable of candidates) {
+        if (await launchDetached(executable, args)) {
+            return true;
+        }
+    }
+    return false;
 }
 function createMainWindow() {
     const win = new electron_1.BrowserWindow({
@@ -106,5 +170,39 @@ electron_1.ipcMain.handle("export-graph", async (_event, payload) => {
     }
     debugLog("export completed", outputs);
     return outputs;
+});
+electron_1.ipcMain.handle("read-source-file", async (_event, filePath) => {
+    if (!filePath) {
+        throw new Error("filePath 不能为空");
+    }
+    const source = await (0, promises_1.readFile)(filePath, "utf-8");
+    return source;
+});
+electron_1.ipcMain.handle("open-source-location", async (_event, payload) => {
+    const filePath = String(payload?.filePath ?? "");
+    const line = Math.max(1, Number(payload?.line ?? 1));
+    const column = Math.max(1, Number(payload?.column ?? 1));
+    if (!filePath) {
+        throw new Error("filePath 不能为空");
+    }
+    const resolvedPath = node_path_1.default.resolve(filePath);
+    if (await openInVSCodeByCommand(resolvedPath, line, column)) {
+        return { mode: "vscode" };
+    }
+    const normalizedPath = resolvedPath.replace(/\\/g, "/");
+    const vscodeUrl = `vscode://file/${encodeURI(normalizedPath)}:${line}:${column}`;
+    try {
+        const fileUrl = (0, node_url_1.pathToFileURL)(resolvedPath).toString();
+        await electron_1.shell.openExternal(vscodeUrl);
+        debugLog("open-source-location fallback openExternal", { vscodeUrl, fileUrl });
+        return { mode: "vscode" };
+    }
+    catch {
+        const fallbackError = await electron_1.shell.openPath(resolvedPath);
+        if (fallbackError) {
+            throw new Error(fallbackError);
+        }
+        return { mode: "default" };
+    }
 });
 //# sourceMappingURL=main.js.map

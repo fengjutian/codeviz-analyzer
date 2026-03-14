@@ -1,5 +1,8 @@
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
+import { readFile } from "node:fs/promises";
+import { spawn } from "node:child_process";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { analyzeProject } from "../core/analyzer";
 import { exportJson } from "../exporters/jsonExporter";
 import { exportMermaid } from "../exporters/mermaidExporter";
@@ -16,6 +19,72 @@ function debugLog(message: string, payload?: unknown): void {
     return;
   }
   console.log(`[codeviz] ${message}`, payload);
+}
+
+function launchDetached(command: string, args: string[], useShell = false): Promise<boolean> {
+  return new Promise((resolve) => {
+    const cp = spawn(command, args, {
+      detached: true,
+      stdio: "ignore",
+      windowsHide: true,
+      shell: useShell,
+    });
+    let settled = false;
+    cp.once("error", () => {
+      if (!settled) {
+        settled = true;
+        resolve(false);
+      }
+    });
+    cp.once("spawn", () => {
+      if (!settled) {
+        settled = true;
+        cp.unref();
+        resolve(true);
+      }
+    });
+  });
+}
+
+function getWindowsCodeExecutableCandidates(): string[] {
+  const localAppData = process.env.LOCALAPPDATA;
+  const programFiles = process.env.ProgramFiles;
+  const programFilesX86 = process.env["ProgramFiles(x86)"];
+  const candidates = [
+    localAppData ? path.join(localAppData, "Programs", "Microsoft VS Code", "Code.exe") : "",
+    localAppData ? path.join(localAppData, "Programs", "VS Code Insiders", "Code - Insiders.exe") : "",
+    programFiles ? path.join(programFiles, "Microsoft VS Code", "Code.exe") : "",
+    programFilesX86 ? path.join(programFilesX86, "Microsoft VS Code", "Code.exe") : "",
+  ];
+  return candidates.filter(Boolean);
+}
+
+async function openInVSCodeByCommand(filePath: string, line: number, column: number): Promise<boolean> {
+  const target = `${filePath}:${line}:${column}`;
+  const args = ["-g", target, "--reuse-window"];
+
+  if (process.platform === "win32") {
+    if (await launchDetached("code", args, true)) {
+      return true;
+    }
+    if (await launchDetached("cmd.exe", ["/c", "code", ...args])) {
+      return true;
+    }
+  } else if (await launchDetached("code", args)) {
+    return true;
+  }
+
+  if (process.platform !== "win32") {
+    return false;
+  }
+
+  const candidates = getWindowsCodeExecutableCandidates();
+  for (const executable of candidates) {
+    if (await launchDetached(executable, args)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function createMainWindow(): BrowserWindow {
@@ -121,3 +190,45 @@ ipcMain.handle("export-graph", async (_event, payload: { outDir: string; formats
   debugLog("export completed", outputs);
   return outputs;
 });
+
+ipcMain.handle("read-source-file", async (_event, filePath: string) => {
+  if (!filePath) {
+    throw new Error("filePath 不能为空");
+  }
+  const source = await readFile(filePath, "utf-8");
+  return source;
+});
+
+ipcMain.handle(
+  "open-source-location",
+  async (_event, payload: { filePath: string; line?: number; column?: number }) => {
+    const filePath = String(payload?.filePath ?? "");
+    const line = Math.max(1, Number(payload?.line ?? 1));
+    const column = Math.max(1, Number(payload?.column ?? 1));
+    if (!filePath) {
+      throw new Error("filePath 不能为空");
+    }
+
+    const resolvedPath = path.resolve(filePath);
+
+    if (await openInVSCodeByCommand(resolvedPath, line, column)) {
+      return { mode: "vscode" as const };
+    }
+
+    const normalizedPath = resolvedPath.replace(/\\/g, "/");
+    const vscodeUrl = `vscode://file/${encodeURI(normalizedPath)}:${line}:${column}`;
+
+    try {
+      const fileUrl = pathToFileURL(resolvedPath).toString();
+      await shell.openExternal(vscodeUrl);
+      debugLog("open-source-location fallback openExternal", { vscodeUrl, fileUrl });
+      return { mode: "vscode" as const };
+    } catch {
+      const fallbackError = await shell.openPath(resolvedPath);
+      if (fallbackError) {
+        throw new Error(fallbackError);
+      }
+      return { mode: "default" as const };
+    }
+  }
+);

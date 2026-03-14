@@ -64,6 +64,17 @@ function ensureSymbol(symbols, id, symbol_name, symbol_type, module_name) {
     symbols.set(id, created);
     return created;
 }
+function applyNodeLocation(symbol, node) {
+    if (!node?.loc) {
+        return;
+    }
+    symbol.location = {
+        start_line: node.loc.start.line,
+        start_column: node.loc.start.column + 1,
+        end_line: node.loc.end.line,
+        end_column: node.loc.end.column + 1,
+    };
+}
 function getContainerName(path) {
     const fn = path.findParent((p) => p.isFunctionDeclaration() || p.isClassMethod() || p.isObjectMethod());
     if (!fn) {
@@ -86,10 +97,11 @@ exports.jsTsPlugin = {
         const edges = new Map();
         const moduleAnchorId = `${moduleName}::(module)`;
         ensureSymbol(symbols, moduleAnchorId, "(module)", "variable", moduleName);
-        const addSymbol = (name, type) => {
+        const addSymbol = (name, type, node) => {
             const id = `${moduleName}::${name}`;
-            const node = ensureSymbol(symbols, id, name, type, moduleName);
-            localNameToSymbolId.set(name, node.id);
+            const symbolNode = ensureSymbol(symbols, id, name, type, moduleName);
+            applyNodeLocation(symbolNode, node);
+            localNameToSymbolId.set(name, symbolNode.id);
             return id;
         };
         const addEdge = (from, to, dependency_type, uncertain) => {
@@ -117,7 +129,7 @@ exports.jsTsPlugin = {
                 FunctionDeclaration(p) {
                     const name = p.node.id?.name;
                     if (name) {
-                        addSymbol(name, "function");
+                        addSymbol(name, "function", p.node);
                     }
                 },
                 ClassDeclaration(p) {
@@ -125,7 +137,7 @@ exports.jsTsPlugin = {
                     if (!className) {
                         return;
                     }
-                    const classId = addSymbol(className, "class");
+                    const classId = addSymbol(className, "class", p.node);
                     if (p.node.superClass && t.isIdentifier(p.node.superClass)) {
                         const to = localNameToSymbolId.get(p.node.superClass.name) ?? `${moduleName}::external::${p.node.superClass.name}`;
                         addEdge(classId, to, "inherit", !localNameToSymbolId.has(p.node.superClass.name));
@@ -139,19 +151,19 @@ exports.jsTsPlugin = {
                 },
                 ClassMethod(p) {
                     if (t.isIdentifier(p.node.key)) {
-                        addSymbol(p.node.key.name, "method");
+                        addSymbol(p.node.key.name, "method", p.node);
                     }
                 },
                 VariableDeclarator(p) {
                     if (t.isIdentifier(p.node.id)) {
-                        addSymbol(p.node.id.name, "variable");
+                        addSymbol(p.node.id.name, "variable", p.node);
                     }
                 },
                 TSInterfaceDeclaration(p) {
-                    addSymbol(p.node.id.name, "interface");
+                    addSymbol(p.node.id.name, "interface", p.node);
                 },
                 TSTypeAliasDeclaration(p) {
-                    addSymbol(p.node.id.name, "type_alias");
+                    addSymbol(p.node.id.name, "type_alias", p.node);
                 },
                 ImportDeclaration(p) {
                     const importFrom = p.node.source.value;

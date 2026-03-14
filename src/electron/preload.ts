@@ -9,6 +9,9 @@ type ProgressEventPayload = {
 const api = {
   openProjectDialog: (): Promise<string | null> => ipcRenderer.invoke("open-project-dialog"),
   analyzeProject: (projectPath: string): Promise<KnowledgeGraph> => ipcRenderer.invoke("analyze-project", projectPath),
+  readSourceFile: (filePath: string): Promise<string> => ipcRenderer.invoke("read-source-file", filePath),
+  openSourceLocation: (payload: { filePath: string; line?: number; column?: number }): Promise<{ mode: "vscode" | "default" }> =>
+    ipcRenderer.invoke("open-source-location", payload),
   exportGraph: (outDir: string, formats: string[]): Promise<string[]> =>
     ipcRenderer.invoke("export-graph", { outDir, formats }),
   onAnalysisProgress: (listener: (event: ProgressEventPayload) => void) => {

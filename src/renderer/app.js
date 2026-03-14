@@ -232,6 +232,22 @@
     return lines.join("\n");
   }
 
+  function getEditorLanguage(moduleName) {
+    const normalized = String(moduleName || "").toLowerCase();
+    if (normalized.endsWith(".ts")) return "typescript";
+    if (normalized.endsWith(".tsx")) return "typescript";
+    if (normalized.endsWith(".js")) return "javascript";
+    if (normalized.endsWith(".jsx")) return "javascript";
+    if (normalized.endsWith(".mjs")) return "javascript";
+    if (normalized.endsWith(".cjs")) return "javascript";
+    if (normalized.endsWith(".json")) return "json";
+    if (normalized.endsWith(".py")) return "python";
+    if (normalized.endsWith(".css")) return "css";
+    if (normalized.endsWith(".html")) return "html";
+    if (normalized.endsWith(".md")) return "markdown";
+    return "plaintext";
+  }
+
 
 
   function App() {
@@ -249,6 +265,12 @@
     const [mermaidSvg, setMermaidSvg] = React.useState("");
     const [mermaidViewport, setMermaidViewport] = React.useState({ x: 0, y: 0, scale: 1 });
     const [mermaidDragging, setMermaidDragging] = React.useState(false);
+    const [sourceModule, setSourceModule] = React.useState("");
+    const [sourceFilePath, setSourceFilePath] = React.useState("");
+    const [sourceCode, setSourceCode] = React.useState("");
+    const [sourceLanguage, setSourceLanguage] = React.useState("plaintext");
+    const [sourceCursor, setSourceCursor] = React.useState({ line: 1, column: 1 });
+    const [editorStatus, setEditorStatus] = React.useState("编辑器未初始化");
 
     const [busy, setBusy] = React.useState(false);
 
@@ -266,6 +288,8 @@
     const startTimeRef = React.useRef(0);
     const mermaidRenderRef = React.useRef(null);
     const mermaidDragRef = React.useRef({ x: 0, y: 0, vx: 0, vy: 0 });
+    const sourceEditorRef = React.useRef(null);
+    const sourceEditorContainerRef = React.useRef(null);
 
 
     React.useEffect(() => {
@@ -279,6 +303,122 @@
       });
       return unsubscribe;
     }, []);
+
+    React.useEffect(() => {
+      if (!sourceEditorContainerRef.current) {
+        return undefined;
+      }
+      if (!window.require) {
+        setEditorStatus("Monaco 加载器不可用");
+        return undefined;
+      }
+      let disposed = false;
+      window.require.config({
+        paths: {
+          vs: "../../node_modules/monaco-editor/min/vs",
+        },
+      });
+      window.require(["vs/editor/editor.main"], () => {
+        if (disposed || sourceEditorRef.current || !sourceEditorContainerRef.current) {
+          return;
+        }
+        sourceEditorRef.current = window.monaco.editor.create(sourceEditorContainerRef.current, {
+          value: "",
+          language: "plaintext",
+          automaticLayout: true,
+          minimap: { enabled: true },
+          fontSize: 13,
+          roundedSelection: false,
+          tabSize: 2,
+          readOnly: true,
+          scrollBeyondLastLine: false,
+          theme: theme === "dark" ? "vs-dark" : "vs",
+        });
+        setEditorStatus("编辑器已就绪");
+      });
+      return () => {
+        disposed = true;
+        if (sourceEditorRef.current) {
+          sourceEditorRef.current.dispose();
+          sourceEditorRef.current = null;
+        }
+      };
+    }, []);
+
+    React.useEffect(() => {
+      if (sourceEditorRef.current && window.monaco) {
+        window.monaco.editor.setTheme(theme === "dark" ? "vs-dark" : "vs");
+      }
+    }, [theme]);
+
+    const openModuleInEditor = async (moduleName, line = 1, column = 1) => {
+      if (!graph || !window.codeviz) {
+        return;
+      }
+      const moduleNode = graph.modules.find((m) => m.module_name === moduleName);
+      if (!moduleNode) {
+        return;
+      }
+      try {
+        const content = await window.codeviz.readSourceFile(moduleNode.file_path);
+        setSourceModule(moduleNode.module_name);
+        setSourceFilePath(moduleNode.file_path);
+        setSourceCode(content);
+        setSourceLanguage(getEditorLanguage(moduleNode.module_name));
+        setSourceCursor({ line: Math.max(1, Number(line || 1)), column: Math.max(1, Number(column || 1)) });
+        setEditorStatus("源码已加载");
+      } catch (err) {
+        setEditorStatus(`源码读取失败: ${String(err)}`);
+      }
+    };
+
+    const openInVSCode = async () => {
+      if (!sourceFilePath || !window.codeviz) {
+        return;
+      }
+      try {
+        const result = await window.codeviz.openSourceLocation({
+          filePath: sourceFilePath,
+          line: sourceCursor.line,
+          column: sourceCursor.column,
+        });
+        if (result && result.mode === "vscode") {
+          setStatus("已发送到 VSCode 打开");
+          return;
+        }
+        setStatus("已使用系统默认程序打开文件");
+      } catch (err) {
+        setStatus(`打开源码失败: ${String(err)}`);
+      }
+    };
+
+    React.useEffect(() => {
+      if (!sourceEditorRef.current || !window.monaco) {
+        return;
+      }
+      const editor = sourceEditorRef.current;
+      const model = editor.getModel();
+      if (model && model.getLanguageId() !== sourceLanguage) {
+        window.monaco.editor.setModelLanguage(model, sourceLanguage);
+      }
+      if (editor.getValue() !== sourceCode) {
+        editor.setValue(sourceCode || "");
+      }
+      const lineNumber = Math.max(1, Number(sourceCursor.line || 1));
+      const column = Math.max(1, Number(sourceCursor.column || 1));
+      editor.setPosition({ lineNumber, column });
+      editor.revealLineInCenter(lineNumber);
+      editor.focus();
+    }, [sourceCode, sourceLanguage, sourceCursor]);
+
+    React.useEffect(() => {
+      if (!graph || !selectedModule) {
+        return;
+      }
+      if (sourceModule !== selectedModule) {
+        void openModuleInEditor(selectedModule, 1, 1);
+      }
+    }, [graph, selectedModule]);
 
 
 
@@ -455,6 +595,7 @@
           return hit && typePass;
         })
       : [];
+    const currentSymbol = selectedNodeId ? symbolById.get(selectedNodeId) : null;
 
     const onWheel = (ev) => {
       ev.preventDefault();
@@ -548,6 +689,12 @@
     const selectNode = (nodeId) => {
       setSelectedNodeId(nodeId);
       centerNode(nodeId);
+      const symbol = symbolById.get(nodeId);
+      if (symbol) {
+        const line = symbol.location ? symbol.location.start_line : 1;
+        const column = symbol.location ? symbol.location.start_column : 1;
+        void openModuleInEditor(symbol.module_name, line, column);
+      }
     };
 
     return e(
@@ -642,6 +789,7 @@
                           setSelectedModule(m.module_name);
                           setSelectedNodeId("");
                           setNodeKeyword("");
+                          void openModuleInEditor(m.module_name, 1, 1);
                         },
                       },
                       e("div", null, m.module_name),
@@ -704,6 +852,7 @@
                             onClick: () => {
                               setSelectedModule(m.module_name);
                               setLeftMenu("explorer");
+                              void openModuleInEditor(m.module_name, 1, 1);
                             },
                           },
                           e("div", null, m.module_name),
@@ -815,23 +964,31 @@
           ),
           e(
             "div",
-            { className: "panel" },
-            e("strong", null, "当前模块详情"),
+            { className: "panel source-panel" },
+            e("strong", null, "源码编辑器（Monaco Editor）"),
+            sourceFilePath
+              ? e(
+                  "div",
+                  { className: "source-actions" },
+                  e("div", { className: "source-path", title: sourceFilePath }, sourceFilePath),
+                  e(
+                    "div",
+                    { className: "source-actions-right" },
+                    e("button", { onClick: () => currentSymbol && selectNode(currentSymbol.id), disabled: !currentSymbol }, "定位符号"),
+                    e("button", { onClick: openInVSCode }, "在 VSCode 打开")
+                  )
+                )
+              : e("div", { className: "small" }, "请选择模块或节点"),
+            e("div", { className: "source-editor", ref: sourceEditorContainerRef }),
             currentModule
               ? e(
                   "div",
                   null,
-                  e("div", { className: "small", style: { marginTop: 8 } }, `module: ${currentModule.module_name}`),
+                  e("div", { className: "small" }, `module: ${currentModule.module_name}`),
                   e("div", { className: "small" }, `symbols: ${currentModule.symbols.length}, edges: ${currentModuleEdges.length}`),
                   e("div", { className: "small" }, selectedNodeId ? `selected: ${selectedNodeId}` : "selected: 无"),
-                  e(
-                    "pre",
-                    null,
-                    currentModuleEdges
-                      .slice(0, 40)
-                      .map((edge) => `${edge.dependency_type}: ${edge.from} -> ${edge.to}`)
-                      .join("\n") || "无"
-                  )
+                  e("div", { className: "small" }, currentSymbol && currentSymbol.location ? `line: ${currentSymbol.location.start_line}, column: ${currentSymbol.location.start_column}` : "line: -"),
+                  e("div", { className: "small" }, `编辑器状态: ${editorStatus}`)
                 )
               : e("div", { className: "small", style: { marginTop: 8 } }, "请选择模块")
           )

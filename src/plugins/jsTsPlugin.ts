@@ -36,6 +36,18 @@ function ensureSymbol(
   return created;
 }
 
+function applyNodeLocation(symbol: SymbolNode, node: t.Node | null | undefined): void {
+  if (!node?.loc) {
+    return;
+  }
+  symbol.location = {
+    start_line: node.loc.start.line,
+    start_column: node.loc.start.column + 1,
+    end_line: node.loc.end.line,
+    end_column: node.loc.end.column + 1,
+  };
+}
+
 function getContainerName(path: NodePath<t.Node>): string | undefined {
   const fn = path.findParent((p) => p.isFunctionDeclaration() || p.isClassMethod() || p.isObjectMethod());
   if (!fn) {
@@ -64,10 +76,11 @@ export const jsTsPlugin: ParserPlugin = {
     const moduleAnchorId = `${moduleName}::(module)`;
     ensureSymbol(symbols, moduleAnchorId, "(module)", "variable", moduleName);
 
-    const addSymbol = (name: string, type: SymbolType): string => {
+    const addSymbol = (name: string, type: SymbolType, node?: t.Node): string => {
       const id = `${moduleName}::${name}`;
-      const node = ensureSymbol(symbols, id, name, type, moduleName);
-      localNameToSymbolId.set(name, node.id);
+      const symbolNode = ensureSymbol(symbols, id, name, type, moduleName);
+      applyNodeLocation(symbolNode, node);
+      localNameToSymbolId.set(name, symbolNode.id);
       return id;
     };
 
@@ -99,7 +112,7 @@ export const jsTsPlugin: ParserPlugin = {
         FunctionDeclaration(p) {
           const name = p.node.id?.name;
           if (name) {
-            addSymbol(name, "function");
+            addSymbol(name, "function", p.node);
           }
         },
         ClassDeclaration(p) {
@@ -108,7 +121,7 @@ export const jsTsPlugin: ParserPlugin = {
             return;
           }
 
-          const classId = addSymbol(className, "class");
+          const classId = addSymbol(className, "class", p.node);
 
           if (p.node.superClass && t.isIdentifier(p.node.superClass)) {
             const to = localNameToSymbolId.get(p.node.superClass.name) ?? `${moduleName}::external::${p.node.superClass.name}`;
@@ -124,19 +137,19 @@ export const jsTsPlugin: ParserPlugin = {
         },
         ClassMethod(p) {
           if (t.isIdentifier(p.node.key)) {
-            addSymbol(p.node.key.name, "method");
+            addSymbol(p.node.key.name, "method", p.node);
           }
         },
         VariableDeclarator(p) {
           if (t.isIdentifier(p.node.id)) {
-            addSymbol(p.node.id.name, "variable");
+            addSymbol(p.node.id.name, "variable", p.node);
           }
         },
         TSInterfaceDeclaration(p) {
-          addSymbol(p.node.id.name, "interface");
+          addSymbol(p.node.id.name, "interface", p.node);
         },
         TSTypeAliasDeclaration(p) {
-          addSymbol(p.node.id.name, "type_alias");
+          addSymbol(p.node.id.name, "type_alias", p.node);
         },
         ImportDeclaration(p) {
           const importFrom = p.node.source.value;
