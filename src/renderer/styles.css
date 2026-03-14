@@ -162,13 +162,19 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 }
 
 .graph-edge {
-  stroke-width: 1.8;
   fill: none;
+  transition: opacity 0.15s ease;
 }
 .graph-edge.active { stroke: var(--edge-active); opacity: 0.95; }
 .graph-edge.dim { stroke: var(--edge-dim); opacity: 0.35; }
+.graph-edge.type-import,
+.graph-edge.type-reference { stroke-dasharray: 6 4; }
+.graph-edge.type-inherit,
+.graph-edge.type-implement { stroke-dasharray: 2 2; }
 
 .graph-node { stroke-width: 2; }
+.graph-node-handle { cursor: grab; }
+.graph-node-handle:active { cursor: grabbing; }
 .graph-node.normal { fill: var(--node-normal-fill); stroke: var(--node-normal-stroke); }
 .graph-node.selected { fill: var(--node-selected-fill); stroke: var(--node-selected-stroke); }
 .graph-node.upstream { fill: var(--node-upstream-fill); stroke: var(--node-upstream-stroke); }
