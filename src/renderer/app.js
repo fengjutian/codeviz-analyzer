@@ -248,9 +248,47 @@
     return "plaintext";
   }
 
+  function suppressEnumerablePrototypeKeys() {
+    const changed = [];
+    const prototypes = [
+      Object.prototype,
+      Function.prototype,
+      Array.prototype,
+      String.prototype,
+      Number.prototype,
+      Boolean.prototype,
+      RegExp.prototype,
+      Date.prototype,
+    ];
+
+    for (const proto of prototypes) {
+      if (!proto) continue;
+      for (const key in proto) {
+        if (!Object.prototype.hasOwnProperty.call(proto, key)) {
+          continue;
+        }
+        const desc = Object.getOwnPropertyDescriptor(proto, key);
+        if (!desc || !desc.enumerable || !desc.configurable) {
+          continue;
+        }
+        Object.defineProperty(proto, key, { ...desc, enumerable: false });
+        changed.push([proto, key, desc]);
+      }
+    }
+
+    return () => {
+      for (const [proto, key, desc] of changed) {
+        try {
+          Object.defineProperty(proto, key, desc);
+        } catch {
+        }
+      }
+    };
+  }
 
 
   function App() {
+
     const [projectPath, setProjectPath] = React.useState("");
     const [outDir, setOutDir] = React.useState("");
     const [fileKeyword, setFileKeyword] = React.useState("");
@@ -271,9 +309,10 @@
     const [sourceLanguage, setSourceLanguage] = React.useState("plaintext");
     const [sourceCursor, setSourceCursor] = React.useState({ line: 1, column: 1 });
     const [editorStatus, setEditorStatus] = React.useState("编辑器未初始化");
-    const [leftPaneWidth, setLeftPaneWidth] = React.useState(320);
+    const [leftPaneWidth, setLeftPaneWidth] = React.useState(200);
     const [bottomPaneHeight, setBottomPaneHeight] = React.useState(340);
     const [resizing, setResizing] = React.useState(null);
+
 
     const [busy, setBusy] = React.useState(false);
 
@@ -294,7 +333,8 @@
     const mermaidDragRef = React.useRef({ x: 0, y: 0, vx: 0, vy: 0 });
     const sourceEditorRef = React.useRef(null);
     const sourceEditorContainerRef = React.useRef(null);
-    const resizeRef = React.useRef({ startX: 0, startY: 0, startLeftWidth: 320, startBottomHeight: 340 });
+    const resizeRef = React.useRef({ startX: 0, startY: 0, startLeftWidth: 200, startBottomHeight: 340 });
+
 
 
 
@@ -324,33 +364,68 @@
           vs: "../../node_modules/monaco-editor/min/vs",
         },
       });
+
+      const createEditor = () => {
+        if (disposed || sourceEditorRef.current || !sourceEditorContainerRef.current || !window.monaco) {
+          return;
+        }
+        sourceEditorRef.current = window.monaco.editor.create(sourceEditorContainerRef.current, {
+          value: "",
+          language: "plaintext",
+          automaticLayout: true,
+          minimap: { enabled: true },
+          fontSize: 13,
+          roundedSelection: false,
+          tabSize: 2,
+          readOnly: true,
+          scrollBeyondLastLine: false,
+          theme: theme === "dark" ? "vs-dark" : "vs",
+        });
+        setEditorStatus("编辑器已就绪");
+      };
+
+      const loadBareApi = () => {
+        const restore = suppressEnumerablePrototypeKeys();
+        window.require(
+          ["vs/editor.api.001a2486"],
+          (apiModule) => {
+            restore();
+            if (!window.monaco && apiModule && apiModule.m) {
+              window.monaco = apiModule.m;
+            }
+            if (!window.monaco && apiModule && apiModule.editor && apiModule.languages) {
+              window.monaco = apiModule;
+            }
+            if (window.require && typeof window.require.toUrl === "function" && !document.querySelector("link[data-monaco-style='1']")) {
+              const link = document.createElement("link");
+              link.rel = "stylesheet";
+              link.href = window.require.toUrl("vs/style.css");
+              link.setAttribute("data-monaco-style", "1");
+              document.head.appendChild(link);
+            }
+            createEditor();
+          },
+          (err) => {
+            restore();
+            if (!disposed) {
+              setEditorStatus(`Monaco 加载失败: ${String(err)}`);
+            }
+          }
+        );
+      };
+
+      const restoreMain = suppressEnumerablePrototypeKeys();
       window.require(
         ["vs/editor/editor.main"],
         () => {
-          if (disposed || sourceEditorRef.current || !sourceEditorContainerRef.current) {
-            return;
-          }
-          sourceEditorRef.current = window.monaco.editor.create(sourceEditorContainerRef.current, {
-            value: "",
-            language: "plaintext",
-            automaticLayout: true,
-            minimap: { enabled: true },
-            fontSize: 13,
-            roundedSelection: false,
-            tabSize: 2,
-            readOnly: true,
-            scrollBeyondLastLine: false,
-            theme: theme === "dark" ? "vs-dark" : "vs",
-          });
-          setEditorStatus("编辑器已就绪");
+          restoreMain();
+          createEditor();
         },
-        (err) => {
-          if (!disposed) {
-            setEditorStatus(`Monaco 加载失败: ${String(err)}`);
-          }
+        () => {
+          restoreMain();
+          loadBareApi();
         }
       );
-
 
       return () => {
         disposed = true;
@@ -360,6 +435,7 @@
         }
       };
     }, []);
+
 
     React.useEffect(() => {
       if (sourceEditorRef.current && window.monaco) {
@@ -611,7 +687,8 @@
         if (resizing === "col") {
           const dx = ev.clientX - resizeRef.current.startX;
           const maxWidth = Math.max(260, window.innerWidth - 420);
-          const next = Math.max(220, Math.min(maxWidth, resizeRef.current.startLeftWidth + dx));
+          const next = Math.max(200, Math.min(maxWidth, resizeRef.current.startLeftWidth + dx));
+
           setLeftPaneWidth(Math.round(next));
           return;
         }
