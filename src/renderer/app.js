@@ -271,8 +271,12 @@
     const [sourceLanguage, setSourceLanguage] = React.useState("plaintext");
     const [sourceCursor, setSourceCursor] = React.useState({ line: 1, column: 1 });
     const [editorStatus, setEditorStatus] = React.useState("编辑器未初始化");
+    const [leftPaneWidth, setLeftPaneWidth] = React.useState(320);
+    const [bottomPaneHeight, setBottomPaneHeight] = React.useState(340);
+    const [resizing, setResizing] = React.useState(null);
 
     const [busy, setBusy] = React.useState(false);
+
 
 
     const [status, setStatus] = React.useState("等待开始");
@@ -290,6 +294,8 @@
     const mermaidDragRef = React.useRef({ x: 0, y: 0, vx: 0, vy: 0 });
     const sourceEditorRef = React.useRef(null);
     const sourceEditorContainerRef = React.useRef(null);
+    const resizeRef = React.useRef({ startX: 0, startY: 0, startLeftWidth: 320, startBottomHeight: 340 });
+
 
 
     React.useEffect(() => {
@@ -318,24 +324,34 @@
           vs: "../../node_modules/monaco-editor/min/vs",
         },
       });
-      window.require(["vs/editor/editor.main"], () => {
-        if (disposed || sourceEditorRef.current || !sourceEditorContainerRef.current) {
-          return;
+      window.require(
+        ["vs/editor/editor.main"],
+        () => {
+          if (disposed || sourceEditorRef.current || !sourceEditorContainerRef.current) {
+            return;
+          }
+          sourceEditorRef.current = window.monaco.editor.create(sourceEditorContainerRef.current, {
+            value: "",
+            language: "plaintext",
+            automaticLayout: true,
+            minimap: { enabled: true },
+            fontSize: 13,
+            roundedSelection: false,
+            tabSize: 2,
+            readOnly: true,
+            scrollBeyondLastLine: false,
+            theme: theme === "dark" ? "vs-dark" : "vs",
+          });
+          setEditorStatus("编辑器已就绪");
+        },
+        (err) => {
+          if (!disposed) {
+            setEditorStatus(`Monaco 加载失败: ${String(err)}`);
+          }
         }
-        sourceEditorRef.current = window.monaco.editor.create(sourceEditorContainerRef.current, {
-          value: "",
-          language: "plaintext",
-          automaticLayout: true,
-          minimap: { enabled: true },
-          fontSize: 13,
-          roundedSelection: false,
-          tabSize: 2,
-          readOnly: true,
-          scrollBeyondLastLine: false,
-          theme: theme === "dark" ? "vs-dark" : "vs",
-        });
-        setEditorStatus("编辑器已就绪");
-      });
+      );
+
+
       return () => {
         disposed = true;
         if (sourceEditorRef.current) {
@@ -585,7 +601,38 @@
       });
     }, [view.nodes]);
 
+    React.useEffect(() => {
+      if (!resizing) {
+        document.body.classList.remove("resizing-layout", "resizing-col", "resizing-row");
+        return;
+      }
+      document.body.classList.add("resizing-layout", resizing === "col" ? "resizing-col" : "resizing-row");
+      const onMove = (ev) => {
+        if (resizing === "col") {
+          const dx = ev.clientX - resizeRef.current.startX;
+          const maxWidth = Math.max(260, window.innerWidth - 420);
+          const next = Math.max(220, Math.min(maxWidth, resizeRef.current.startLeftWidth + dx));
+          setLeftPaneWidth(Math.round(next));
+          return;
+        }
+        const dy = ev.clientY - resizeRef.current.startY;
+        const maxHeight = Math.max(220, window.innerHeight - 240);
+        const next = Math.max(220, Math.min(maxHeight, resizeRef.current.startBottomHeight - dy));
+        setBottomPaneHeight(Math.round(next));
+      };
+      const onUp = () => {
+        setResizing(null);
+      };
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+      return () => {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+      };
+    }, [resizing]);
+
     const currentModuleEdges = graph
+
       ? graph.edges.filter((edge) => {
           if (!currentModule) return false;
           const from = symbolById.get(edge.from);
@@ -643,7 +690,30 @@
       setNodeDrag(null);
     };
 
+    const startResizeCol = (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      resizeRef.current = {
+        ...resizeRef.current,
+        startX: ev.clientX,
+        startLeftWidth: leftPaneWidth,
+      };
+      setResizing("col");
+    };
+
+    const startResizeRow = (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      resizeRef.current = {
+        ...resizeRef.current,
+        startY: ev.clientY,
+        startBottomHeight: bottomPaneHeight,
+      };
+      setResizing("row");
+    };
+
     const onMermaidWheel = (ev) => {
+
       ev.preventDefault();
       const rect = mermaidRenderRef.current ? mermaidRenderRef.current.getBoundingClientRect() : null;
       setMermaidViewport((prev) => {
@@ -745,7 +815,11 @@
       ),
       e(
         "div",
-        { className: "workspace" },
+        {
+          className: "workspace",
+          style: { gridTemplateColumns: `56px ${leftPaneWidth}px 6px minmax(420px, 1fr)` },
+        },
+
         e(
           "div",
           { className: "activity-bar" },
@@ -864,9 +938,14 @@
               )
             : null
         ),
+        e("div", { className: "workspace-splitter workspace-splitter-col", onMouseDown: startResizeCol }),
         e(
           "div",
-          { className: "right" },
+          {
+            className: "right",
+            style: { gridTemplateRows: `minmax(220px, 1fr) 6px ${bottomPaneHeight}px` },
+          },
+
           e(
             "div",
             { className: "panel" },
@@ -962,9 +1041,11 @@
               )
             )
           ),
+          e("div", { className: "workspace-splitter workspace-splitter-row", onMouseDown: startResizeRow }),
           e(
             "div",
             { className: "panel source-panel" },
+
             e("strong", null, "源码编辑器（Monaco Editor）"),
             sourceFilePath
               ? e(
