@@ -310,7 +310,7 @@
     const [sourceCursor, setSourceCursor] = React.useState({ line: 1, column: 1 });
     const [editorStatus, setEditorStatus] = React.useState("编辑器未初始化");
     const [leftPaneWidth, setLeftPaneWidth] = React.useState(200);
-    const [bottomPaneHeight, setBottomPaneHeight] = React.useState(340);
+    const [sourcePaneWidth, setSourcePaneWidth] = React.useState(620);
     const [resizing, setResizing] = React.useState(null);
 
 
@@ -333,7 +333,7 @@
     const mermaidDragRef = React.useRef({ x: 0, y: 0, vx: 0, vy: 0 });
     const sourceEditorRef = React.useRef(null);
     const sourceEditorContainerRef = React.useRef(null);
-    const resizeRef = React.useRef({ startX: 0, startY: 0, startLeftWidth: 200, startBottomHeight: 340 });
+    const resizeRef = React.useRef({ startX: 0, startLeftWidth: 200, startSourceWidth: 620 });
 
 
 
@@ -682,20 +682,18 @@
         document.body.classList.remove("resizing-layout", "resizing-col", "resizing-row");
         return;
       }
-      document.body.classList.add("resizing-layout", resizing === "col" ? "resizing-col" : "resizing-row");
+      document.body.classList.add("resizing-layout", "resizing-col");
       const onMove = (ev) => {
-        if (resizing === "col") {
-          const dx = ev.clientX - resizeRef.current.startX;
+        const dx = ev.clientX - resizeRef.current.startX;
+        if (resizing === "left-col") {
           const maxWidth = Math.max(260, window.innerWidth - 420);
           const next = Math.max(200, Math.min(maxWidth, resizeRef.current.startLeftWidth + dx));
-
           setLeftPaneWidth(Math.round(next));
           return;
         }
-        const dy = ev.clientY - resizeRef.current.startY;
-        const maxHeight = Math.max(220, window.innerHeight - 240);
-        const next = Math.max(220, Math.min(maxHeight, resizeRef.current.startBottomHeight - dy));
-        setBottomPaneHeight(Math.round(next));
+        const maxWidth = Math.max(420, window.innerWidth - leftPaneWidth - 220);
+        const next = Math.max(360, Math.min(maxWidth, resizeRef.current.startSourceWidth + dx));
+        setSourcePaneWidth(Math.round(next));
       };
       const onUp = () => {
         setResizing(null);
@@ -706,7 +704,7 @@
         window.removeEventListener("mousemove", onMove);
         window.removeEventListener("mouseup", onUp);
       };
-    }, [resizing]);
+    }, [resizing, leftPaneWidth]);
 
     const currentModuleEdges = graph
 
@@ -767,7 +765,7 @@
       setNodeDrag(null);
     };
 
-    const startResizeCol = (ev) => {
+    const startResizeLeftCol = (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
       resizeRef.current = {
@@ -775,18 +773,18 @@
         startX: ev.clientX,
         startLeftWidth: leftPaneWidth,
       };
-      setResizing("col");
+      setResizing("left-col");
     };
 
-    const startResizeRow = (ev) => {
+    const startResizeRightCol = (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
       resizeRef.current = {
         ...resizeRef.current,
-        startY: ev.clientY,
-        startBottomHeight: bottomPaneHeight,
+        startX: ev.clientX,
+        startSourceWidth: sourcePaneWidth,
       };
-      setResizing("row");
+      setResizing("right-col");
     };
 
     const onMermaidWheel = (ev) => {
@@ -1015,21 +1013,21 @@
               )
             : null
         ),
-        e("div", { className: "workspace-splitter workspace-splitter-col", onMouseDown: startResizeCol }),
+        e("div", { className: "workspace-splitter workspace-splitter-col", onMouseDown: startResizeLeftCol }),
         e(
           "div",
           {
             className: "right",
-            style: { gridTemplateRows: `minmax(220px, 1fr) 6px ${bottomPaneHeight}px` },
+            style: { gridTemplateColumns: `${sourcePaneWidth}px 6px minmax(420px, 1fr)` },
           },
 
           e(
             "div",
-            { className: "panel" },
+            { className: "panel", style: { gridColumn: 3, gridRow: 1, display: "grid", gridTemplateRows: "auto 1fr", minWidth: 0, minHeight: 0 } },
             e(
               "div",
               { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8, gap: 8 } },
-              e("strong", null, "依赖图谱（可拖拽/滚轮缩放/点击节点高亮上下游）"),
+              e("strong", null, "依赖图谱"),
               e(
                 "div",
                 { style: { display: "flex", alignItems: "center", gap: 8 } },
@@ -1118,10 +1116,10 @@
               )
             )
           ),
-          e("div", { className: "workspace-splitter workspace-splitter-row", onMouseDown: startResizeRow }),
+          e("div", { className: "workspace-splitter workspace-splitter-col", style: { gridColumn: 2, gridRow: 1 }, onMouseDown: startResizeRightCol }),
           e(
             "div",
-            { className: "panel source-panel" },
+            { className: "panel source-panel", style: { gridColumn: 1, gridRow: 1, minWidth: 0, minHeight: 0 } },
 
             e("strong", null, "源码编辑器（Monaco Editor）"),
             sourceFilePath
