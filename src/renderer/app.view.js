@@ -104,7 +104,7 @@
                             onClick: () => ctx.openModuleFromExplorer(m.module_name),
                           },
                           e("div", null, m.module_name),
-                          e("div", { className: "small" }, `symbols: ${m.symbols.length} | instability: ${m.metrics.instability}`)
+                          e("div", { className: "small" }, ``)
                         )
                       )
                     )

@@ -46,7 +46,7 @@
           "div",
           { className: "tree-file-node" },
           e("div", { className: "tree-file-name", title: module.module_name }, fileName),
-          e("div", { className: "small tree-file-meta" }, `symbols: ${module.symbols.length} | instability: ${module.metrics.instability}`)
+          e("div", { className: "small tree-file-meta" }, ``)
         ),
       });
     }

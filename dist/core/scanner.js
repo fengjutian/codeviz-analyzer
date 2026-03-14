@@ -7,14 +7,14 @@ exports.scanProjectFiles = scanProjectFiles;
 const promises_1 = require("node:fs/promises");
 const node_path_1 = __importDefault(require("node:path"));
 const DEFAULT_IGNORES = ["node_modules", "dist", ".git", ".idea", ".vscode"];
-const DEFAULT_EXTENSIONS = [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".py"];
 function shouldIgnore(fullPath, ignoreTokens) {
     const normalized = fullPath.replace(/\\/g, "/");
     return ignoreTokens.some((token) => normalized.includes(token));
 }
 async function scanProjectFiles(projectPath, options = {}) {
     const ignore = [...DEFAULT_IGNORES, ...(options.ignore ?? [])];
-    const extensions = options.extensions ?? DEFAULT_EXTENSIONS;
+    const extensions = (options.extensions ?? []).map((ext) => ext.toLowerCase());
+    const hasExtensionFilter = extensions.length > 0;
     const files = [];
     const errors = [];
     const progress = {
@@ -54,7 +54,7 @@ async function scanProjectFiles(projectPath, options = {}) {
             }
             progress.scanned_files += 1;
             const ext = node_path_1.default.extname(entry.name).toLowerCase();
-            if (extensions.includes(ext)) {
+            if (!hasExtensionFilter || extensions.includes(ext)) {
                 files.push(fullPath);
                 progress.matched_files += 1;
             }

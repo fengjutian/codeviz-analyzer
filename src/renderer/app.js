@@ -9,7 +9,6 @@
   const getEditorLanguage = helpers.getEditorLanguage;
   const layout = helpers.layout;
   const renderAppView = viewRenderer.renderAppView;
-  const suppressEnumerablePrototypeKeys = helpers.suppressEnumerablePrototypeKeys;
   const toMermaidFromView = helpers.toMermaidFromView;
 
 
@@ -110,46 +109,15 @@
         setEditorStatus("编辑器已就绪");
       };
 
-      const loadBareApi = () => {
-        const restore = suppressEnumerablePrototypeKeys();
-        window.require(
-          ["vs/editor.api.001a2486"],
-          (apiModule) => {
-            restore();
-            if (!window.monaco && apiModule && apiModule.m) {
-              window.monaco = apiModule.m;
-            }
-            if (!window.monaco && apiModule && apiModule.editor && apiModule.languages) {
-              window.monaco = apiModule;
-            }
-            if (window.require && typeof window.require.toUrl === "function" && !document.querySelector("link[data-monaco-style='1']")) {
-              const link = document.createElement("link");
-              link.rel = "stylesheet";
-              link.href = window.require.toUrl("vs/style.css");
-              link.setAttribute("data-monaco-style", "1");
-              document.head.appendChild(link);
-            }
-            createEditor();
-          },
-          (err) => {
-            restore();
-            if (!disposed) {
-              setEditorStatus(`Monaco 加载失败: ${String(err)}`);
-            }
-          }
-        );
-      };
-
-      const restoreMain = suppressEnumerablePrototypeKeys();
       window.require(
         ["vs/editor/editor.main"],
         () => {
-          restoreMain();
           createEditor();
         },
-        () => {
-          restoreMain();
-          loadBareApi();
+        (err) => {
+          if (!disposed) {
+            setEditorStatus(`Monaco 加载失败: ${String(err)}`);
+          }
         }
       );
 

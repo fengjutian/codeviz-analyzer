@@ -11,10 +11,9 @@ const pluginManager_1 = require("./pluginManager");
 const scanner_1 = require("./scanner");
 const jsTsPlugin_1 = require("../plugins/jsTsPlugin");
 const placeholderPlugin_1 = require("../plugins/placeholderPlugin");
-const DEFAULT_EXTENSIONS = [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".py"];
 async function analyzeProject(projectPath, options = {}) {
     const ignore = options.ignore ?? [];
-    const extensions = options.extensions ?? DEFAULT_EXTENSIONS;
+    const extensions = options.extensions?.map((ext) => ext.toLowerCase()).filter(Boolean);
     options.onProgress?.("scan", { projectPath });
     const scanned = await (0, scanner_1.scanProjectFiles)(projectPath, {
         ignore,
@@ -31,10 +30,25 @@ async function analyzeProject(projectPath, options = {}) {
         const relativeModule = node_path_1.default.relative(projectPath, filePath).replace(/\\/g, "/");
         const plugin = pluginManager.resolve(filePath);
         if (!plugin) {
-            diagnostics.push({
-                level: "warning",
+            const symbolId = `${relativeModule}::(file)`;
+            symbols.push({
+                id: symbolId,
+                symbol_name: "(file)",
+                symbol_type: "variable",
+                module_name: relativeModule,
+                dependencies: [],
+                metrics: {
+                    cyclomatic_complexity: 1,
+                    fan_in: 0,
+                    fan_out: 0,
+                    loc: 0,
+                },
+            });
+            parsedCount += 1;
+            options.onProgress?.("parse", {
+                parsed_files: parsedCount,
+                total_files: scanned.files.length,
                 file: relativeModule,
-                message: "未找到匹配解析器，已跳过。",
             });
             continue;
         }
@@ -75,7 +89,7 @@ async function analyzeProject(projectPath, options = {}) {
         edges,
         diagnostics,
         ignore,
-        extensions,
+        extensions: extensions ?? [],
     });
 }
 //# sourceMappingURL=analyzer.js.map

@@ -4,7 +4,6 @@ import path from "node:path";
 import { AnalyzerDiagnostic, ScanOptions, ScanResult } from "../types";
 
 const DEFAULT_IGNORES = ["node_modules", "dist", ".git", ".idea", ".vscode"];
-const DEFAULT_EXTENSIONS = [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".py"];
 
 function shouldIgnore(fullPath: string, ignoreTokens: string[]): boolean {
   const normalized = fullPath.replace(/\\/g, "/");
@@ -13,7 +12,8 @@ function shouldIgnore(fullPath: string, ignoreTokens: string[]): boolean {
 
 export async function scanProjectFiles(projectPath: string, options: ScanOptions = {}): Promise<ScanResult> {
   const ignore = [...DEFAULT_IGNORES, ...(options.ignore ?? [])];
-  const extensions = options.extensions ?? DEFAULT_EXTENSIONS;
+  const extensions = (options.extensions ?? []).map((ext) => ext.toLowerCase());
+  const hasExtensionFilter = extensions.length > 0;
   const files: string[] = [];
   const errors: AnalyzerDiagnostic[] = [];
 
@@ -61,7 +61,7 @@ export async function scanProjectFiles(projectPath: string, options: ScanOptions
 
         progress.scanned_files += 1;
         const ext = path.extname(entry.name).toLowerCase();
-        if (extensions.includes(ext)) {
+        if (!hasExtensionFilter || extensions.includes(ext)) {
           files.push(fullPath);
           progress.matched_files += 1;
         }
