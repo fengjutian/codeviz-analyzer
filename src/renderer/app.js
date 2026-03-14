@@ -782,8 +782,7 @@
                   style: { transform: `translate(${mermaidViewport.x}px, ${mermaidViewport.y}px) scale(${mermaidViewport.scale})` },
                   dangerouslySetInnerHTML: { __html: mermaidSvg || "<div class='small'>渲染中...</div>" },
                 })
-              ),
-              e("pre", { className: "drawer-source" }, mermaidSource)
+              )
 
             )
           )
