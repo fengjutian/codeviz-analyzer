@@ -30,6 +30,25 @@ const api = {
   exportExecutionGraph: (outDir: string, format: "sequence" | "heatmap" | "json"): Promise<string> =>
     ipcRenderer.invoke("export-execution-graph", { outDir, format }),
   getLatestExecutionGraph: (): Promise<TraceResult | null> => ipcRenderer.invoke("get-latest-execution-graph"),
+  // 控制流图 API
+  extractControlFlow: (payload: {
+    filePath: string;
+    functionName?: string;
+  }): Promise<{
+    success: boolean;
+    functionName?: string;
+    moduleName?: string;
+    mermaidCode?: string;
+    nodeCount?: number;
+    edgeCount?: number;
+    functions?: Array<{
+      functionName: string;
+      mermaidCode: string;
+      nodeCount: number;
+      edgeCount: number;
+    }>;
+    error?: string;
+  }> => ipcRenderer.invoke("extract-control-flow", payload),
   onAnalysisProgress: (listener: (event: ProgressEventPayload) => void) => {
     const wrapped = (_event: Electron.IpcRendererEvent, data: ProgressEventPayload) => listener(data);
     ipcRenderer.on("analysis-progress", wrapped);

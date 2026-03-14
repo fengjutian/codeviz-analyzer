@@ -8,6 +8,7 @@ import { runWithTrace } from "../core/executionTracer";
 import { exportJson } from "../exporters/jsonExporter";
 import { exportMermaid } from "../exporters/mermaidExporter";
 import { exportExecutionGraph } from "../exporters/executionGraph";
+import { extractControlFlow, extractModuleControlFlow, toMermaidCFG } from "../exporters/controlFlowExporter";
 import { KnowledgeGraph } from "../types";
 
 let mainWindow: BrowserWindow | null = null;
@@ -316,4 +317,63 @@ ipcMain.handle("export-execution-graph", async (_event, payload: {
 // 获取最新执行追踪结果
 ipcMain.handle("get-latest-execution-graph", async () => {
   return latestExecutionGraph;
+});
+
+// 控制流图 IPC 处理
+ipcMain.handle("extract-control-flow", async (_event, payload: {
+  filePath: string;
+  functionName?: string;
+}) => {
+  const { filePath, functionName } = payload;
+
+  if (!filePath) {
+    throw new Error("filePath 不能为空");
+  }
+
+  debugLog("IPC extract-control-flow start", { filePath, functionName });
+
+  try {
+    const sourceCode = await readFile(filePath, "utf-8");
+    const moduleName = path.basename(filePath);
+
+    let result;
+    if (functionName) {
+      // 提取单个函数的控制流图
+      const graph = extractControlFlow(sourceCode, moduleName, functionName);
+      if (!graph) {
+        return { success: false, error: `无法提取函数 ${functionName} 的控制流图` };
+      }
+      const mermaidCode = toMermaidCFG(graph);
+      result = {
+        success: true,
+        functionName,
+        moduleName,
+        mermaidCode,
+        nodeCount: graph.nodes.length,
+        edgeCount: graph.edges.length,
+      };
+    } else {
+      // 提取整个模块的所有函数控制流图
+      const graphs = extractModuleControlFlow(sourceCode, moduleName);
+      if (graphs.length === 0) {
+        return { success: false, error: "未找到可提取控制流图的函数" };
+      }
+      result = {
+        success: true,
+        moduleName,
+        functions: graphs.map((g) => ({
+          functionName: g.functionName,
+          mermaidCode: toMermaidCFG(g),
+          nodeCount: g.nodes.length,
+          edgeCount: g.edges.length,
+        })),
+      };
+    }
+
+    debugLog("IPC extract-control-flow done", result);
+    return result;
+  } catch (error) {
+    debugLog("IPC extract-control-flow error", String(error));
+    return { success: false, error: String(error) };
+  }
 });

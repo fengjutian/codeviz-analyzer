@@ -37,6 +37,16 @@
     const [traceResult, setTraceResult] = React.useState(null);
     const [traceError, setTraceError] = React.useState("");
 
+    // 控制流图相关状态
+    const [cfgDrawerOpen, setCfgDrawerOpen] = React.useState(false);
+    const [cfgModuleName, setCfgModuleName] = React.useState("");
+    const [cfgFunctions, setCfgFunctions] = React.useState([]);
+    const [cfgSelectedFunction, setCfgSelectedFunction] = React.useState("");
+    const [cfgMermaidCode, setCfgMermaidCode] = React.useState("");
+    const [cfgMermaidSvg, setCfgMermaidSvg] = React.useState("");
+    const [cfgLoading, setCfgLoading] = React.useState(false);
+    const [cfgError, setCfgError] = React.useState("");
+
     const [sourceModule, setSourceModule] = React.useState("");
     const [sourceFilePath, setSourceFilePath] = React.useState("");
     const [sourceCode, setSourceCode] = React.useState("");
@@ -306,7 +316,98 @@
       }
     };
 
+    // 加载控制流图
+    const loadControlFlowGraph = async (moduleName, functionName) => {
+      if (!graph || !window.codeviz) {
+        setCfgError("请先分析项目");
+        return;
+      }
 
+      const moduleNode = graph.modules.find((m) => m.module_name === moduleName);
+      if (!moduleNode) {
+        setCfgError(`找不到模块: ${moduleName}`);
+        return;
+      }
+
+      setCfgLoading(true);
+      setCfgError("");
+
+      try {
+        const result = await window.codeviz.extractControlFlow({
+          filePath: moduleNode.file_path,
+          functionName: functionName || undefined,
+        });
+
+        if (result.success) {
+          if (result.functions) {
+            // 返回了多个函数
+            setCfgFunctions(result.functions);
+            setCfgSelectedFunction("");
+            setCfgMermaidCode("");
+            setCfgMermaidSvg("");
+          } else if (result.mermaidCode) {
+            // 返回了单个函数的控制流图
+            setCfgFunctions([]);
+            setCfgSelectedFunction(result.functionName);
+            setCfgMermaidCode(result.mermaidCode);
+          }
+        } else {
+          setCfgError(result.error || "提取控制流图失败");
+        }
+      } catch (err) {
+        setCfgError(String(err));
+      } finally {
+        setCfgLoading(false);
+      }
+    };
+
+    // 渲染控制流图 Mermaid
+    React.useEffect(() => {
+      if (!cfgMermaidCode || !window.mermaid) return;
+
+      let cancelled = false;
+      const render = async () => {
+        try {
+          window.mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: "loose",
+            theme: theme === "dark" ? "dark" : "default"
+          });
+          const id = `cfg-mermaid-${Date.now()}`;
+          const result = await window.mermaid.render(id, cfgMermaidCode);
+          if (!cancelled) {
+            setCfgMermaidSvg(result.svg);
+          }
+        } catch (err) {
+          if (!cancelled) {
+            setCfgError(`Mermaid 渲染失败: ${String(err)}`);
+          }
+        }
+      };
+
+      void render();
+      return () => {
+        cancelled = true;
+      };
+    }, [cfgMermaidCode, theme]);
+
+    // 当选择了函数后自动加载
+    React.useEffect(() => {
+      if (cfgSelectedFunction && currentModule) {
+        loadControlFlowGraph(currentModule.module_name, cfgSelectedFunction);
+      }
+    }, [cfgSelectedFunction]);
+
+    // 打开控制流图抽屉
+    const openControlFlowDrawer = () => {
+      if (!currentModule) {
+        setCfgError("请先选择一个模块");
+        return;
+      }
+      setCfgModuleName(currentModule.module_name);
+      loadControlFlowGraph(currentModule.module_name);
+      setCfgDrawerOpen(true);
+    };
 
     const modules = graph
       ? graph.modules.filter((m) => m.module_name.toLowerCase().includes(fileKeyword.toLowerCase()))
@@ -670,6 +771,8 @@
       runAnalyze,
       // 执行追踪相关
       runTrace,
+      // 控制流图相关
+      openControlFlowDrawer,
       selectNode,
       selectedModule,
       selectedNodeId,
@@ -684,6 +787,15 @@
       setSelectedModule,
       setTheme,
       setTraceDrawerOpen,
+      // 控制流图相关
+      cfgDrawerOpen,
+      cfgFunctions,
+      cfgSelectedFunction,
+      cfgMermaidSvg,
+      cfgLoading,
+      cfgError,
+      setCfgDrawerOpen,
+      setCfgSelectedFunction,
       setViewport,
       sourceEditorContainerRef,
       sourceFilePath,

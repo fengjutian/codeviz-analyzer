@@ -28,6 +28,7 @@
         }),
         e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setDrawerOpen(true), disabled: !ctx.graph }, "Mermaid"),
         e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setTraceDrawerOpen(true), disabled: !ctx.graph }, "执行追踪"),
+        e(SButton, { theme: "solid", type: "secondary", onClick: ctx.openControlFlowDrawer, disabled: !ctx.graph }, "控制流图"),
         e("input", {
           style: { width: 260 },
           value: ctx.nodeKeyword,
@@ -347,6 +348,64 @@
                   style: { transform: `translate(${ctx.mermaidViewport.x}px, ${ctx.mermaidViewport.y}px) scale(${ctx.mermaidViewport.scale})` },
                   dangerouslySetInnerHTML: { __html: ctx.mermaidSvg || "<div class='small'>渲染中...</div>" },
                 })
+              )
+            )
+          )
+        : null,
+      // 控制流图抽屉
+      ctx.cfgDrawerOpen
+        ? e(
+            "div",
+            { className: "drawer-mask", onClick: () => ctx.setCfgDrawerOpen(false) },
+            e(
+              "div",
+              {
+                className: "drawer",
+                style: { width: 600 },
+                onClick: (ev) => ev.stopPropagation(),
+              },
+              e(
+                "div",
+                { className: "drawer-header" },
+                e("strong", null, "控制流图 (Control Flow Graph)"),
+                e(
+                  "div",
+                  { className: "drawer-actions" },
+                  e(SButton, { theme: "solid", type: "danger", onClick: () => ctx.setCfgDrawerOpen(false) }, "关闭")
+                )
+              ),
+              // 函数选择器
+              ctx.cfgFunctions.length > 0
+                ? e("div", { style: { padding: "12px", borderBottom: "1px solid var(--border)" } },
+                    e("div", { style: { marginBottom: 8 } }, "选择函数:"),
+                    e("select", {
+                      style: { width: "100%", padding: "6px" },
+                      value: ctx.cfgSelectedFunction,
+                      onChange: (ev) => ctx.setCfgSelectedFunction(ev.target.value),
+                    },
+                      e("option", { value: "" }, `-- 选择函数 (${ctx.cfgFunctions.length} 个)`),
+                      ctx.cfgFunctions.map((fn) =>
+                        e("option", { key: fn.functionName, value: fn.functionName },
+                          `${fn.functionName} (${fn.nodeCount} 节点, ${fn.edgeCount} 边)`
+                        )
+                      )
+                    )
+                  )
+                : null,
+              // 渲染区域
+              e(
+                "div",
+                { className: "trace-results", style: { overflow: "auto", flex: 1, padding: 12 } },
+                ctx.cfgLoading
+                  ? e("div", { className: "small" }, "加载中...")
+                  : ctx.cfgError
+                    ? e("div", { style: { color: "var(--danger)" } }, ctx.cfgError)
+                    : ctx.cfgMermaidSvg
+                      ? e("div", {
+                          className: "mermaid-preview",
+                          dangerouslySetInnerHTML: { __html: ctx.cfgMermaidSvg }
+                        })
+                      : e("div", { className: "small" }, "选择一个函数查看其控制流图")
               )
             )
           )

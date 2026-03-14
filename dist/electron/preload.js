@@ -11,6 +11,8 @@ const api = {
     runExecutionTrace: (payload) => electron_1.ipcRenderer.invoke("run-execution-trace", payload),
     exportExecutionGraph: (outDir, format) => electron_1.ipcRenderer.invoke("export-execution-graph", { outDir, format }),
     getLatestExecutionGraph: () => electron_1.ipcRenderer.invoke("get-latest-execution-graph"),
+    // 控制流图 API
+    extractControlFlow: (payload) => electron_1.ipcRenderer.invoke("extract-control-flow", payload),
     onAnalysisProgress: (listener) => {
         const wrapped = (_event, data) => listener(data);
         electron_1.ipcRenderer.on("analysis-progress", wrapped);

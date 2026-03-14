@@ -46,6 +46,7 @@ const executionTracer_1 = require("../core/executionTracer");
 const jsonExporter_1 = require("../exporters/jsonExporter");
 const mermaidExporter_1 = require("../exporters/mermaidExporter");
 const executionGraph_1 = require("../exporters/executionGraph");
+const controlFlowExporter_1 = require("../exporters/controlFlowExporter");
 let mainWindow = null;
 let latestGraph = null;
 const DEBUG_LOG_ENABLED = process.env.CODEVIZ_DEBUG === "1" || !electron_1.app.isPackaged;
@@ -296,5 +297,57 @@ electron_1.ipcMain.handle("export-execution-graph", async (_event, payload) => {
 // 获取最新执行追踪结果
 electron_1.ipcMain.handle("get-latest-execution-graph", async () => {
     return latestExecutionGraph;
+});
+// 控制流图 IPC 处理
+electron_1.ipcMain.handle("extract-control-flow", async (_event, payload) => {
+    const { filePath, functionName } = payload;
+    if (!filePath) {
+        throw new Error("filePath 不能为空");
+    }
+    debugLog("IPC extract-control-flow start", { filePath, functionName });
+    try {
+        const sourceCode = await (0, promises_1.readFile)(filePath, "utf-8");
+        const moduleName = node_path_1.default.basename(filePath);
+        let result;
+        if (functionName) {
+            // 提取单个函数的控制流图
+            const graph = (0, controlFlowExporter_1.extractControlFlow)(sourceCode, moduleName, functionName);
+            if (!graph) {
+                return { success: false, error: `无法提取函数 ${functionName} 的控制流图` };
+            }
+            const mermaidCode = (0, controlFlowExporter_1.toMermaidCFG)(graph);
+            result = {
+                success: true,
+                functionName,
+                moduleName,
+                mermaidCode,
+                nodeCount: graph.nodes.length,
+                edgeCount: graph.edges.length,
+            };
+        }
+        else {
+            // 提取整个模块的所有函数控制流图
+            const graphs = (0, controlFlowExporter_1.extractModuleControlFlow)(sourceCode, moduleName);
+            if (graphs.length === 0) {
+                return { success: false, error: "未找到可提取控制流图的函数" };
+            }
+            result = {
+                success: true,
+                moduleName,
+                functions: graphs.map((g) => ({
+                    functionName: g.functionName,
+                    mermaidCode: (0, controlFlowExporter_1.toMermaidCFG)(g),
+                    nodeCount: g.nodes.length,
+                    edgeCount: g.edges.length,
+                })),
+            };
+        }
+        debugLog("IPC extract-control-flow done", result);
+        return result;
+    }
+    catch (error) {
+        debugLog("IPC extract-control-flow error", String(error));
+        return { success: false, error: String(error) };
+    }
 });
 //# sourceMappingURL=main.js.map
