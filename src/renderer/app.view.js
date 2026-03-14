@@ -356,11 +356,11 @@
       ctx.cfgDrawerOpen
         ? e(
             "div",
-            { className: "drawer-mask", onClick: () => ctx.setCfgDrawerOpen(false) },
+            { className: "drawer-mask drawer-mask-right", onClick: () => ctx.setCfgDrawerOpen(false) },
             e(
               "div",
               {
-                className: "drawer",
+                className: "drawer drawer-right",
                 style: { width: 600 },
                 onClick: (ev) => ev.stopPropagation(),
               },
