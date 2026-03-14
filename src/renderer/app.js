@@ -1,7 +1,11 @@
 (function () {
   const e = React.createElement;
+  const Semi = window.SemiUI || {};
+  const SButton = Semi.Button || "button";
+  const STag = Semi.Tag || "span";
 
   function uniq(arr) {
+
     return [...new Set(arr)];
   }
 
@@ -192,6 +196,44 @@
     return 1.6;
   }
 
+  function escapeMermaidLabel(text) {
+    return String(text || "").replace(/"/g, "'").replace(/\n/g, " ").trim();
+  }
+
+  function toMermaidFromView(nodes, edges) {
+    if (!nodes.length) {
+      return "graph TD\n  Empty[\"暂无可渲染节点\"]";
+    }
+
+    const nodeMap = new Map(nodes.map((n) => [n.id, n]));
+    const lines = ["graph TD"];
+    const used = new Set();
+    const aliasMap = new Map(nodes.map((node, idx) => [node.id, `N${idx}`]));
+
+    const pushNode = (id) => {
+      if (used.has(id)) return;
+      const node = nodeMap.get(id);
+      const alias = aliasMap.get(id);
+      if (!node || !alias) return;
+      lines.push(`  ${alias}[\"${escapeMermaidLabel(node.label)}\"]`);
+      used.add(id);
+    };
+
+    edges.forEach((edge) => {
+      const fromAlias = aliasMap.get(edge.from);
+      const toAlias = aliasMap.get(edge.to);
+      if (!fromAlias || !toAlias) return;
+      pushNode(edge.from);
+      pushNode(edge.to);
+      lines.push(`  ${fromAlias} -->|${escapeMermaidLabel(edge.dependency_type)}| ${toAlias}`);
+    });
+
+    nodes.forEach((node) => pushNode(node.id));
+    return lines.join("\n");
+  }
+
+
+
   function App() {
     const [projectPath, setProjectPath] = React.useState("");
     const [outDir, setOutDir] = React.useState("");
@@ -202,8 +244,14 @@
     const [nodeKeyword, setNodeKeyword] = React.useState("");
     const [graph, setGraph] = React.useState(null);
     const [theme, setTheme] = React.useState("light");
+    const [drawerOpen, setDrawerOpen] = React.useState(false);
+    const [mermaidSvg, setMermaidSvg] = React.useState("");
+    const [mermaidViewport, setMermaidViewport] = React.useState({ x: 0, y: 0, scale: 1 });
+    const [mermaidDragging, setMermaidDragging] = React.useState(false);
 
     const [busy, setBusy] = React.useState(false);
+
+
     const [status, setStatus] = React.useState("等待开始");
     const [elapsed, setElapsed] = React.useState(0);
 
@@ -215,8 +263,12 @@
     const dragMovedRef = React.useRef(false);
 
     const startTimeRef = React.useRef(0);
+    const mermaidRenderRef = React.useRef(null);
+    const mermaidDragRef = React.useRef({ x: 0, y: 0, vx: 0, vy: 0 });
+
 
     React.useEffect(() => {
+
       if (!window.codeviz) {
         setStatus("预加载 API 不可用");
         return;
@@ -230,29 +282,31 @@
 
 
 
-    const pickProject = async () => {
-      const selected = await window.codeviz.openProjectDialog();
-      if (selected) {
-        setProjectPath(selected);
-        setOutDir(`${selected}\\out`);
-      }
-    };
-
-    const runAnalyze = async () => {
-      if (!projectPath) {
+    const runAnalyze = async (targetProjectPath = projectPath) => {
+      if (!targetProjectPath) {
         setStatus("请先选择项目目录");
         return;
       }
 
+      const prevSelectedModule = selectedModule;
+      const prevSelectedNodeId = selectedNodeId;
+      const sameProject = targetProjectPath === projectPath;
       setBusy(true);
       startTimeRef.current = Date.now();
       try {
-        const result = await window.codeviz.analyzeProject(projectPath);
+        const result = await window.codeviz.analyzeProject(targetProjectPath);
         setGraph(result);
-        setSelectedModule(result.modules[0] ? result.modules[0].module_name : "");
-        setSelectedNodeId("");
-        setManualPositions({});
-        setViewport({ x: 0, y: 0, scale: 1 });
+        const nextSelectedModule = result.modules.some((m) => m.module_name === prevSelectedModule)
+          ? prevSelectedModule
+          : result.modules[0]
+            ? result.modules[0].module_name
+            : "";
+        setSelectedModule(nextSelectedModule);
+        setSelectedNodeId(result.symbols.some((s) => s.id === prevSelectedNodeId) ? prevSelectedNodeId : "");
+        if (!sameProject) {
+          setManualPositions({});
+          setViewport({ x: 0, y: 0, scale: 1 });
+        }
         setElapsed(Date.now() - startTimeRef.current);
         setStatus(`分析完成：modules=${result.modules.length}, symbols=${result.symbols.length}, edges=${result.edges.length}`);
       } catch (err) {
@@ -262,18 +316,16 @@
       }
     };
 
-    const doExport = async (formats) => {
-      if (!outDir) {
-        setStatus("请填写输出目录");
-        return;
-      }
-      try {
-        const outputs = await window.codeviz.exportGraph(outDir, formats);
-        setStatus(`导出成功: ${outputs.join(", ")}`);
-      } catch (err) {
-        setStatus(`导出失败: ${String(err)}`);
+    const pickProject = async () => {
+      const selected = await window.codeviz.openProjectDialog();
+      if (selected) {
+        setProjectPath(selected);
+        setOutDir(`${selected}\\out`);
+        await runAnalyze(selected);
       }
     };
+
+
 
     const modules = graph
       ? graph.modules.filter((m) => m.module_name.toLowerCase().includes(fileKeyword.toLowerCase()))
@@ -303,8 +355,73 @@
       return view.nodes.filter((n) => n.label.toLowerCase().includes(kw)).slice(0, 20);
     }, [view.nodes, nodeKeyword]);
 
+    const mermaidSource = React.useMemo(() => {
+      const maxNodes = 120;
+      const maxEdges = 240;
+      const nodes = view.nodes.slice(0, maxNodes);
+      const nodeSet = new Set(nodes.map((n) => n.id));
+      const edges = view.edges.filter((edge) => nodeSet.has(edge.from) && nodeSet.has(edge.to)).slice(0, maxEdges);
+      return toMermaidFromView(nodes, edges);
+    }, [view.nodes, view.edges]);
+
     React.useEffect(() => {
+      if (!drawerOpen) return;
+      if (!window.mermaid || typeof window.mermaid.render !== "function") {
+        setStatus("Mermaid 未加载，无法渲染");
+        return;
+      }
+
+      let cancelled = false;
+      const render = async () => {
+        try {
+          window.mermaid.initialize({ startOnLoad: false, securityLevel: "loose", theme: theme === "dark" ? "dark" : "default" });
+          const id = `mermaid-${Date.now()}`;
+          const result = await window.mermaid.render(id, mermaidSource);
+          if (!cancelled) {
+            setMermaidSvg(result.svg);
+          }
+        } catch (err) {
+          if (!cancelled) {
+            setMermaidSvg("");
+            setStatus(`Mermaid 渲染失败: ${String(err)}`);
+          }
+        }
+      };
+
+      void render();
+      return () => {
+        cancelled = true;
+      };
+    }, [drawerOpen, mermaidSource, theme]);
+
+    React.useEffect(() => {
+      if (!drawerOpen) {
+        setMermaidDragging(false);
+        return;
+      }
+      setMermaidViewport({ x: 0, y: 0, scale: 1 });
+    }, [drawerOpen]);
+
+    React.useEffect(() => {
+      if (!mermaidDragging) return;
+      const onMove = (ev) => {
+        const dx = ev.clientX - mermaidDragRef.current.x;
+        const dy = ev.clientY - mermaidDragRef.current.y;
+        setMermaidViewport((prev) => ({ ...prev, x: mermaidDragRef.current.vx + dx, y: mermaidDragRef.current.vy + dy }));
+      };
+      const onUp = () => setMermaidDragging(false);
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+      return () => {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+      };
+    }, [mermaidDragging]);
+
+    React.useEffect(() => {
+
       const visible = new Set(view.nodes.map((n) => n.id));
+
       setManualPositions((prev) => {
         let changed = false;
         const next = {};
@@ -376,8 +493,40 @@
       setNodeDrag(null);
     };
 
+    const onMermaidWheel = (ev) => {
+      ev.preventDefault();
+      const rect = mermaidRenderRef.current ? mermaidRenderRef.current.getBoundingClientRect() : null;
+      setMermaidViewport((prev) => {
+        const nextScale = Math.max(0.35, Math.min(3.2, Number((prev.scale * (ev.deltaY > 0 ? 0.9 : 1.1)).toFixed(3))));
+        if (!rect) {
+          return { ...prev, scale: nextScale };
+        }
+        const px = ev.clientX - rect.left;
+        const py = ev.clientY - rect.top;
+        const worldX = (px - prev.x) / prev.scale;
+        const worldY = (py - prev.y) / prev.scale;
+        return {
+          scale: nextScale,
+          x: px - worldX * nextScale,
+          y: py - worldY * nextScale,
+        };
+      });
+    };
+
+    const onMermaidMouseDown = (ev) => {
+      if (ev.button !== 0) return;
+      ev.preventDefault();
+      setMermaidDragging(true);
+      mermaidDragRef.current = {
+        x: ev.clientX,
+        y: ev.clientY,
+        vx: mermaidViewport.x,
+        vy: mermaidViewport.y,
+      };
+    };
 
     const centerNode = (nodeId) => {
+
       const p = positions.get(nodeId);
       if (!p) return;
       setViewport((prev) => ({
@@ -399,8 +548,9 @@
       e(
         "div",
         { className: "toolbar" },
-        e("button", { onClick: () => setTheme((prev) => (prev === "light" ? "dark" : "light")) }, theme === "light" ? "切换暗色" : "切换亮色"),
-        e("button", { onClick: pickProject, disabled: busy }, "导入项目"),
+        e(SButton, { theme: "solid", type: "tertiary", onClick: () => setTheme((prev) => (prev === "light" ? "dark" : "light")) }, theme === "light" ? "切换暗色" : "切换亮色"),
+        e(SButton, { theme: "solid", type: "primary", onClick: pickProject, disabled: busy }, "导入项目"),
+
         e("input", {
           style: { width: 330 },
           value: projectPath,
@@ -414,9 +564,9 @@
           onChange: (ev) => setOutDir(ev.target.value),
           placeholder: "导出目录",
         }),
-        e("button", { onClick: () => doExport(["json"]), disabled: !graph }, "导出 JSON"),
-        e("button", { onClick: () => doExport(["mermaid"]), disabled: !graph }, "导出 Mermaid"),
-        e("button", { onClick: () => doExport(["json", "mermaid"]), disabled: !graph }, "全部导出"),
+        e(SButton, { theme: "solid", type: "secondary", onClick: () => setDrawerOpen(true), disabled: !graph }, "打开 Mermaid 抽屉"),
+
+
         e("input", {
           style: { width: 260 },
           value: nodeKeyword,
@@ -594,6 +744,50 @@
           )
         )
       ),
+      drawerOpen
+        ? e(
+            "div",
+            { className: "drawer-mask", onClick: () => setDrawerOpen(false) },
+            e(
+              "div",
+              {
+                className: "drawer",
+                onClick: (ev) => ev.stopPropagation(),
+              },
+              e(
+                "div",
+                { className: "drawer-header" },
+                e("strong", null, "Mermaid 预览"),
+                e(
+                  "div",
+                  { className: "drawer-actions" },
+                  e("span", { className: "small" }, `缩放 ${(mermaidViewport.scale * 100).toFixed(0)}%`),
+                  e(SButton, { theme: "light", type: "tertiary", onClick: () => setMermaidViewport((prev) => ({ ...prev, scale: Math.max(0.35, Number((prev.scale * 0.9).toFixed(3)) ) })) }, "缩小"),
+                  e(SButton, { theme: "light", type: "tertiary", onClick: () => setMermaidViewport((prev) => ({ ...prev, scale: Math.min(3.2, Number((prev.scale * 1.1).toFixed(3)) ) })) }, "放大"),
+                  e(SButton, { theme: "light", type: "secondary", onClick: () => setMermaidViewport({ x: 0, y: 0, scale: 1 }) }, "重置"),
+                  e(SButton, { theme: "solid", type: "danger", onClick: () => setDrawerOpen(false) }, "关闭")
+
+                )
+              ),
+              e(
+                "div",
+                {
+                  ref: mermaidRenderRef,
+                  className: `mermaid-preview ${mermaidDragging ? "dragging" : ""}`,
+                  onWheel: onMermaidWheel,
+                  onMouseDown: onMermaidMouseDown,
+                },
+                e("div", {
+                  className: "mermaid-canvas",
+                  style: { transform: `translate(${mermaidViewport.x}px, ${mermaidViewport.y}px) scale(${mermaidViewport.scale})` },
+                  dangerouslySetInnerHTML: { __html: mermaidSvg || "<div class='small'>渲染中...</div>" },
+                })
+              ),
+              e("pre", { className: "drawer-source" }, mermaidSource)
+
+            )
+          )
+        : null,
       e(
         "div",
         { className: "status" },
@@ -601,6 +795,7 @@
         e("div", null, `耗时: ${elapsed} ms | 缩放: ${viewport.scale.toFixed(2)}`)
       )
     );
+
   }
 
   const root = ReactDOM.createRoot(document.getElementById("root"));
