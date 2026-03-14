@@ -244,6 +244,7 @@
     const [nodeKeyword, setNodeKeyword] = React.useState("");
     const [graph, setGraph] = React.useState(null);
     const [theme, setTheme] = React.useState("light");
+    const [leftMenu, setLeftMenu] = React.useState("explorer");
     const [drawerOpen, setDrawerOpen] = React.useState(false);
     const [mermaidSvg, setMermaidSvg] = React.useState("");
     const [mermaidViewport, setMermaidViewport] = React.useState({ x: 0, y: 0, scale: 1 });
@@ -330,8 +331,16 @@
     const modules = graph
       ? graph.modules.filter((m) => m.module_name.toLowerCase().includes(fileKeyword.toLowerCase()))
       : [];
+    const leftMenus = [
+      { id: "explorer", icon: "📁", label: "资源管理器" },
+      { id: "search", icon: "🔎", label: "搜索" },
+      { id: "insights", icon: "📊", label: "概览" },
+    ];
 
     const currentModule = graph ? graph.modules.find((m) => m.module_name === selectedModule) : null;
+    const topModules = graph
+      ? [...graph.modules].sort((a, b) => b.symbols.length - a.symbols.length).slice(0, 5)
+      : [];
     const symbolById = React.useMemo(() => {
       if (!graph) return new Map();
       return new Map(graph.symbols.map((s) => [s.id, s]));
@@ -592,35 +601,119 @@
         { className: "workspace" },
         e(
           "div",
-          { className: "left" },
-          e("div", null, "文件树", graph ? e("span", { className: "badge" }, `${modules.length}`) : null),
-          e("input", {
-            style: { width: "100%", marginTop: 10, marginBottom: 10 },
-            value: fileKeyword,
-            onChange: (ev) => setFileKeyword(ev.target.value),
-            placeholder: "搜索模块",
-          }),
-          e(
-            "div",
-            null,
-            modules.map((m) =>
-              e(
-                "div",
-                {
-                  key: m.id,
-                  className: `file-item ${selectedModule === m.module_name ? "active" : ""}`,
-                  onClick: () => {
-                    setSelectedModule(m.module_name);
-                    setSelectedNodeId("");
-                    setNodeKeyword("");
-                  },
-
-                },
-                e("div", null, m.module_name),
-                e("div", { className: "small" }, `symbols: ${m.symbols.length} | instability: ${m.metrics.instability}`)
-              )
+          { className: "activity-bar" },
+          leftMenus.map((item) =>
+            e(
+              "button",
+              {
+                key: item.id,
+                className: `activity-item ${leftMenu === item.id ? "active" : ""}`,
+                onClick: () => setLeftMenu(item.id),
+                title: item.label,
+              },
+              e("span", { className: "activity-icon" }, item.icon)
             )
           )
+        ),
+        e(
+          "div",
+          { className: "left" },
+          leftMenu === "explorer"
+            ? e(
+                React.Fragment,
+                null,
+                e("div", null, "文件树", graph ? e("span", { className: "badge" }, `${modules.length}`) : null),
+                e("input", {
+                  style: { width: "100%", marginTop: 10, marginBottom: 10 },
+                  value: fileKeyword,
+                  onChange: (ev) => setFileKeyword(ev.target.value),
+                  placeholder: "搜索模块",
+                }),
+                e(
+                  "div",
+                  null,
+                  modules.map((m) =>
+                    e(
+                      "div",
+                      {
+                        key: m.id,
+                        className: `file-item ${selectedModule === m.module_name ? "active" : ""}`,
+                        onClick: () => {
+                          setSelectedModule(m.module_name);
+                          setSelectedNodeId("");
+                          setNodeKeyword("");
+                        },
+                      },
+                      e("div", null, m.module_name),
+                      e("div", { className: "small" }, `symbols: ${m.symbols.length} | instability: ${m.metrics.instability}`)
+                    )
+                  )
+                )
+              )
+            : null,
+          leftMenu === "search"
+            ? e(
+                React.Fragment,
+                null,
+                e("div", null, "节点搜索", graph ? e("span", { className: "badge" }, `${nodeMatches.length}`) : null),
+                e("input", {
+                  style: { width: "100%", marginTop: 10, marginBottom: 10 },
+                  value: nodeKeyword,
+                  onChange: (ev) => setNodeKeyword(ev.target.value),
+                  placeholder: "输入 symbol 关键字",
+                }),
+                e(
+                  "div",
+                  null,
+                  nodeMatches.length === 0
+                    ? e("div", { className: "small" }, "没有匹配结果")
+                    : nodeMatches.map((node) =>
+                        e(
+                          "div",
+                          {
+                            key: node.id,
+                            className: `file-item ${selectedNodeId === node.id ? "active" : ""}`,
+                            onClick: () => selectNode(node.id),
+                          },
+                          e("div", null, node.label),
+                          e("div", { className: "small" }, node.id)
+                        )
+                      )
+                )
+              )
+            : null,
+          leftMenu === "insights"
+            ? e(
+                React.Fragment,
+                null,
+                e("div", null, "工作区概览"),
+                graph
+                  ? e(
+                      "div",
+                      { style: { marginTop: 10 } },
+                      e("div", { className: "small" }, `modules: ${graph.modules.length}`),
+                      e("div", { className: "small" }, `symbols: ${graph.symbols.length}`),
+                      e("div", { className: "small" }, `edges: ${graph.edges.length}`),
+                      e("div", { className: "small", style: { marginTop: 8, marginBottom: 8 } }, "Top 模块"),
+                      topModules.map((m) =>
+                        e(
+                          "div",
+                          {
+                            key: m.id,
+                            className: `file-item ${selectedModule === m.module_name ? "active" : ""}`,
+                            onClick: () => {
+                              setSelectedModule(m.module_name);
+                              setLeftMenu("explorer");
+                            },
+                          },
+                          e("div", null, m.module_name),
+                          e("div", { className: "small" }, `symbols: ${m.symbols.length}`)
+                        )
+                      )
+                    )
+                  : e("div", { className: "small", style: { marginTop: 8 } }, "请先导入并分析项目")
+              )
+            : null
         ),
         e(
           "div",
