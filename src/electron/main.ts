@@ -11,7 +11,8 @@ import { exportExecutionGraph } from "../exporters/executionGraph";
 import { extractControlFlow, extractModuleControlFlow, toMermaidCFG } from "../exporters/controlFlowExporter";
 import { extractReactComponentFlow, toMermaidRCF, extractModuleReactFlows } from "../exporters/reactComponentFlowExporter";
 import { calculateCyclomaticComplexity, toComplexityMermaid, toTimelineMermaid, toDepthTreeMermaid } from "../exporters/executionVisualizer";
-import { KnowledgeGraph, ExecutionGraph } from "../types";
+import { analyzeCodeUnderstanding, extractDocumentation, generateSymbolExplanation } from "../exporters/codeUnderstanding";
+import { KnowledgeGraph, ExecutionGraph, SymbolNode } from "../types";
 
 let mainWindow: BrowserWindow | null = null;
 let latestGraph: KnowledgeGraph | null = null;
@@ -485,6 +486,54 @@ ipcMain.handle("get-execution-timeline", async (_event, payload: { graph: Execut
     };
   } catch (error) {
     debugLog("IPC get-execution-timeline error", String(error));
+    return { success: false, error: String(error) };
+  }
+});
+
+ipcMain.handle("analyze-code-understanding", async (_event, payload: { filePath: string; symbols?: SymbolNode[] }) => {
+  const { filePath, symbols } = payload;
+  if (!filePath) {
+    throw new Error("filePath 不能为空");
+  }
+
+  debugLog("IPC analyze-code-understanding start", { filePath });
+
+  try {
+    const sourceCode = await readFile(filePath, "utf-8");
+    const understanding = analyzeCodeUnderstanding(sourceCode, filePath, symbols ?? []);
+
+    debugLog("IPC analyze-code-understanding done", { symbols: understanding.symbols.length });
+    return {
+      success: true,
+      filePath,
+      understanding,
+    };
+  } catch (error) {
+    debugLog("IPC analyze-code-understanding error", String(error));
+    return { success: false, error: String(error) };
+  }
+});
+
+ipcMain.handle("extract-code-documentation", async (_event, payload: { filePath: string }) => {
+  const { filePath } = payload;
+  if (!filePath) {
+    throw new Error("filePath 不能为空");
+  }
+
+  debugLog("IPC extract-code-documentation start", { filePath });
+
+  try {
+    const sourceCode = await readFile(filePath, "utf-8");
+    const docs = extractDocumentation(sourceCode, filePath);
+
+    debugLog("IPC extract-code-documentation done", { docs: docs.length });
+    return {
+      success: true,
+      filePath,
+      docs,
+    };
+  } catch (error) {
+    debugLog("IPC extract-code-documentation error", String(error));
     return { success: false, error: String(error) };
   }
 });

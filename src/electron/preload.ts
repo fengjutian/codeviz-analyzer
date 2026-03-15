@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { ExecutionGraph, KnowledgeGraph } from "../types";
+import { ExecutionGraph, KnowledgeGraph, SymbolNode } from "../types";
 
 type TraceResult = {
   success: boolean;
@@ -114,6 +114,52 @@ const api = {
     depthMermaid?: string;
     error?: string;
   }> => ipcRenderer.invoke("get-execution-timeline", payload),
+  // 代码理解分析 API
+  analyzeCodeUnderstanding: (payload: {
+    filePath: string;
+    symbols?: SymbolNode[];
+  }): Promise<{
+    success: boolean;
+    filePath?: string;
+    understanding?: {
+      file_path: string;
+      file_summary: string;
+      symbols: Array<{
+        symbol_id: string;
+        symbol_name: string;
+        symbol_type: string;
+        what_it_does: string;
+        how_it_works: string;
+        parameters: Array<{ name: string; purpose: string }>;
+        returns: string;
+        side_effects: string[];
+        complexity: string;
+        suggestions: string[];
+      }>;
+      key_concepts: string[];
+      usage_patterns: string[];
+      dependencies_summary: string;
+    };
+    error?: string;
+  }> => ipcRenderer.invoke("analyze-code-understanding", payload),
+  // 代码文档提取 API
+  extractCodeDocumentation: (payload: {
+    filePath: string;
+  }): Promise<{
+    success: boolean;
+    filePath?: string;
+    docs?: Array<{
+      summary?: string;
+      description?: string;
+      params?: Array<{ name: string; description: string }>;
+      returns?: string;
+      examples?: string[];
+      see_also?: string[];
+      throws?: string[];
+      deprecated?: string;
+    }>;
+    error?: string;
+  }> => ipcRenderer.invoke("extract-code-documentation", payload),
   onAnalysisProgress: (listener: (event: ProgressEventPayload) => void) => {
     const wrapped = (_event: Electron.IpcRendererEvent, data: ProgressEventPayload) => listener(data);
     ipcRenderer.on("analysis-progress", wrapped);

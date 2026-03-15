@@ -49,6 +49,7 @@ const executionGraph_1 = require("../exporters/executionGraph");
 const controlFlowExporter_1 = require("../exporters/controlFlowExporter");
 const reactComponentFlowExporter_1 = require("../exporters/reactComponentFlowExporter");
 const executionVisualizer_1 = require("../exporters/executionVisualizer");
+const codeUnderstanding_1 = require("../exporters/codeUnderstanding");
 let mainWindow = null;
 let latestGraph = null;
 const DEBUG_LOG_ENABLED = process.env.CODEVIZ_DEBUG === "1" || !electron_1.app.isPackaged;
@@ -449,6 +450,48 @@ electron_1.ipcMain.handle("get-execution-timeline", async (_event, payload) => {
     }
     catch (error) {
         debugLog("IPC get-execution-timeline error", String(error));
+        return { success: false, error: String(error) };
+    }
+});
+electron_1.ipcMain.handle("analyze-code-understanding", async (_event, payload) => {
+    const { filePath, symbols } = payload;
+    if (!filePath) {
+        throw new Error("filePath 不能为空");
+    }
+    debugLog("IPC analyze-code-understanding start", { filePath });
+    try {
+        const sourceCode = await (0, promises_1.readFile)(filePath, "utf-8");
+        const understanding = (0, codeUnderstanding_1.analyzeCodeUnderstanding)(sourceCode, filePath, symbols ?? []);
+        debugLog("IPC analyze-code-understanding done", { symbols: understanding.symbols.length });
+        return {
+            success: true,
+            filePath,
+            understanding,
+        };
+    }
+    catch (error) {
+        debugLog("IPC analyze-code-understanding error", String(error));
+        return { success: false, error: String(error) };
+    }
+});
+electron_1.ipcMain.handle("extract-code-documentation", async (_event, payload) => {
+    const { filePath } = payload;
+    if (!filePath) {
+        throw new Error("filePath 不能为空");
+    }
+    debugLog("IPC extract-code-documentation start", { filePath });
+    try {
+        const sourceCode = await (0, promises_1.readFile)(filePath, "utf-8");
+        const docs = (0, codeUnderstanding_1.extractDocumentation)(sourceCode, filePath);
+        debugLog("IPC extract-code-documentation done", { docs: docs.length });
+        return {
+            success: true,
+            filePath,
+            docs,
+        };
+    }
+    catch (error) {
+        debugLog("IPC extract-code-documentation error", String(error));
         return { success: false, error: String(error) };
     }
 });

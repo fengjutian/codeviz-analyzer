@@ -13,6 +13,52 @@ export interface SymbolNode {
     metrics: MetricMap;
     loc?: number;
     location?: SourceLocation;
+    documentation?: SymbolDocumentation;
+    signature?: string;
+    return_type?: string;
+    parameters?: ParameterInfo[];
+}
+export interface ParameterInfo {
+    name: string;
+    type?: string;
+    optional?: boolean;
+    default_value?: string;
+}
+export interface SymbolDocumentation {
+    summary?: string;
+    description?: string;
+    params?: {
+        name: string;
+        description: string;
+    }[];
+    returns?: string;
+    examples?: string[];
+    see_also?: string[];
+    throws?: string[];
+    deprecated?: string;
+}
+export interface CodeUnderstanding {
+    file_path: string;
+    file_summary: string;
+    symbols: SymbolUnderstanding[];
+    key_concepts: string[];
+    usage_patterns: string[];
+    dependencies_summary: string;
+}
+export interface SymbolUnderstanding {
+    symbol_id: string;
+    symbol_name: string;
+    symbol_type: SymbolType;
+    what_it_does: string;
+    how_it_works: string;
+    parameters: {
+        name: string;
+        purpose: string;
+    }[];
+    returns: string;
+    side_effects: string[];
+    complexity: "simple" | "moderate" | "complex";
+    suggestions: string[];
 }
 export interface SourceLocation {
     start_line: number;

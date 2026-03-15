@@ -19,6 +19,10 @@ const api = {
     calculateComplexity: (payload) => electron_1.ipcRenderer.invoke("calculate-complexity", payload),
     // 执行时间线 API
     getExecutionTimeline: (payload) => electron_1.ipcRenderer.invoke("get-execution-timeline", payload),
+    // 代码理解分析 API
+    analyzeCodeUnderstanding: (payload) => electron_1.ipcRenderer.invoke("analyze-code-understanding", payload),
+    // 代码文档提取 API
+    extractCodeDocumentation: (payload) => electron_1.ipcRenderer.invoke("extract-code-documentation", payload),
     onAnalysisProgress: (listener) => {
         const wrapped = (_event, data) => listener(data);
         electron_1.ipcRenderer.on("analysis-progress", wrapped);
