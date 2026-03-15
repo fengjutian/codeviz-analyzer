@@ -71,6 +71,13 @@
     const [understandingError, setUnderstandingError] = React.useState("");
     const [selectedSymbolIndex, setSelectedSymbolIndex] = React.useState(0);
 
+    // 3D可视化相关状态
+    const [visualizer3DOpen, setVisualizer3DOpen] = React.useState(false);
+    const [visualizer3DLoading, setVisualizer3DLoading] = React.useState(false);
+    const [visualizer3DError, setVisualizer3DError] = React.useState("");
+    const visualizer3DContainerRef = React.useRef(null);
+    const visualizer3DInitializedRef = React.useRef(false);
+
     const [sourceModule, setSourceModule] = React.useState("");
     const [sourceFilePath, setSourceFilePath] = React.useState("");
     const [sourceCode, setSourceCode] = React.useState("");
@@ -232,6 +239,155 @@
         setStatus("已使用系统默认程序打开文件");
       } catch (err) {
         setStatus(`打开源码失败: ${String(err)}`);
+      }
+    };
+
+    // 3D可视化相关函数
+    const openVisualizer3D = async () => {
+      if (!graph) {
+        setVisualizer3DError("请先分析项目");
+        return;
+      }
+      
+      setVisualizer3DOpen(true);
+      setVisualizer3DLoading(true);
+      setVisualizer3DError("");
+      
+      // 延迟初始化以确保DOM准备好
+      setTimeout(() => {
+        try {
+          console.log('=== 3D可视化初始化开始 ===');
+          console.log('Checking 3D visualizer availability...');
+          console.log('window.CodeViz3DVisualizer:', window.CodeViz3DVisualizer);
+          console.log('Available window properties:', Object.keys(window).filter(key => key.includes('Viz') || key.includes('3D')));
+          console.log('visualizer3DContainerRef.current:', visualizer3DContainerRef.current);
+          console.log('visualizer3DInitializedRef.current:', visualizer3DInitializedRef.current);
+          
+          // 等待脚本加载完成
+          if (!window.CodeViz3DVisualizer) {
+            console.log('3D visualizer not ready, waiting...');
+            setTimeout(() => {
+              if (!window.CodeViz3DVisualizer) {
+                console.error('3D visualizer still not available after delay');
+                setVisualizer3DError("3D可视化组件加载失败，请刷新页面重试");
+                setVisualizer3DLoading(false);
+              } else {
+                // 重试初始化
+                console.log('3D visualizer now available, retrying...');
+                openVisualizer3D();
+              }
+            }, 1000);
+            return;
+          }
+          
+          if (!visualizer3DInitializedRef.current && visualizer3DContainerRef.current) {
+            console.log('Starting 3D visualization setup...');
+            // 初始化3D场景
+            const container = visualizer3DContainerRef.current;
+            console.log('Container element:', container);
+            console.log('Container dimensions:', container.clientWidth, 'x', container.clientHeight);
+            
+            // 等待容器尺寸稳定
+            let retryCount = 0;
+            const maxRetries = 10;
+            
+            const tryInitialize = () => {
+              const rect = container.getBoundingClientRect();
+              console.log(`Retry ${retryCount}: Container dimensions:`, rect.width, 'x', rect.height);
+              
+              if (rect.height < 100 && retryCount < maxRetries) {
+                retryCount++;
+                console.log('Container too small, waiting...');
+                setTimeout(tryInitialize, 200);
+                return;
+              }
+              
+              if (rect.height < 100) {
+                console.error('Container still too small after maximum retries');
+                setVisualizer3DError("3D可视化容器尺寸过小，请检查布局");
+                setVisualizer3DLoading(false);
+                return;
+              }
+              
+              console.log('Container size OK, initializing...');
+              try {
+                const canvas = window.CodeViz3DVisualizer.initScene(container);
+                console.log('Canvas created:', canvas);
+                
+                // 延迟一下确保Canvas正确渲染
+                setTimeout(() => {
+                  console.log('Calling handleResize...');
+                  window.CodeViz3DVisualizer.handleResize();
+                  console.log('3D visualizer resize completed');
+                }, 200);
+                
+                // 创建3D节点和边
+                console.log('Creating 3D nodes from graph:', graph.symbols.length, 'symbols');
+                const positions = window.CodeViz3DVisualizer.create3DNodes(graph);
+                console.log('3D nodes created, positions:', positions.size);
+                
+                window.CodeViz3DVisualizer.create3DEdges(graph, positions);
+                console.log('3D edges created');
+                
+                // 如果没有数据，创建测试场景
+                if (positions.size === 0) {
+                  console.log('No data found, creating test scene');
+                  window.CodeViz3DVisualizer.createTestScene();
+                }
+                
+                // 强制创建测试场景（调试用）
+                if (window.CodeViz3DVisualizer.visualizer && 
+                    window.CodeViz3DVisualizer.visualizer.nodes.length === 0) {
+                  console.log('No nodes found, forcing test scene creation');
+                  window.CodeViz3DVisualizer.createTestScene();
+                }
+                
+                // 开始动画循环
+                window.CodeViz3DVisualizer.animate();
+                console.log('3D animation started');
+                
+                // 添加窗口大小变化监听
+                const handleResize = () => {
+                  window.CodeViz3DVisualizer.handleResize();
+                };
+                window.addEventListener('resize', handleResize);
+                
+                visualizer3DInitializedRef.current = true;
+                setVisualizer3DLoading(false);
+                setStatus("3D可视化已启动");
+                console.log('=== 3D可视化初始化完成 ===');
+              } catch (error) {
+                console.error('3D可视化初始化失败:', error);
+                setVisualizer3DError(`3D可视化初始化失败: ${String(error)}`);
+                setVisualizer3DLoading(false);
+              }
+            };
+            
+            tryInitialize();
+          } else {
+            console.log('3D visualization already initialized or no container');
+          }
+        } catch (error) {
+          console.error('=== 3D可视化初始化失败 ===', error);
+          setVisualizer3DError(`3D可视化初始化失败: ${String(error)}`);
+          setVisualizer3DLoading(false);
+        }
+      }, 100);
+    };
+
+    const closeVisualizer3D = () => {
+      setVisualizer3DOpen(false);
+      if (visualizer3DInitializedRef.current) {
+        window.CodeViz3DVisualizer.cleanup();
+        visualizer3DInitializedRef.current = false;
+        // 移除窗口大小变化监听
+        window.removeEventListener('resize', window.CodeViz3DVisualizer.handleResize);
+      }
+    };
+
+    const reset3DView = () => {
+      if (visualizer3DInitializedRef.current) {
+        window.CodeViz3DVisualizer.resetView();
       }
     };
 
@@ -1162,6 +1318,15 @@
       selectedSymbolIndex,
       setSelectedSymbolIndex,
       openUnderstandingDrawer,
+      // 3D可视化相关
+      visualizer3DOpen,
+      setVisualizer3DOpen,
+      visualizer3DLoading,
+      visualizer3DError,
+      visualizer3DContainerRef,
+      openVisualizer3D,
+      closeVisualizer3D,
+      reset3DView,
     });
 
   }

@@ -11,6 +11,16 @@
   <body>
     <div id="root"></div>
 
+    <!-- 禁用React DevTools警告 -->
+    <script>
+      // 在Electron环境中禁用React DevTools警告
+      if (typeof window !== 'undefined' && window.process && window.process.type) {
+        window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.__REACT_DEVTOOLS_GLOBAL_HOOK__ || {};
+        window.__REACT_DEVTOOLS_GLOBAL_HOOK__.supportsFiber = true;
+        window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = function() {};
+      }
+    </script>
+
     <script src="../../node_modules/react/umd/react.development.js"></script>
     <script src="../../node_modules/react-dom/umd/react-dom.development.js"></script>
     <script src="../../node_modules/@douyinfe/semi-ui/dist/umd/semi-ui.min.js"></script>
@@ -18,6 +28,7 @@
 
     <script src="../../node_modules/d3/dist/d3.min.js"></script>
     <script src="../../node_modules/monaco-editor/min/vs/loader.js"></script>
+    <script src="./simple-3d-visualizer.js"></script>
     <script src="./app.helpers.js"></script>
     <script src="./app.view.js"></script>
     <script src="./app.js"></script>

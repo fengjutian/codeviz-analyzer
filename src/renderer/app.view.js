@@ -655,6 +655,67 @@
             )
           )
         : null,
+      // 3D可视化抽屉 (右侧)
+      ctx.visualizer3DOpen
+        ? e(
+            "div",
+            { className: "drawer-mask drawer-mask-right", onClick: ctx.closeVisualizer3D },
+            e(
+              "div",
+              {
+                className: "drawer drawer-right drawer-3d", // 添加drawer-3d类
+                style: { width: 900 }, // 移除flex样式，使用CSS类
+                onClick: (ev) => ev.stopPropagation(),
+              },
+              e(
+                "div",
+                { className: "drawer-header", style: { flexShrink: 0 } },
+                e("strong", null, "3D代码可视化"),
+                e(
+                  "div",
+                  { className: "drawer-actions" },
+                  e(SButton, { theme: "solid", type: "secondary", onClick: ctx.reset3DView }, "重置视图"),
+                  e(SButton, { theme: "solid", type: "danger", onClick: ctx.closeVisualizer3D }, "关闭")
+                )
+              ),
+              e("div", { 
+                style: { 
+                  padding: "12px", 
+                  borderBottom: "1px solid var(--border)", 
+                  flexShrink: 0,
+                  background: "var(--panel-bg)"
+                } 
+              },
+                e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 } }, 
+                  "使用鼠标拖拽旋转视角，滚轮缩放，右键拖拽平移"
+                )
+              ),
+              e("div", { 
+                ref: ctx.visualizer3DContainerRef,
+                className: "visualizer-3d-container", // 使用专用CSS类
+                style: { 
+                  flex: 1, // 占据剩余空间
+                  position: "relative",
+                  background: "#1a1a1a",
+                  overflow: "hidden",
+                  minHeight: "0", // 允许收缩
+                  width: "100%",
+                  height: "100%" // 确保填满可用空间
+                } 
+              },
+                ctx.visualizer3DLoading
+                  ? e("div", { style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center" } }, 
+                      e("div", { style: { fontSize: 14, color: "var(--text-secondary)" } }, "正在初始化3D场景...")
+                    )
+                  : ctx.visualizer3DError
+                  ? e("div", { style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "#ff4444" } }, 
+                      e("div", { style: { fontSize: 14 } }, ctx.visualizer3DError)
+                    )
+                  : null // 正常情况不显示任何内容，让Canvas填充整个区域
+              )
+            )
+          )
+        : null,
       // 执行追踪抽屉 (右侧)
       ctx.traceDrawerOpen
         ? e(
@@ -780,6 +841,11 @@
               "button",
               { className: "float-button", title: "代码理解", onClick: ctx.openUnderstandingDrawer },
               "理解"
+            ),
+            e(
+              "button",
+              { className: "float-button", title: "3D可视化", onClick: ctx.openVisualizer3D },
+              "3D"
             )
           )
         : null,
