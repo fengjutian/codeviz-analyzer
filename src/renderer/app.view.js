@@ -26,11 +26,6 @@
           onChange: (ev) => ctx.setOutDir(ev.target.value),
           placeholder: "导出目录",
         }),
-        e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setDrawerOpen(true), disabled: !ctx.graph }, "Mermaid"),
-        e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setTraceDrawerOpen(true), disabled: !ctx.graph }, "执行追踪"),
-        e(SButton, { theme: "solid", type: "secondary", onClick: ctx.openControlFlowDrawer, disabled: !ctx.graph }, "控制流图"),
-        e(SButton, { theme: "solid", type: "secondary", onClick: ctx.openReactFlowDrawer, disabled: !ctx.graph }, "组件流程"),
-        e(SButton, { theme: "solid", type: "secondary", onClick: ctx.openUnderstandingDrawer, disabled: !ctx.graph }, "代码理解"),
         e("input", {
           style: { width: 260 },
           value: ctx.nodeKeyword,
@@ -754,6 +749,37 @@
                     ? e("div", { style: { color: "var(--danger)" } }, `追踪失败: ${ctx.traceError}`)
                     : e("div", { className: "small" }, "点击「开始追踪」运行代码并捕获执行轨迹")
               )
+            )
+          )
+        : null,
+      ctx.graph
+        ? e(
+            "div",
+            { className: "float-button-group" },
+            e(
+              "button",
+              { className: "float-button", title: "Mermaid", onClick: () => ctx.setDrawerOpen(true) },
+              "M"
+            ),
+            e(
+              "button",
+              { className: "float-button", title: "执行追踪", onClick: () => ctx.setTraceDrawerOpen(true) },
+              "追踪"
+            ),
+            e(
+              "button",
+              { className: "float-button", title: "控制流图", onClick: ctx.openControlFlowDrawer },
+              "控制"
+            ),
+            e(
+              "button",
+              { className: "float-button", title: "组件流程", onClick: ctx.openReactFlowDrawer },
+              "组件"
+            ),
+            e(
+              "button",
+              { className: "float-button", title: "代码理解", onClick: ctx.openUnderstandingDrawer },
+              "理解"
             )
           )
         : null,

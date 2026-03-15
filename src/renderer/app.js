@@ -157,12 +157,12 @@
           readOnly: true,
           scrollBeyondLastLine: false,
           theme: theme === "dark" ? "vs-dark" : "vs",
-          // 禁用某些可能导致问题的功能
           folding: false,
           glyphMargin: false,
           links: false,
           contextmenu: true,
         });
+        
         setEditorStatus("编辑器已就绪");
       };
 
@@ -763,6 +763,47 @@
         window.removeEventListener("mouseup", onUp);
       };
     }, [resizing, leftPaneWidth]);
+
+    React.useEffect(() => {
+      if (!sourceEditorRef.current || !graph) return;
+      
+      const editor = sourceEditorRef.current;
+      const disposable = editor.onDidChangeCursorPosition((e) => {
+        if (!sourceModule) return;
+        const cursorLine = e.position.lineNumber;
+        
+        let matchedSymbol = null;
+        let minDistance = Infinity;
+        
+        for (const symbol of graph.symbols) {
+          if (symbol.module_name !== sourceModule || !symbol.location) continue;
+          const symStartLine = symbol.location.start_line;
+          const symEndLine = symbol.location.end_line;
+          
+          if (cursorLine >= symStartLine && cursorLine <= symEndLine) {
+            const distance = Math.abs(cursorLine - symStartLine);
+            if (distance < minDistance) {
+              minDistance = distance;
+              matchedSymbol = symbol;
+            }
+          }
+        }
+        
+        if (matchedSymbol) {
+          setSelectedNodeId(matchedSymbol.id);
+          const p = basePositions.get(matchedSymbol.id);
+          if (p) {
+            setViewport((prev) => ({
+              ...prev,
+              x: 1100 - p.x * prev.scale,
+              y: 700 - p.y * prev.scale,
+            }));
+          }
+        }
+      });
+      
+      return () => disposable.dispose();
+    }, [graph, sourceModule]);
 
     const currentModuleEdges = graph
 

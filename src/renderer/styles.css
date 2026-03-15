@@ -246,6 +246,35 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
   margin-top: 2px;
 }
 
+.float-button-group {
+  position: fixed;
+  right: 24px;
+  bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.float-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: var(--active-bg);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.float-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 .status {
   border-top: 1px solid var(--border);
   background: var(--status-bg);
