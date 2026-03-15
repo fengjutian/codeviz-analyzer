@@ -57,31 +57,36 @@ function makeNodeId(prefix: string, index: number): string {
  * 转义 Mermaid 标签
  */
 function escapeLabel(text: string): string {
-  return text.replace(/"/g, "'").replace(/\n/g, " ");
+  // 简化标签，移除过长的描述
+  let simplified = text;
+  if (text.length > 30) {
+    simplified = text.substring(0, 27) + "...";
+  }
+  return simplified.replace(/"/g, "'").replace(/\n/g, " ");
 }
 
 /**
- * 获取节点的 Mermaid 形状
+ * 获取节点的 Mermaid 形状 - 使用更简洁的圆角矩形
  */
 function getNodeShape(type: CFGNodeType, label: string): string {
   const escaped = escapeLabel(label);
   switch (type) {
     case "entry":
-      return `[["${escaped}"]]`;
+      return `([${escaped}])`;
     case "exit":
-      return `[["${escaped}"]]`;
+      return `([${escaped}])`;
     case "branch":
       return `{${escaped}}`;
     case "loop":
-      return `{"${escaped}"}`;
+      return `(${escaped})`;
     case "loop_exit":
-      return `[["${escaped}"]]`;
+      return `>[${escaped}]`;
     case "throw":
-      return `[/"${escaped}"/]`;
+      return `/${escaped}/`;
     case "catch":
-      return `\\"${escaped}"\\`;
+      return `\\${escaped}\\`;
     default:
-      return `["${escaped}"]`;
+      return `[${escaped}]`;
   }
 }
 
@@ -265,11 +270,21 @@ function processStatement(
   // 处理基本语句
   if (t.isExpressionStatement(stmt)) {
     const expr = stmt.expression;
-    let label: string = String(expr.type);
-    if (t.isCallExpression(expr) && t.isIdentifier(expr.callee)) {
-      label = `${String(expr.callee.name)}(...)`;
+    let label: string = "stmt";
+    if (t.isCallExpression(expr)) {
+      if (t.isIdentifier(expr.callee)) {
+        label = expr.callee.name + "()";
+      } else if (t.isMemberExpression(expr.callee)) {
+        label = "method()";
+      } else {
+        label = "call";
+      }
     } else if (t.isAssignmentExpression(expr)) {
-      label = `${String(expr.left.type)} = ...`;
+      label = "=";
+    } else if (t.isUpdateExpression(expr)) {
+      label = "++/--";
+    } else if (t.isUnaryExpression(expr)) {
+      label = "unary";
     }
     const node = addNode("statement", label, label, stmt.loc?.start.line);
     return { node, nextNode: node };
@@ -277,9 +292,7 @@ function processStatement(
 
   // 处理 Return 语句
   if (t.isReturnStatement(stmt)) {
-    const label = stmt.argument
-      ? `return ${stmt.argument.type}`
-      : "return";
+    const label = stmt.argument ? "return" : "return void";
     const node = addNode("statement", label, label, stmt.loc?.start.line);
     return { node, nextNode: null }; // 返回 null 表示这是终止节点
   }
@@ -287,23 +300,27 @@ function processStatement(
   // 处理 VariableDeclaration
   if (t.isVariableDeclaration(stmt)) {
     const declarations = stmt.declarations
-      .map((d) => d.id && t.isIdentifier(d.id) ? String(d.id.name) : String(d.id.type))
+      .map((d) => d.id && t.isIdentifier(d.id) ? String(d.id.name) : "var")
+      .slice(0, 2)  // 最多显示2个变量
       .join(", ");
-    const node = addNode("statement", `let ${declarations}`, declarations, stmt.loc?.start.line);
+    const suffix = stmt.declarations.length > 2 ? "..." : "";
+    const node = addNode("statement", `${declarations}${suffix}`, declarations, stmt.loc?.start.line);
     return { node, nextNode: node };
   }
 
   // 处理 If 语句
   if (t.isIfStatement(stmt)) {
     const test = stmt.test;
-    let conditionLabel: string = String(test.type);
+    let conditionLabel: string = "?";
     if (t.isBinaryExpression(test)) {
-      conditionLabel = `${String(test.left.type)} ${String(test.operator)} ${String(test.right.type)}`;
+      conditionLabel = "cond";
     } else if (t.isIdentifier(test)) {
-      conditionLabel = String(test.name);
+      conditionLabel = test.name.length > 8 ? test.name.substring(0, 8) : test.name;
+    } else if (t.isUnaryExpression(test)) {
+      conditionLabel = "cond";
     }
 
-    const branchNode = addNode("branch", `if (${conditionLabel})`, conditionLabel, stmt.loc?.start.line);
+    const branchNode = addNode("branch", `if`, conditionLabel, stmt.loc?.start.line);
 
     // then 分支
     if (stmt.consequent) {
@@ -324,16 +341,12 @@ function processStatement(
     if (stmt.init) {
       if (t.isVariableDeclaration(stmt.init) && stmt.init.declarations[0]?.id) {
         const declId = stmt.init.declarations[0].id;
-        initVal = t.isIdentifier(declId) ? String(declId.name) : String(declId.type);
+        initVal = t.isIdentifier(declId) ? String(declId.name) : "i";
       } else {
-        initVal = String(stmt.init.type);
+        initVal = "i";
       }
     }
-    const test = stmt.test ? String(stmt.test.type) : "";
-    const update = stmt.update ? String(stmt.update.type) : "";
-    const loopLabel = `for (${initVal}; ${test}; ${update})`;
-
-    const loopNode = addNode("loop", loopLabel, loopLabel, stmt.loc?.start.line);
+    const loopNode = addNode("loop", "for", initVal, stmt.loc?.start.line);
 
     if (stmt.body) {
       processStatement(stmt.body, _path as any, loopNode);
@@ -344,13 +357,7 @@ function processStatement(
 
   // 处理 While 循环
   if (t.isWhileStatement(stmt)) {
-    const test = stmt.test;
-    let conditionLabel: string = String(test.type);
-    if (t.isBinaryExpression(test)) {
-      conditionLabel = `${String(test.left.type)} ${String(test.operator)} ${String(test.right.type)}`;
-    }
-
-    const loopNode = addNode("loop", `while (${conditionLabel})`, conditionLabel, stmt.loc?.start.line);
+    const loopNode = addNode("loop", "while", "loop", stmt.loc?.start.line);
 
     if (stmt.body) {
       processStatement(stmt.body, _path as any, loopNode);
@@ -361,8 +368,7 @@ function processStatement(
 
   // 处理 Switch 语句
   if (t.isSwitchStatement(stmt)) {
-    const discriminant = stmt.discriminant.type;
-    const switchNode = addNode("branch", `switch (${discriminant})`, discriminant, stmt.loc?.start.line);
+    const switchNode = addNode("branch", "switch", "switch", stmt.loc?.start.line);
 
     return { node: switchNode, nextNode: switchNode };
   }
@@ -372,10 +378,7 @@ function processStatement(
     const tryNode = addNode("statement", "try", "try", stmt.loc?.start.line);
 
     if (stmt.handler && t.isCatchClause(stmt.handler)) {
-      const param = stmt.handler.param && t.isIdentifier(stmt.handler.param) 
-        ? String(stmt.handler.param.name) 
-        : "error";
-      const catchNode = addNode("catch", `catch (${param})`, param, stmt.handler.loc?.start.line);
+      const catchNode = addNode("catch", "catch", "err", stmt.handler.loc?.start.line);
     }
 
     return { node: tryNode, nextNode: tryNode };
@@ -383,8 +386,7 @@ function processStatement(
 
   // 处理 Throw
   if (t.isThrowStatement(stmt)) {
-    const argType = stmt.argument?.type || "error";
-    const node = addNode("throw", `throw ${argType}`, argType, stmt.loc?.start.line);
+    const node = addNode("throw", "throw", "err", stmt.loc?.start.line);
     return { node, nextNode: null };
   }
 
@@ -396,7 +398,7 @@ function processStatement(
 
   // 处理 Continue
   if (t.isContinueStatement(stmt)) {
-    const node = addNode("loop_exit", "continue", "continue", stmt.loc?.start.line);
+    const node = addNode("loop_exit", "continue", "cont", stmt.loc?.start.line);
     return { node, nextNode: null };
   }
 
@@ -423,12 +425,12 @@ function processStatement(
 (processStatement as any).nodes = [] as CFGNode[];
 
 /**
- * 将控制流图转换为 Mermaid 流程图代码
+ * 将控制流图转换为 Mermaid 流程图代码（简洁版）
  */
 export function toMermaidCFG(graph: ControlFlowGraph): string {
   const lines: string[] = ["flowchart TD"];
 
-  // 添加节点
+  // 添加节点（简化版）
   for (const node of graph.nodes) {
     const shape = getNodeShape(node.type, node.label);
     lines.push(`  ${node.id}${shape}`);
@@ -443,15 +445,15 @@ export function toMermaidCFG(graph: ControlFlowGraph): string {
     }
   }
 
-  // 添加样式
+  // 添加简洁样式
   lines.push("");
-  lines.push("  classDef entry fill:#e3f2fd,stroke:#1976d2,stroke-width:2px");
-  lines.push("  classDef exit fill:#fce4ec,stroke:#c2185b,stroke-width:2px");
-  lines.push("  classDef branch fill:#fff3e0,stroke:#ff9800,stroke-width:2px");
-  lines.push("  classDef loop fill:#e8f5e9,stroke:#4caf50,stroke-width:2px");
-  lines.push("  classDef statement fill:#f5f5f5,stroke:#9e9e9e");
-  lines.push("  classDef throw fill:#ffebee,stroke:#f44336");
-  lines.push("  classDef catch fill:#f3e5f5,stroke:#7b1fa2");
+  lines.push("  classDef entry fill:#4CAF50,stroke:#2E7D32,color:#fff");
+  lines.push("  classDef exit fill:#f44336,stroke:#c62828,color:#fff");
+  lines.push("  classDef branch fill:#FF9800,stroke:#EF6C00,color:#fff");
+  lines.push("  classDef loop fill:#2196F3,stroke:#1565C0,color:#fff");
+  lines.push("  classDef statement fill:#ECEFF1,stroke:#546E7A");
+  lines.push("  classDef throw fill:#f44336,stroke:#c62828,color:#fff");
+  lines.push("  classDef catch fill:#9C27B0,stroke:#6A1B9A,color:#fff");
 
   // 应用样式
   for (const node of graph.nodes) {

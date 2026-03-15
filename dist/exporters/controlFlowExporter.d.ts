@@ -34,7 +34,7 @@ export interface ControlFlowGraph {
  */
 export declare function extractControlFlow(sourceCode: string, moduleName: string, functionName?: string): ControlFlowGraph | null;
 /**
- * 将控制流图转换为 Mermaid 流程图代码
+ * 将控制流图转换为 Mermaid 流程图代码（简洁版）
  */
 export declare function toMermaidCFG(graph: ControlFlowGraph): string;
 /**
