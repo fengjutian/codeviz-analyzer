@@ -76,9 +76,12 @@ export const jsTsPlugin: ParserPlugin = {
     const moduleAnchorId = `${moduleName}::(module)`;
     ensureSymbol(symbols, moduleAnchorId, "(module)", "variable", moduleName);
 
-    const addSymbol = (name: string, type: SymbolType, node?: t.Node): string => {
+    const addSymbol = (name: string, type: SymbolType, node?: t.Node, parentSymbol?: string): string => {
       const id = `${moduleName}::${name}`;
       const symbolNode = ensureSymbol(symbols, id, name, type, moduleName);
+      if (parentSymbol) {
+        symbolNode.parent_symbol = parentSymbol;
+      }
       applyNodeLocation(symbolNode, node);
       localNameToSymbolId.set(name, symbolNode.id);
       return id;
@@ -137,7 +140,44 @@ export const jsTsPlugin: ParserPlugin = {
         },
         ClassMethod(p) {
           if (t.isIdentifier(p.node.key)) {
-            addSymbol(p.node.key.name, "method", p.node);
+            const classParent = p.findParent((parent) => parent.isClassDeclaration());
+            let parentName: string | undefined;
+            if (classParent && t.isClassDeclaration(classParent.node) && classParent.node.id) {
+              parentName = classParent.node.id.name;
+            }
+            addSymbol(p.node.key.name, "method", p.node, parentName);
+          }
+        },
+        ClassProperty(p) {
+          if (t.isIdentifier(p.node.key)) {
+            const classParent = p.findParent((parent) => parent.isClassDeclaration());
+            let parentName: string | undefined;
+            if (classParent && t.isClassDeclaration(classParent.node) && classParent.node.id) {
+              parentName = classParent.node.id.name;
+            }
+            const name = p.node.key.name;
+            const nodeAny = p.node as unknown as { kind?: string };
+            if (nodeAny.kind === "get") {
+              addSymbol(`get ${name}`, "getter", p.node, parentName);
+            } else if (nodeAny.kind === "set") {
+              addSymbol(`set ${name}`, "setter", p.node, parentName);
+            } else {
+              addSymbol(name, "property", p.node, parentName);
+            }
+          }
+        },
+        ObjectProperty(p) {
+          if (t.isIdentifier(p.node.key)) {
+            const objParent = p.findParent((parent) => parent.isObjectExpression());
+            const parentName = objParent ? "(object)" : undefined;
+            addSymbol(p.node.key.name, "property", p.node, parentName);
+          }
+        },
+        ObjectMethod(p) {
+          if (t.isIdentifier(p.node.key)) {
+            const objParent = p.findParent((parent) => parent.isObjectExpression());
+            const parentName = objParent ? "(object)" : undefined;
+            addSymbol(p.node.key.name, "method", p.node, parentName);
           }
         },
         VariableDeclarator(p) {

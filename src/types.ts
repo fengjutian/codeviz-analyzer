@@ -2,6 +2,9 @@ export type SymbolType =
   | "function"
   | "class"
   | "method"
+  | "property"
+  | "getter"
+  | "setter"
   | "variable"
   | "interface"
   | "type_alias";
@@ -17,6 +20,7 @@ export interface SymbolNode {
   symbol_name: string;
   symbol_type: SymbolType;
   module_name: string;
+  parent_symbol?: string;
   dependencies: string[];
   metrics: MetricMap;
   loc?: number;

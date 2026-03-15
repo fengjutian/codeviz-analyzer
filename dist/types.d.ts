@@ -1,4 +1,4 @@
-export type SymbolType = "function" | "class" | "method" | "variable" | "interface" | "type_alias";
+export type SymbolType = "function" | "class" | "method" | "property" | "getter" | "setter" | "variable" | "interface" | "type_alias";
 export type DependencyType = "call" | "import" | "inherit" | "implement" | "reference";
 export interface MetricMap {
     [key: string]: number;
@@ -8,6 +8,7 @@ export interface SymbolNode {
     symbol_name: string;
     symbol_type: SymbolType;
     module_name: string;
+    parent_symbol?: string;
     dependencies: string[];
     metrics: MetricMap;
     loc?: number;
