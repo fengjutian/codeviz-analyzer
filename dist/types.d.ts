@@ -44,6 +44,14 @@ export interface CodeUnderstanding {
     key_concepts: string[];
     usage_patterns: string[];
     dependencies_summary: string;
+    design_patterns?: string[];
+    anti_patterns?: string[];
+    data_flow_summary?: {
+        entry_points: string[];
+        exit_points: string[];
+        external_apis: string[];
+        side_effects: string[];
+    };
 }
 export interface SymbolUnderstanding {
     symbol_id: string;
@@ -75,6 +83,14 @@ export interface SymbolUnderstanding {
     is_async?: boolean;
     is_arrow?: boolean;
     decorators?: string[];
+    design_patterns?: string[];
+    anti_patterns?: string[];
+    data_flow?: {
+        sources: string[];
+        destinations: string[];
+        variables_read: string[];
+        variables_written: string[];
+    };
 }
 export interface SourceLocation {
     start_line: number;

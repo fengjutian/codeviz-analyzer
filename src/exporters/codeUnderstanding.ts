@@ -236,6 +236,337 @@ function analyzeSideEffects(body: t.Statement[]): string[] {
   return [...new Set(effects)];
 }
 
+function detectDesignPatterns(
+  ast: t.File,
+  importMap: Map<string, string>
+): { patterns: string[]; antiPatterns: string[] } {
+  const patterns: string[] = [];
+  const antiPatterns: string[] = [];
+  const classInfo: {
+    name?: string;
+    methods: string[];
+    hasPrivateConstructor?: boolean;
+    staticInstance?: boolean;
+    extends?: string;
+    implements: string[];
+  }[] = [];
+
+  traverse(ast, {
+    ClassDeclaration(path) {
+      const className = path.node.id?.name;
+      const methods = path.node.body.body
+        .filter((m): m is t.ClassMethod => t.isClassMethod(m))
+        .map(m => m.key && t.isIdentifier(m.key) ? m.key.name : "");
+      const implementsList = (path.node.implements ?? []).map((i: any) => 
+        t.isIdentifier(i.expression) ? i.expression.name : ""
+      );
+      const extendsClass = path.node.superClass && t.isIdentifier(path.node.superClass)
+        ? path.node.superClass.name : "";
+
+      classInfo.push({
+        name: className,
+        methods,
+        implements: implementsList,
+        extends: extendsClass,
+      });
+
+      if (implementsList.includes("Singleton") || className?.includes("Singleton")) {
+        if (methods.includes("getInstance") || methods.includes("instance")) {
+          patterns.push(`单例模式 (${className})`);
+        }
+      }
+
+      if (methods.some(m => m === "subscribe" || m === "addListener")) {
+        patterns.push(`观察者模式 (${className})`);
+      }
+      if (methods.some(m => m === "notify" || m === "emit")) {
+        patterns.push(`发布订阅模式 (${className})`);
+      }
+      if (implementsList.includes("Factory") || className?.includes("Factory")) {
+        patterns.push(`工厂模式 (${className})`);
+      }
+      if (className?.includes("Builder")) {
+        patterns.push(`建造者模式 (${className})`);
+      }
+      if (implementsList.includes("Strategy") || className?.includes("Strategy")) {
+        patterns.push(`策略模式 (${className})`);
+      }
+      if (implementsList.includes("Decorator") || className?.includes("Decorator")) {
+        patterns.push(`装饰器模式 (${className})`);
+      }
+    },
+
+    ClassMethod(path) {
+      const methodName = path.node.key && t.isIdentifier(path.node.key) 
+        ? path.node.key.name : "";
+      if (methodName === "render" || methodName === "componentDidMount") {
+        patterns.push("React 组件模式");
+      }
+    },
+
+    ExportDefaultDeclaration(path) {
+      patterns.push("默认导出模式");
+    },
+
+    ExportNamedDeclaration(path) {
+      patterns.push("命名导出模式");
+    },
+  });
+
+  traverse(ast, {
+    IfStatement(path) {
+      const body = path.get("consequent");
+      const elseBody = path.get("alternate");
+      if (body.isBlockStatement() && body.node.body.length > 15) {
+        antiPatterns.push(`深层嵌套 - if 语句包含 ${body.node.body.length} 行代码`);
+      }
+    },
+
+    ForStatement(path) {
+      const body = path.get("body");
+      if (body.isBlockStatement() && body.node.body.length > 20) {
+        antiPatterns.push(`过长循环 - for 循环包含 ${body.node.body.length} 行代码`);
+      }
+    },
+
+    WhileStatement(path) {
+      const body = path.get("body");
+      if (body.isBlockStatement() && body.node.body.length > 20) {
+        antiPatterns.push(`过长循环 - while 循环包含 ${body.node.body.length} 行代码`);
+      }
+    },
+
+    StringLiteral(path) {
+      if (path.node.value.match(/^\d+$/)) {
+        const parent = path.findParent(p => 
+          p.isVariableDeclarator() || p.isAssignmentExpression()
+        );
+        if (parent) {
+          antiPatterns.push(`魔法数字 - 发现硬编码数字: ${path.node.value}`);
+        }
+      }
+    },
+  });
+
+  return { patterns: [...new Set(patterns)], antiPatterns: [...new Set(antiPatterns)] };
+}
+
+function analyzeDataFlow(
+  ast: t.File,
+  importMap: Map<string, string>
+): {
+  entryPoints: string[];
+  exitPoints: string[];
+  externalApis: string[];
+  sideEffects: string[];
+  variableFlows: Map<string, { read: string[]; written: string[] }>;
+} {
+  const entryPoints: string[] = [];
+  const exitPoints: string[] = [];
+  const externalApis: string[] = [];
+  const sideEffects: string[] = [];
+  const variableFlows = new Map<string, { read: string[]; written: string[] }>();
+
+  const collectVariablesFromPath = (path: NodePath): string[] => {
+    const vars = new Set<string>();
+    
+    path.traverse({
+      Identifier(path: NodePath) {
+        if (path.isReferencedIdentifier()) {
+          const name = path.node.name;
+          if (name && name.length > 1 && !name.startsWith("_")) {
+            vars.add(name);
+          }
+        }
+      },
+    });
+    
+    return [...vars];
+  };
+
+  const getParams = (node: t.Function | t.ClassMethod): string[] => {
+    return node.params
+      .map(p => t.isIdentifier(p) ? p.name : "")
+      .filter(Boolean);
+  };
+
+  const getBodyStatements = (node: t.Function | t.ClassMethod): t.Statement[] => {
+    if (node.body && t.isBlockStatement(node.body)) {
+      return node.body.body;
+    }
+    return [];
+  };
+
+  traverse(ast, {
+    Program(path) {
+      const body = path.node.body;
+      body.forEach((stmt, index) => {
+        if (index < 3) {
+          if (t.isImportDeclaration(stmt)) {
+            const source = stmt.source.value;
+            if (!source.startsWith(".") && !source.startsWith("@")) {
+              externalApis.push(source);
+            }
+          }
+        }
+      });
+    },
+
+    FunctionDeclaration(path) {
+      const name = path.node.id?.name;
+      if (name) {
+        entryPoints.push(name);
+      }
+
+      if (path.node.body) {
+        const params = getParams(path.node);
+        const bodyPath = path.get("body");
+        
+        if (bodyPath && bodyPath.isBlockStatement()) {
+          const writtenVars = collectVariablesFromPath(bodyPath);
+          const readVars = collectVariablesFromPath(bodyPath);
+          
+          if (name) {
+            variableFlows.set(name, {
+              written: writtenVars,
+              read: readVars.filter(v => !params.includes(v)),
+            });
+          }
+        }
+      }
+    },
+
+    ClassDeclaration(path) {
+      const name = path.node.id?.name;
+      if (name) {
+        entryPoints.push(name);
+      }
+
+      for (const method of path.node.body.body) {
+        if (t.isClassMethod(method) && method.kind === "constructor") {
+          sideEffects.push(`构造函数可能初始化资源`);
+        }
+      }
+    },
+
+    ReturnStatement(path) {
+      const func = path.findParent(p => 
+        p.isFunctionDeclaration() || p.isFunctionExpression() || p.isArrowFunctionExpression()
+      );
+      if (func) {
+        const funcName = (func as any).node.id?.name || "(anonymous)";
+        if (!exitPoints.includes(funcName)) {
+          exitPoints.push(funcName);
+        }
+      }
+
+      if (path.node.argument) {
+        if (t.isCallExpression(path.node.argument)) {
+          const callee = path.node.argument.callee;
+          if (t.isIdentifier(callee)) {
+            sideEffects.push(`返回外部调用结果: ${callee.name}`);
+          }
+        }
+      }
+    },
+
+    ThrowStatement(path) {
+      const func = path.findParent(p => 
+        p.isFunctionDeclaration() || p.isFunctionExpression() || p.isArrowFunctionExpression()
+      );
+      const funcName = func && (func as any).node.id?.name || "(anonymous)";
+      sideEffects.push(`可能抛出异常: ${funcName}`);
+    },
+
+    CallExpression(path) {
+      const callee = path.node.callee;
+      
+      if (t.isIdentifier(callee)) {
+        const name = callee.name;
+        if (name === "fetch" || name === "axios" || name === "XMLHttpRequest") {
+          sideEffects.push(`网络请求: ${name}`);
+        } else if (name === "setTimeout" || name === "setInterval") {
+          sideEffects.push(`异步定时器: ${name}`);
+        } else if (name === "console") {
+          sideEffects.push("控制台输出");
+        } else if (name === "localStorage" || name === "sessionStorage") {
+          sideEffects.push(`浏览器存储操作: ${name}`);
+        } else if (name === "document" || name === "window") {
+          sideEffects.push(`DOM/Window 操作`);
+        }
+      } else if (t.isMemberExpression(callee)) {
+        if (t.isIdentifier(callee.object) && callee.object.name === "console") {
+          sideEffects.push("控制台输出");
+        } else if (t.isIdentifier(callee.object) && callee.object.name === "Math") {
+          // Math operations are pure, skip
+        } else {
+          const methodName = t.isIdentifier(callee.property) ? callee.property.name : "";
+          if (methodName) {
+            sideEffects.push(`调用方法: ${methodName}`);
+          }
+        }
+      }
+    },
+
+    AssignmentExpression(path) {
+      const left = path.node.left;
+      if (t.isIdentifier(left)) {
+        const name = left.name;
+        if (name) {
+          const current = variableFlows.get(name) || { read: [], written: [] };
+          current.written.push(name);
+          variableFlows.set(name, current);
+          sideEffects.push(`赋值操作: ${name}`);
+        }
+      } else if (t.isMemberExpression(left)) {
+        sideEffects.push("修改对象属性");
+      }
+    },
+
+    UpdateExpression(path) {
+      const argument = path.node.argument;
+      if (t.isIdentifier(argument)) {
+        const name = argument.name;
+        if (name) {
+          const current = variableFlows.get(name) || { read: [], written: [] };
+          current.written.push(name);
+          variableFlows.set(name, current);
+          sideEffects.push(`更新操作: ${name}`);
+        }
+      }
+    },
+
+    VariableDeclarator(path) {
+      if (path.node.init) {
+        const id = path.node.id;
+        if (t.isIdentifier(id)) {
+          const name = id.name;
+          const initPath = path.get("init") as NodePath;
+          if (initPath && initPath.node) {
+            const initVars = collectVariablesFromPath(initPath);
+            if (name) {
+              variableFlows.set(name, {
+                written: [name],
+                read: initVars,
+              });
+            }
+          }
+        }
+      }
+    },
+  });
+
+  const filteredSideEffects = [...new Set(sideEffects)].slice(0, 10);
+
+  return {
+    entryPoints,
+    exitPoints,
+    externalApis: [...new Set(externalApis)],
+    sideEffects: filteredSideEffects,
+    variableFlows,
+  };
+}
+
 export function analyzeCodeUnderstanding(
   sourceCode: string,
   filePath: string,
@@ -261,6 +592,8 @@ export function analyzeCodeUnderstanding(
   const symbolUnderstandings: SymbolUnderstanding[] = [];
   const keyConcepts = new Set<string>();
   const usagePatterns: string[] = [];
+  const detectedDesignPatterns: string[] = [];
+  const detectedAntiPatterns: string[] = [];
 
   const importMap = new Map<string, string>();
   traverse(ast, {
@@ -525,6 +858,23 @@ export function analyzeCodeUnderstanding(
   const imports = Array.from(importMap.entries()).map(([source, specs]) => `从 ${source} 导入 ${specs}`);
   const dependenciesSummary = imports.length > 0 ? imports.join("；") : "无外部依赖";
 
+  const { patterns, antiPatterns } = detectDesignPatterns(ast, importMap);
+  const dataFlow = analyzeDataFlow(ast, importMap);
+
+  symbolUnderstandings.forEach(sym => {
+    if (sym.symbol_type === "function" || sym.symbol_type === "method") {
+      const flow = dataFlow.variableFlows.get(sym.symbol_name);
+      if (flow) {
+        sym.data_flow = {
+          sources: flow.read.slice(0, 5),
+          destinations: flow.written.slice(0, 5),
+          variables_read: flow.read.slice(0, 5),
+          variables_written: flow.written.slice(0, 5),
+        };
+      }
+    }
+  });
+
   return {
     file_path: filePath,
     file_summary: `此文件是${moduleName}模块，包含${symbolUnderstandings.length}个可导出符号`,
@@ -532,6 +882,14 @@ export function analyzeCodeUnderstanding(
     key_concepts: Array.from(keyConcepts),
     usage_patterns: usagePatterns.slice(0, 10),
     dependencies_summary: dependenciesSummary,
+    design_patterns: patterns,
+    anti_patterns: antiPatterns,
+    data_flow_summary: {
+      entry_points: dataFlow.entryPoints,
+      exit_points: dataFlow.exitPoints,
+      external_apis: dataFlow.externalApis,
+      side_effects: dataFlow.sideEffects,
+    },
   };
 }
 
