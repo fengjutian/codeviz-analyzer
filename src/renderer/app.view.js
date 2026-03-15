@@ -30,6 +30,7 @@
         e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setTraceDrawerOpen(true), disabled: !ctx.graph }, "执行追踪"),
         e(SButton, { theme: "solid", type: "secondary", onClick: ctx.openControlFlowDrawer, disabled: !ctx.graph }, "控制流图"),
         e(SButton, { theme: "solid", type: "secondary", onClick: ctx.openReactFlowDrawer, disabled: !ctx.graph }, "组件流程"),
+        e(SButton, { theme: "solid", type: "secondary", onClick: ctx.openUnderstandingDrawer, disabled: !ctx.graph }, "代码理解"),
         e("input", {
           style: { width: 260 },
           value: ctx.nodeKeyword,
@@ -488,6 +489,174 @@
                         })
                       : e("div", { className: "small" }, "选择一个组件查看其流程图")
               )
+            )
+          )
+        : null,
+      // 代码理解抽屉 (右侧)
+      ctx.understandingDrawerOpen
+        ? e(
+            "div",
+            { className: "drawer-mask drawer-mask-right", onClick: () => ctx.setUnderstandingDrawerOpen(false) },
+            e(
+              "div",
+              {
+                className: "drawer drawer-right",
+                style: { width: 700 },
+                onClick: (ev) => ev.stopPropagation(),
+              },
+              e(
+                "div",
+                { className: "drawer-header" },
+                e("strong", null, "代码理解分析"),
+                e(
+                  "div",
+                  { className: "drawer-actions" },
+                  e(SButton, { theme: "solid", type: "danger", onClick: () => ctx.setUnderstandingDrawerOpen(false) }, "关闭")
+                )
+              ),
+              // 文件摘要
+              ctx.understandingLoading
+                ? e("div", { style: { padding: 20, textAlign: "center" } }, "分析中...")
+                : ctx.understandingError
+                  ? e("div", { style: { padding: 20, color: "var(--danger)" } }, ctx.understandingError)
+                  : ctx.understandingData
+                    ? e(
+                        "div",
+                        { style: { display: "flex", flexDirection: "column", height: "calc(100% - 60px)" } },
+                        // 文件摘要区域
+                        e("div", { style: { padding: 12, borderBottom: "1px solid var(--border)", background: "var(--bg-secondary)" } },
+                          e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 6 } }, "文件摘要"),
+                          e("div", { style: { fontSize: 14, fontWeight: 500 } }, ctx.understandingData.file_summary),
+                          e("div", { style: { marginTop: 8, fontSize: 12 } },
+                            e("span", { style: { marginRight: 12 } }, "Symbols:" + ((ctx.understandingData.symbols || []).length)),
+                            e("span", { style: { marginRight: 12 } }, "Concepts:" + ((ctx.understandingData.key_concepts || []).slice(0, 2).join(", ")))
+                          )
+                        ),
+                        // 符号列表和详情
+                        e("div", { style: { display: "flex", flex: 1, overflow: "hidden" } },
+                          // 左侧符号列表
+                          e("div", { style: { width: 200, borderRight: "1px solid var(--border)", overflow: "auto", padding: 8 } },
+                            e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 } }, "符号列表"),
+                            ctx.understandingData.symbols.map((sym, idx) =>
+                              e("div", {
+                                key: sym.symbol_id,
+                                style: {
+                                  padding: "8px 10px",
+                                  marginBottom: 4,
+                                  borderRadius: 4,
+                                  cursor: "pointer",
+                                  background: idx === ctx.selectedSymbolIndex ? "var(--primary-light)" : "transparent",
+                                  fontSize: 13,
+                                },
+                                onClick: () => ctx.setSelectedSymbolIndex(idx),
+                              },
+                                e("span", { style: { fontWeight: 500 } }, sym.symbol_name),
+                                e("span", { style: { fontSize: 11, color: "var(--text-secondary)", marginLeft: 6 } },
+                                  sym.symbol_type === "function" ? "🔵" : sym.symbol_type === "method" ? "🟢" : sym.symbol_type === "class" ? "🟡" : "⚪"
+                                )
+                              )
+                            )
+                          ),
+                          // 右侧详情
+                          e("div", { style: { flex: 1, overflow: "auto", padding: 12 } },
+                            ctx.understandingData.symbols[ctx.selectedSymbolIndex]
+                              ? (() => {
+                                  const sym = ctx.understandingData.symbols[ctx.selectedSymbolIndex];
+                                  return e("div", null,
+                                    // 名称和类型
+                                    e("div", { style: { marginBottom: 12 } },
+                                      e("h3", { style: { margin: 0, fontSize: 16 } },
+                                        sym.symbol_name,
+                                        e("span", { style: { fontSize: 12, fontWeight: "normal", color: "var(--text-secondary)", marginLeft: 8 } },
+                                          sym.symbol_type
+                                        )
+                                      )
+                                    ),
+                                    // 作用
+                                    e("div", { style: { marginBottom: 12 } },
+                                      e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 4 } }, "这个代码做什么？"),
+                                      e("div", { style: { fontSize: 14 } }, sym.what_it_does)
+                                    ),
+                                    // 工作原理
+                                    e("div", { style: { marginBottom: 12 } },
+                                      e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 4 } }, "工作原理"),
+                                      e("div", { style: { fontSize: 14 } }, sym.how_it_works)
+                                    ),
+                                    // 复杂度
+                                    e("div", { style: { marginBottom: 12 } },
+                                      e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 4 } }, "复杂度"),
+                                      e("span", {
+                                        style: {
+                                          display: "inline-block",
+                                          padding: "2px 8px",
+                                          borderRadius: 4,
+                                          fontSize: 12,
+                                          background: sym.complexity === "simple" ? "#d4edda" : sym.complexity === "moderate" ? "#fff3cd" : "#f8d7da",
+                                          color: sym.complexity === "simple" ? "#155724" : sym.complexity === "moderate" ? "#856404" : "#721c24",
+                                        }
+                                      }, sym.complexity === "simple" ? "简单" : sym.complexity === "moderate" ? "中等" : "复杂")
+                                    ),
+                                    // 参数
+                                    sym.parameters && sym.parameters.length > 0
+                                      ? e("div", { style: { marginBottom: 12 } },
+                                          e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 4 } }, "参数"),
+                                          e("ul", { style: { margin: 0, paddingLeft: 20, fontSize: 13 } },
+                                            sym.parameters.map((p, i) =>
+                                              e("li", { key: i }, e("strong", null, p.name), " - ", p.purpose)
+                                            )
+                                          )
+                                        )
+                                      : null,
+                                    // 返回值
+                                    sym.returns
+                                      ? e("div", { style: { marginBottom: 12 } },
+                                          e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 4 } }, "返回值"),
+                                          e("div", { style: { fontSize: 13 } }, sym.returns)
+                                        )
+                                      : null,
+                                    // 副作用
+                                    sym.side_effects && sym.side_effects.length > 0
+                                      ? e("div", { style: { marginBottom: 12 } },
+                                          e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 4 } }, "可能的副作用"),
+                                          e("ul", { style: { margin: 0, paddingLeft: 20, fontSize: 13 } },
+                                            sym.side_effects.map((se, i) =>
+                                              e("li", { key: i, style: { color: "#856404" } }, se)
+                                            )
+                                          )
+                                        )
+                                      : null,
+                                    // 建议
+                                    sym.suggestions && sym.suggestions.length > 0
+                                      ? e("div", { style: { marginBottom: 12 } },
+                                          e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 4 } }, "优化建议"),
+                                          e("ul", { style: { margin: 0, paddingLeft: 20, fontSize: 13, color: "var(--primary)" } },
+                                            sym.suggestions.map((s, i) =>
+                                              e("li", { key: i }, s)
+                                            )
+                                          )
+                                        )
+                                      : null
+                                  );
+                                })()
+                              : null
+                          )
+                        ),
+                        // 底部关键概念
+                        ctx.understandingData.key_concepts.length > 0
+                          ? e("div", { style: { padding: 12, borderTop: "1px solid var(--border)", background: "var(--bg-secondary)" } },
+                              e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 6 } }, "关键概念"),
+                              e("div", { style: { display: "flex", flexWrap: "wrap", gap: 6 } },
+                                ctx.understandingData.key_concepts.map((concept, idx) =>
+                                  e("span", {
+                                    key: idx,
+                                    style: { padding: "2px 8px", background: "var(--primary-light)", borderRadius: 4, fontSize: 11 }
+                                  }, concept)
+                                )
+                              )
+                            )
+                          : null
+                      )
+                    : e("div", { style: { padding: 20 } }, "暂无数据")
             )
           )
         : null,

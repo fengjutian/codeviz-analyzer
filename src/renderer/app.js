@@ -64,6 +64,13 @@
     const rcfDragRef = React.useRef({ x: 0, y: 0, vx: 0, vy: 0 });
     const rcfRenderRef = React.useRef(null);
 
+    // 代码理解相关状态
+    const [understandingDrawerOpen, setUnderstandingDrawerOpen] = React.useState(false);
+    const [understandingData, setUnderstandingData] = React.useState(null);
+    const [understandingLoading, setUnderstandingLoading] = React.useState(false);
+    const [understandingError, setUnderstandingError] = React.useState("");
+    const [selectedSymbolIndex, setSelectedSymbolIndex] = React.useState(0);
+
     const [sourceModule, setSourceModule] = React.useState("");
     const [sourceFilePath, setSourceFilePath] = React.useState("");
     const [sourceCode, setSourceCode] = React.useState("");
@@ -514,6 +521,50 @@
       }
       loadReactFlowGraph(currentModule.module_name);
       setRcfDrawerOpen(true);
+    };
+
+    // 加载代码理解分析
+    const loadCodeUnderstanding = async (moduleName) => {
+      if (!graph || !window.codeviz) {
+        setUnderstandingError("请先分析项目");
+        return;
+      }
+
+      const moduleNode = graph.modules.find((m) => m.module_name === moduleName);
+      if (!moduleNode) {
+        setUnderstandingError(`找不到模块: ${moduleName}`);
+        return;
+      }
+
+      setUnderstandingLoading(true);
+      setUnderstandingError("");
+
+      try {
+        const result = await window.codeviz.analyzeCodeUnderstanding({
+          filePath: moduleNode.file_path,
+        });
+
+        if (result.success && result.understanding) {
+          setUnderstandingData(result.understanding);
+          setSelectedSymbolIndex(0);
+        } else {
+          setUnderstandingError(result.error || "分析代码失败");
+        }
+      } catch (err) {
+        setUnderstandingError(String(err));
+      } finally {
+        setUnderstandingLoading(false);
+      }
+    };
+
+    // 打开代码理解抽屉
+    const openUnderstandingDrawer = () => {
+      if (!currentModule) {
+        setUnderstandingError("请先选择一个模块");
+        return;
+      }
+      loadCodeUnderstanding(currentModule.module_name);
+      setUnderstandingDrawerOpen(true);
     };
 
     const modules = graph
@@ -1062,6 +1113,14 @@
       setTraceMaxDepth,
       view,
       viewport,
+      understandingDrawerOpen,
+      setUnderstandingDrawerOpen,
+      understandingData,
+      understandingLoading,
+      understandingError,
+      selectedSymbolIndex,
+      setSelectedSymbolIndex,
+      openUnderstandingDrawer,
     });
 
   }
