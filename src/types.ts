@@ -223,3 +223,65 @@ export interface ReactComponentFlow {
   nodes: RCFNode[];
   edges: RCFEdge[];
 }
+
+// ============== 知识图谱分析相关类型 ==============
+
+export interface CircularDependency {
+  modules: string[];
+  type: "direct" | "indirect";
+}
+
+export interface DependencyPath {
+  from: string;
+  to: string;
+  path: string[];
+  length: number;
+}
+
+export interface InheritanceDepth {
+  symbol_id: string;
+  depth: number;
+  ancestors: string[];
+}
+
+export interface HotspotSymbol {
+  symbol_id: string;
+  score: number;
+  rank: number;
+  factors: {
+    fan_in: number;
+    fan_out: number;
+    loc: number;
+    call_count?: number;
+  };
+}
+
+export interface ModuleStability {
+  module_name: string;
+  stability: "stable" | "unstable" | "mixed";
+  stability_score: number;
+  reason: string;
+}
+
+export interface DependencyImportance {
+  symbol_id: string;
+  importance: "critical" | "high" | "medium" | "low";
+  centrality: number;
+  dependencies_count: number;
+}
+
+export interface GraphAnalysisResult {
+  circular_dependencies: CircularDependency[];
+  dependency_paths: DependencyPath[];
+  inheritance_depths: InheritanceDepth[];
+  hotspot_symbols: HotspotSymbol[];
+  module_stabilities: ModuleStability[];
+  dependency_importances: DependencyImportance[];
+  metrics: MetricMap & {
+    avg_dependency_depth: number;
+    max_dependency_depth: number;
+    circular_dependency_count: number;
+    stability_score: number;
+    maintainability_index: number;
+  };
+}

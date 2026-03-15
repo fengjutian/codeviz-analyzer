@@ -1,5 +1,6 @@
 export * from "./types";
 export * from "./core/analyzer";
+export * from "./core/graph";
 export * from "./core/scanner";
 export * from "./core/pluginManager";
 export * from "./plugins/jsTsPlugin";
