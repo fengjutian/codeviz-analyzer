@@ -371,6 +371,10 @@
                 e(
                   "div",
                   { className: "drawer-actions" },
+                  e("span", { className: "small" }, `缩放 ${(ctx.cfgViewport.scale * 100).toFixed(0)}%`),
+                  e(SButton, { theme: "light", type: "tertiary", onClick: () => ctx.setCfgViewport((prev) => ({ ...prev, scale: Math.max(0.35, Number((prev.scale * 0.9).toFixed(3))) })) }, "缩小"),
+                  e(SButton, { theme: "light", type: "tertiary", onClick: () => ctx.setCfgViewport((prev) => ({ ...prev, scale: Math.min(3.2, Number((prev.scale * 1.1).toFixed(3))) })) }, "放大"),
+                  e(SButton, { theme: "light", type: "secondary", onClick: () => ctx.setCfgViewport({ x: 0, y: 0, scale: 1 }) }, "重置"),
                   e(SButton, { theme: "solid", type: "danger", onClick: () => ctx.setCfgDrawerOpen(false) }, "关闭")
                 )
               ),
@@ -395,14 +399,21 @@
               // 渲染区域
               e(
                 "div",
-                { className: "trace-results", style: { overflow: "auto", flex: 1, padding: 12 } },
+                {
+                  ref: ctx.cfgRenderRef,
+                  className: `trace-results ${ctx.cfgDragging ? "dragging" : ""}`,
+                  style: { overflow: "auto", flex: 1, padding: 12 },
+                  onWheel: ctx.onCfgWheel,
+                  onMouseDown: ctx.onCfgMouseDown,
+                },
                 ctx.cfgLoading
                   ? e("div", { className: "small" }, "加载中...")
                   : ctx.cfgError
                     ? e("div", { style: { color: "var(--danger)" } }, ctx.cfgError)
                     : ctx.cfgMermaidSvg
                       ? e("div", {
-                          className: "mermaid-preview",
+                          className: "mermaid-canvas",
+                          style: { transform: `translate(${ctx.cfgViewport.x}px, ${ctx.cfgViewport.y}px) scale(${ctx.cfgViewport.scale})` },
                           dangerouslySetInnerHTML: { __html: ctx.cfgMermaidSvg }
                         })
                       : e("div", { className: "small" }, "选择一个函数查看其控制流图")

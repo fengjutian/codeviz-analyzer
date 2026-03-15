@@ -375,6 +375,16 @@ pre {
   cursor: grabbing;
 }
 
+/* 控制流图拖拽样式 */
+.trace-results {
+  cursor: grab;
+  user-select: none;
+}
+
+.trace-results.dragging {
+  cursor: grabbing;
+}
+
 .mermaid-canvas {
   transform-origin: 0 0;
   width: max-content;

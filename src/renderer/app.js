@@ -46,6 +46,10 @@
     const [cfgMermaidSvg, setCfgMermaidSvg] = React.useState("");
     const [cfgLoading, setCfgLoading] = React.useState(false);
     const [cfgError, setCfgError] = React.useState("");
+    const [cfgViewport, setCfgViewport] = React.useState({ x: 0, y: 0, scale: 1 });
+    const [cfgDragging, setCfgDragging] = React.useState(false);
+    const cfgDragRef = React.useRef({ x: 0, y: 0, vx: 0, vy: 0 });
+    const cfgRenderRef = React.useRef(null);
 
     const [sourceModule, setSourceModule] = React.useState("");
     const [sourceFilePath, setSourceFilePath] = React.useState("");
@@ -509,6 +513,31 @@
       };
     }, [mermaidDragging]);
 
+    // 控制流图拖拽事件处理
+    React.useEffect(() => {
+      if (!cfgDrawerOpen) {
+        setCfgDragging(false);
+        return;
+      }
+      setCfgViewport({ x: 0, y: 0, scale: 1 });
+    }, [cfgDrawerOpen]);
+
+    React.useEffect(() => {
+      if (!cfgDragging) return;
+      const onMove = (ev) => {
+        const dx = ev.clientX - cfgDragRef.current.x;
+        const dy = ev.clientY - cfgDragRef.current.y;
+        setCfgViewport((prev) => ({ ...prev, x: cfgDragRef.current.vx + dx, y: cfgDragRef.current.vy + dy }));
+      };
+      const onUp = () => setCfgDragging(false);
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+      return () => {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+      };
+    }, [cfgDragging]);
+
     React.useEffect(() => {
 
       const visible = new Set(view.nodes.map((n) => n.id));
@@ -670,6 +699,40 @@
       };
     };
 
+    // 控制流图滚轮缩放处理
+    const onCfgWheel = (ev) => {
+      ev.preventDefault();
+      const rect = cfgRenderRef.current ? cfgRenderRef.current.getBoundingClientRect() : null;
+      setCfgViewport((prev) => {
+        const nextScale = Math.max(0.35, Math.min(3.2, Number((prev.scale * (ev.deltaY > 0 ? 0.9 : 1.1)).toFixed(3))));
+        if (!rect) {
+          return { ...prev, scale: nextScale };
+        }
+        const px = ev.clientX - rect.left;
+        const py = ev.clientY - rect.top;
+        const worldX = (px - prev.x) / prev.scale;
+        const worldY = (py - prev.y) / prev.scale;
+        return {
+          scale: nextScale,
+          x: px - worldX * nextScale,
+          y: py - worldY * nextScale,
+        };
+      });
+    };
+
+    // 控制流图拖拽处理
+    const onCfgMouseDown = (ev) => {
+      if (ev.button !== 0) return;
+      ev.preventDefault();
+      setCfgDragging(true);
+      cfgDragRef.current = {
+        x: ev.clientX,
+        y: ev.clientY,
+        vx: cfgViewport.x,
+        vy: cfgViewport.y,
+      };
+    };
+
     const centerNode = (nodeId) => {
 
       const p = positions.get(nodeId);
@@ -794,6 +857,12 @@
       cfgMermaidSvg,
       cfgLoading,
       cfgError,
+      cfgViewport,
+      setCfgViewport,
+      cfgDragging,
+      cfgRenderRef,
+      onCfgWheel,
+      onCfgMouseDown,
       setCfgDrawerOpen,
       setCfgSelectedFunction,
       setViewport,
