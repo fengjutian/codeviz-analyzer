@@ -184,3 +184,42 @@ export interface TraceResult {
   graph?: ExecutionGraph;
   error?: string;
 }
+
+// ============== React 组件流程图相关类型 ==============
+
+export type RCFNodeType =
+  | "props"        // Props 接收
+  | "destruct"      // 解构
+  | "condition"     // 条件判断
+  | "branch"        // 分支
+  | "state"         // State Hook
+  | "effect"        // Effect Hook
+  | "callback"      // Callback Hook
+  | "ref"           // Ref Hook
+  | "memo"          // Memo 计算
+  | "return"        // 返回渲染
+  | "render";       // JSX 渲染
+
+export interface RCFNode {
+  id: string;
+  type: RCFNodeType;
+  label: string;
+  code?: string;
+  line?: number;
+  detail?: string;  // 额外信息，如变量名、条件等
+}
+
+export interface RCFEdge {
+  from: string;
+  to: string;
+  label?: string;  // 分支条件如 "true", "false"
+}
+
+export interface ReactComponentFlow {
+  componentName: string;
+  moduleName: string;
+  isForwardRef: boolean;
+  displayName?: string;
+  nodes: RCFNode[];
+  edges: RCFEdge[];
+}

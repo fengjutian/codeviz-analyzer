@@ -13,6 +13,8 @@ const api = {
     getLatestExecutionGraph: () => electron_1.ipcRenderer.invoke("get-latest-execution-graph"),
     // 控制流图 API
     extractControlFlow: (payload) => electron_1.ipcRenderer.invoke("extract-control-flow", payload),
+    // React 组件流程图 API
+    extractReactFlow: (payload) => electron_1.ipcRenderer.invoke("extract-react-flow", payload),
     onAnalysisProgress: (listener) => {
         const wrapped = (_event, data) => listener(data);
         electron_1.ipcRenderer.on("analysis-progress", wrapped);

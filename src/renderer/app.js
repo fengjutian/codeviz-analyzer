@@ -51,6 +51,19 @@
     const cfgDragRef = React.useRef({ x: 0, y: 0, vx: 0, vy: 0 });
     const cfgRenderRef = React.useRef(null);
 
+    // React 组件流程图相关状态
+    const [rcfDrawerOpen, setRcfDrawerOpen] = React.useState(false);
+    const [rcfComponents, setRcfComponents] = React.useState([]);
+    const [rcfSelectedComponent, setRcfSelectedComponent] = React.useState("");
+    const [rcfMermaidCode, setRcfMermaidCode] = React.useState("");
+    const [rcfMermaidSvg, setRcfMermaidSvg] = React.useState("");
+    const [rcfLoading, setRcfLoading] = React.useState(false);
+    const [rcfError, setRcfError] = React.useState("");
+    const [rcfViewport, setRcfViewport] = React.useState({ x: 0, y: 0, scale: 1 });
+    const [rcfDragging, setRcfDragging] = React.useState(false);
+    const rcfDragRef = React.useRef({ x: 0, y: 0, vx: 0, vy: 0 });
+    const rcfRenderRef = React.useRef(null);
+
     const [sourceModule, setSourceModule] = React.useState("");
     const [sourceFilePath, setSourceFilePath] = React.useState("");
     const [sourceCode, setSourceCode] = React.useState("");
@@ -107,16 +120,19 @@
         return undefined;
       }
       let disposed = false;
+
+      // 配置 Monaco Environment 使用主线程（无 worker）
+      window.MonacoEnvironment = {
+        getWorkerUrl: function (moduleId, label) {
+          // 返回空字符串使用主线程
+          return 'data:text/javascript;charset=utf-8,';
+        }
+      };
+
       window.require.config({
         paths: {
           vs: "../../node_modules/monaco-editor/min/vs",
         },
-        // 禁用 worker，使用主线程
-        "vs/editor/editor.worker": "empty:",
-        "vs/json/json.worker": "empty:",
-        "vs/css/css.worker": "empty:",
-        "vs/html/html.worker": "empty:",
-        "vs/typescript/ts.worker": "empty:",
       });
 
       const createEditor = () => {
@@ -413,6 +429,93 @@
       setCfgDrawerOpen(true);
     };
 
+    // 加载 React 组件流程图
+    const loadReactFlowGraph = async (moduleName, componentName) => {
+      if (!graph) {
+        setRcfError("请先分析项目");
+        return;
+      }
+
+      const module = graph.modules.find((m) => m.module_name === moduleName);
+      if (!module) {
+        setRcfError(`找不到模块: ${moduleName}`);
+        return;
+      }
+
+      const filePath = module.file_path;
+      setRcfLoading(true);
+      setRcfError("");
+
+      try {
+        const result = await window.codeviz.extractReactFlow({
+          filePath,
+          componentName,
+        });
+
+        if (result.success) {
+          if (result.components) {
+            // 返回了多个组件
+            setRcfComponents(result.components);
+            setRcfSelectedComponent("");
+            setRcfMermaidCode("");
+            setRcfMermaidSvg("");
+          } else if (result.mermaidCode) {
+            // 单个组件
+            setRcfComponents([{ componentName: result.componentName, mermaidCode: result.mermaidCode, nodeCount: result.nodeCount, edgeCount: result.edgeCount }]);
+            setRcfSelectedComponent(result.componentName);
+            setRcfMermaidCode(result.mermaidCode);
+          }
+        } else {
+          setRcfError(result.error || "提取 React 组件流程图失败");
+        }
+      } catch (err) {
+        setRcfError(String(err));
+      }
+      setRcfLoading(false);
+    };
+
+    // 渲染 React 组件流程图 Mermaid
+    React.useEffect(() => {
+      if (!rcfMermaidCode || !window.mermaid) return;
+
+      let cancelled = false;
+      const render = async () => {
+        try {
+          const id = `rcf-mermaid-${Date.now()}`;
+          const result = await window.mermaid.render(id, rcfMermaidCode);
+          if (!cancelled) {
+            setRcfMermaidSvg(result.svg);
+          }
+        } catch (err) {
+          if (!cancelled) {
+            setRcfError(`Mermaid 渲染失败: ${String(err)}`);
+          }
+        }
+      };
+
+      void render();
+      return () => {
+        cancelled = true;
+      };
+    }, [rcfMermaidCode, theme]);
+
+    // 当选择了组件后自动加载
+    React.useEffect(() => {
+      if (rcfSelectedComponent && currentModule) {
+        loadReactFlowGraph(currentModule.module_name, rcfSelectedComponent);
+      }
+    }, [rcfSelectedComponent]);
+
+    // 打开 React 组件流程图抽屉
+    const openReactFlowDrawer = () => {
+      if (!currentModule) {
+        setRcfError("请先选择一个模块");
+        return;
+      }
+      loadReactFlowGraph(currentModule.module_name);
+      setRcfDrawerOpen(true);
+    };
+
     const modules = graph
       ? graph.modules.filter((m) => m.module_name.toLowerCase().includes(fileKeyword.toLowerCase()))
       : [];
@@ -537,6 +640,31 @@
         window.removeEventListener("mouseup", onUp);
       };
     }, [cfgDragging]);
+
+    // React 组件流程图拖拽事件处理
+    React.useEffect(() => {
+      if (!rcfDrawerOpen) {
+        setRcfDragging(false);
+        return;
+      }
+      setRcfViewport({ x: 0, y: 0, scale: 1 });
+    }, [rcfDrawerOpen]);
+
+    React.useEffect(() => {
+      if (!rcfDragging) return;
+      const onMove = (ev) => {
+        const dx = ev.clientX - rcfDragRef.current.x;
+        const dy = ev.clientY - rcfDragRef.current.y;
+        setRcfViewport((prev) => ({ ...prev, x: rcfDragRef.current.vx + dx, y: rcfDragRef.current.vy + dy }));
+      };
+      const onUp = () => setRcfDragging(false);
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+      return () => {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+      };
+    }, [rcfDragging]);
 
     React.useEffect(() => {
 
@@ -733,6 +861,38 @@
       };
     };
 
+    // React 组件流程图滚轮缩放处理
+    const onRcfWheel = (ev) => {
+      ev.preventDefault();
+      const rect = rcfRenderRef.current ? rcfRenderRef.current.getBoundingClientRect() : null;
+      setRcfViewport((prev) => {
+        const nextScale = Math.max(0.35, Math.min(3.2, Number((prev.scale * (ev.deltaY > 0 ? 0.9 : 1.1)).toFixed(3))));
+        if (!rect) {
+          return { ...prev, scale: nextScale };
+        }
+        const px = ev.clientX - rect.left;
+        const py = ev.clientY - rect.top;
+        const worldX = (px - prev.x) / prev.scale;
+        const worldY = (py - prev.y) / prev.scale;
+        const newX = px - worldX * nextScale;
+        const newY = py - worldY * nextScale;
+        return { x: newX, y: newY, scale: nextScale };
+      });
+    };
+
+    // React 组件流程图拖拽处理
+    const onRcfMouseDown = (ev) => {
+      if (ev.button !== 0) return;
+      ev.preventDefault();
+      setRcfDragging(true);
+      rcfDragRef.current = {
+        x: ev.clientX,
+        y: ev.clientY,
+        vx: rcfViewport.x,
+        vy: rcfViewport.y,
+      };
+    };
+
     const centerNode = (nodeId) => {
 
       const p = positions.get(nodeId);
@@ -865,6 +1025,22 @@
       onCfgMouseDown,
       setCfgDrawerOpen,
       setCfgSelectedFunction,
+      // React 组件流程图
+      rcfDrawerOpen,
+      setRcfDrawerOpen,
+      rcfComponents,
+      rcfSelectedComponent,
+      setRcfSelectedComponent,
+      rcfMermaidSvg,
+      rcfLoading,
+      rcfError,
+      rcfViewport,
+      setRcfViewport,
+      rcfDragging,
+      rcfRenderRef,
+      onRcfWheel,
+      onRcfMouseDown,
+      openReactFlowDrawer,
       setViewport,
       sourceEditorContainerRef,
       sourceFilePath,

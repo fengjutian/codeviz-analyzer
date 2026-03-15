@@ -151,3 +151,25 @@ export interface TraceResult {
     graph?: ExecutionGraph;
     error?: string;
 }
+export type RCFNodeType = "props" | "destruct" | "condition" | "branch" | "state" | "effect" | "callback" | "ref" | "memo" | "return" | "render";
+export interface RCFNode {
+    id: string;
+    type: RCFNodeType;
+    label: string;
+    code?: string;
+    line?: number;
+    detail?: string;
+}
+export interface RCFEdge {
+    from: string;
+    to: string;
+    label?: string;
+}
+export interface ReactComponentFlow {
+    componentName: string;
+    moduleName: string;
+    isForwardRef: boolean;
+    displayName?: string;
+    nodes: RCFNode[];
+    edges: RCFEdge[];
+}

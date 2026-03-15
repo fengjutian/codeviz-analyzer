@@ -57,7 +57,23 @@ function escapeLabel(text) {
     if (text.length > 30) {
         simplified = text.substring(0, 27) + "...";
     }
-    return simplified.replace(/"/g, "'").replace(/\n/g, " ");
+    // Mermaid 中需要转义的特殊字符：: # ( ) [ ] { } < > | " \ ?
+    return simplified
+        .replace(/\\/g, "\\\\")
+        .replace(/"/g, '\\"')
+        .replace(/:/g, "\\:")
+        .replace(/#/g, "\\#")
+        .replace(/\(/g, "\\(")
+        .replace(/\)/g, "\\)")
+        .replace(/\[/g, "\\[")
+        .replace(/\]/g, "\\]")
+        .replace(/\{/g, "\\{")
+        .replace(/\}/g, "\\}")
+        .replace(/</g, "\\<")
+        .replace(/>/g, "\\>")
+        .replace(/\|/g, "\\|")
+        .replace(/\?/g, "\\?")
+        .replace(/\n/g, " ");
 }
 /**
  * 获取节点的 Mermaid 形状 - 使用更简洁的圆角矩形

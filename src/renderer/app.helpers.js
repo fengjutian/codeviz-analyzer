@@ -258,7 +258,23 @@
   }
 
   function escapeMermaidLabel(text) {
-    return String(text || "").replace(/"/g, "'").replace(/\n/g, " ").trim();
+    return String(text || "")
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"')
+      .replace(/:/g, "\\:")
+      .replace(/#/g, "\\#")
+      .replace(/\(/g, "\\(")
+      .replace(/\)/g, "\\)")
+      .replace(/\[/g, "\\[")
+      .replace(/\]/g, "\\]")
+      .replace(/\{/g, "\\{")
+      .replace(/\}/g, "\\}")
+      .replace(/</g, "\\<")
+      .replace(/>/g, "\\>")
+      .replace(/\|/g, "\\|")
+      .replace(/\?/g, "\\?")
+      .replace(/\n/g, " ")
+      .trim();
   }
 
   function toMermaidFromView(nodes, edges) {

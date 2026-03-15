@@ -49,6 +49,27 @@ const api = {
     }>;
     error?: string;
   }> => ipcRenderer.invoke("extract-control-flow", payload),
+  // React 组件流程图 API
+  extractReactFlow: (payload: {
+    filePath: string;
+    componentName?: string;
+  }): Promise<{
+    success: boolean;
+    componentName?: string;
+    moduleName?: string;
+    isForwardRef?: boolean;
+    displayName?: string;
+    mermaidCode?: string;
+    nodeCount?: number;
+    edgeCount?: number;
+    components?: Array<{
+      componentName: string;
+      mermaidCode: string;
+      nodeCount: number;
+      edgeCount: number;
+    }>;
+    error?: string;
+  }> => ipcRenderer.invoke("extract-react-flow", payload),
   onAnalysisProgress: (listener: (event: ProgressEventPayload) => void) => {
     const wrapped = (_event: Electron.IpcRendererEvent, data: ProgressEventPayload) => listener(data);
     ipcRenderer.on("analysis-progress", wrapped);

@@ -47,6 +47,7 @@ const jsonExporter_1 = require("../exporters/jsonExporter");
 const mermaidExporter_1 = require("../exporters/mermaidExporter");
 const executionGraph_1 = require("../exporters/executionGraph");
 const controlFlowExporter_1 = require("../exporters/controlFlowExporter");
+const reactComponentFlowExporter_1 = require("../exporters/reactComponentFlowExporter");
 let mainWindow = null;
 let latestGraph = null;
 const DEBUG_LOG_ENABLED = process.env.CODEVIZ_DEBUG === "1" || !electron_1.app.isPackaged;
@@ -347,6 +348,60 @@ electron_1.ipcMain.handle("extract-control-flow", async (_event, payload) => {
     }
     catch (error) {
         debugLog("IPC extract-control-flow error", String(error));
+        return { success: false, error: String(error) };
+    }
+});
+// React 组件流程图 IPC 处理器
+electron_1.ipcMain.handle("extract-react-flow", async (_event, payload) => {
+    const { filePath, componentName } = payload;
+    if (!filePath) {
+        throw new Error("filePath 不能为空");
+    }
+    debugLog("IPC extract-react-flow start", { filePath, componentName });
+    try {
+        const sourceCode = await (0, promises_1.readFile)(filePath, "utf-8");
+        const moduleName = node_path_1.default.basename(filePath);
+        let result;
+        if (componentName) {
+            // 提取单个组件的流程图
+            const flow = (0, reactComponentFlowExporter_1.extractReactComponentFlow)(sourceCode, moduleName, componentName);
+            if (!flow || flow.nodes.length === 0) {
+                return { success: false, error: `无法提取组件 ${componentName} 的流程图` };
+            }
+            const mermaidCode = (0, reactComponentFlowExporter_1.toMermaidRCF)(flow);
+            result = {
+                success: true,
+                componentName: flow.componentName,
+                moduleName,
+                isForwardRef: flow.isForwardRef,
+                displayName: flow.displayName,
+                mermaidCode,
+                nodeCount: flow.nodes.length,
+                edgeCount: flow.edges.length,
+            };
+        }
+        else {
+            // 提取整个模块的所有 React 组件
+            const flows = (0, reactComponentFlowExporter_1.extractModuleReactFlows)(sourceCode, moduleName);
+            if (flows.length === 0) {
+                return { success: false, error: "未找到 React 组件" };
+            }
+            result = {
+                success: true,
+                moduleName,
+                components: flows.map((f) => ({
+                    componentName: f.componentName,
+                    mermaidCode: f.mermaidCode,
+                    nodeCount: f.nodeCount,
+                    edgeCount: f.edgeCount,
+                })),
+            };
+        }
+        debugLog("IPC extract-react-flow done", result);
+        return result;
+    }
+    catch (error) {
+        debugLog("IPC extract-react-flow error", String(error));
         return { success: false, error: String(error) };
     }
 });

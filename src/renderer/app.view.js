@@ -29,6 +29,7 @@
         e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setDrawerOpen(true), disabled: !ctx.graph }, "Mermaid"),
         e(SButton, { theme: "solid", type: "secondary", onClick: () => ctx.setTraceDrawerOpen(true), disabled: !ctx.graph }, "执行追踪"),
         e(SButton, { theme: "solid", type: "secondary", onClick: ctx.openControlFlowDrawer, disabled: !ctx.graph }, "控制流图"),
+        e(SButton, { theme: "solid", type: "secondary", onClick: ctx.openReactFlowDrawer, disabled: !ctx.graph }, "组件流程"),
         e("input", {
           style: { width: 260 },
           value: ctx.nodeKeyword,
@@ -417,6 +418,75 @@
                           dangerouslySetInnerHTML: { __html: ctx.cfgMermaidSvg }
                         })
                       : e("div", { className: "small" }, "选择一个函数查看其控制流图")
+              )
+            )
+          )
+        : null,
+      // React 组件流程图抽屉 (右侧)
+      ctx.rcfDrawerOpen
+        ? e(
+            "div",
+            { className: "drawer-mask drawer-mask-right", onClick: () => ctx.setRcfDrawerOpen(false) },
+            e(
+              "div",
+              {
+                className: "drawer drawer-right",
+                style: { width: 600 },
+                onClick: (ev) => ev.stopPropagation(),
+              },
+              e(
+                "div",
+                { className: "drawer-header" },
+                e("strong", null, "React 组件流程图"),
+                e(
+                  "div",
+                  { className: "drawer-actions" },
+                  e("span", { className: "small" }, `缩放 ${(ctx.rcfViewport.scale * 100).toFixed(0)}%`),
+                  e(SButton, { theme: "light", type: "tertiary", onClick: () => ctx.setRcfViewport((prev) => ({ ...prev, scale: Math.max(0.35, Number((prev.scale * 0.9).toFixed(3))) })) }, "缩小"),
+                  e(SButton, { theme: "light", type: "tertiary", onClick: () => ctx.setRcfViewport((prev) => ({ ...prev, scale: Math.min(3.2, Number((prev.scale * 1.1).toFixed(3))) })) }, "放大"),
+                  e(SButton, { theme: "light", type: "secondary", onClick: () => ctx.setRcfViewport({ x: 0, y: 0, scale: 1 }) }, "重置"),
+                  e(SButton, { theme: "solid", type: "danger", onClick: () => ctx.setRcfDrawerOpen(false) }, "关闭")
+                )
+              ),
+              // 组件选择器
+              ctx.rcfComponents.length > 0
+                ? e("div", { style: { padding: "12px", borderBottom: "1px solid var(--border)" } },
+                    e("div", { style: { marginBottom: 8 } }, "选择组件:"),
+                    e("select", {
+                      style: { width: "100%", padding: "6px" },
+                      value: ctx.rcfSelectedComponent,
+                      onChange: (ev) => ctx.setRcfSelectedComponent(ev.target.value),
+                    },
+                      e("option", { value: "" }, `-- 选择组件 (${ctx.rcfComponents.length} 个)`),
+                      ctx.rcfComponents.map((comp) =>
+                        e("option", { key: comp.componentName, value: comp.componentName },
+                          `${comp.componentName} (${comp.nodeCount} 节点, ${comp.edgeCount} 边)`
+                        )
+                      )
+                    )
+                  )
+                : null,
+              // 渲染区域
+              e(
+                "div",
+                {
+                  ref: ctx.rcfRenderRef,
+                  className: `trace-results ${ctx.rcfDragging ? "dragging" : ""}`,
+                  style: { overflow: "auto", flex: 1, padding: 12 },
+                  onWheel: ctx.onRcfWheel,
+                  onMouseDown: ctx.onRcfMouseDown,
+                },
+                ctx.rcfLoading
+                  ? e("div", { className: "small" }, "加载中...")
+                  : ctx.rcfError
+                    ? e("div", { style: { color: "var(--danger)" } }, ctx.rcfError)
+                    : ctx.rcfMermaidSvg
+                      ? e("div", {
+                          className: "mermaid-canvas",
+                          style: { transform: `translate(${ctx.rcfViewport.x}px, ${ctx.rcfViewport.y}px) scale(${ctx.rcfViewport.scale})` },
+                          dangerouslySetInnerHTML: { __html: ctx.rcfMermaidSvg }
+                        })
+                      : e("div", { className: "small" }, "选择一个组件查看其流程图")
               )
             )
           )

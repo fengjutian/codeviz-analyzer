@@ -62,7 +62,23 @@ function escapeLabel(text: string): string {
   if (text.length > 30) {
     simplified = text.substring(0, 27) + "...";
   }
-  return simplified.replace(/"/g, "'").replace(/\n/g, " ");
+  // Mermaid 中需要转义的特殊字符：: # ( ) [ ] { } < > | " \ ?
+  return simplified
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/:/g, "\\:")
+    .replace(/#/g, "\\#")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)")
+    .replace(/\[/g, "\\[")
+    .replace(/\]/g, "\\]")
+    .replace(/\{/g, "\\{")
+    .replace(/\}/g, "\\}")
+    .replace(/</g, "\\<")
+    .replace(/>/g, "\\>")
+    .replace(/\|/g, "\\|")
+    .replace(/\?/g, "\\?")
+    .replace(/\n/g, " ");
 }
 
 /**
