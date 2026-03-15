@@ -1,4 +1,4 @@
-import { CircularDependency, DependencyImportance, DependencyPath, Edge, GraphAnalysisResult, HotspotSymbol, InheritanceDepth, KnowledgeGraph, ModuleNode, ModuleStability, SymbolNode } from "../types";
+import { CircularDependency, DependencyImportance, DependencyPath, Edge, GraphAnalysisResult, HotspotSymbol, InheritanceDepth, KnowledgeGraph, ModuleNode, ModuleStability, SymbolNode, ArchitectureLayer, ArchitectureFitness, PackageAnalysis, ImpactAnalysisResult, DependencyRiskAssessment, KeyPathAnalysis } from "../types";
 export declare function aggregateGraph(input: {
     projectPath: string;
     symbols: SymbolNode[];
@@ -39,3 +39,14 @@ export declare function calculateMaintainabilityIndex(modules: ModuleNode[], sym
  * 综合知识图谱分析
  */
 export declare function analyzeKnowledgeGraph(graph: KnowledgeGraph): GraphAnalysisResult;
+export declare function detectArchitectureLayers(modules: ModuleNode[]): ArchitectureLayer[];
+export declare function analyzePackages(graph: KnowledgeGraph): PackageAnalysis[];
+export declare function evaluateArchitectureFitness(modules: ModuleNode[], layers: ArchitectureLayer[]): ArchitectureFitness | null;
+export declare function analyzeArchitecture(graph: KnowledgeGraph): {
+    layers: ArchitectureLayer[];
+    packages: PackageAnalysis[];
+    fitness: ArchitectureFitness | null;
+};
+export declare function analyzeModuleImpact(graph: KnowledgeGraph, targetModule: string): ImpactAnalysisResult;
+export declare function assessDependencyRisk(graph: KnowledgeGraph): DependencyRiskAssessment[];
+export declare function analyzeKeyPaths(graph: KnowledgeGraph): KeyPathAnalysis;

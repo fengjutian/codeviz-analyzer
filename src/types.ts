@@ -224,6 +224,117 @@ export interface ReactComponentFlow {
   edges: RCFEdge[];
 }
 
+// ============== 架构分析相关类型 ==============
+
+export type ArchitecturePattern = 
+  | "layered"       // 分层架构 (UI/Business/Data)
+  | "hexagonal"     // 六边形架构 (Ports & Adapters)
+  | "onion"         // 洋葱架构
+  | "clean"         // 整洁架构
+  | "modular"       // 模块化架构
+  | "monolithic";   // 单体架构
+
+export type LayerType = 
+  | "ui"            // 用户界面层
+  | "presentation" // 表现层
+  | "application"  // 应用层
+  | "service"      // 服务层
+  | "business"     // 业务逻辑层
+  | "domain"       // 领域层
+  | "infrastructure"// 基础设施层
+  | "data"         // 数据层
+  | "shared"       // 共享/工具层
+  | "entry";       // 入口层
+
+export interface ArchitectureLayer {
+  name: LayerType;
+  display_name: string;
+  modules: string[];
+  description: string;
+  dependencies_allowed: LayerType[];
+  dependencies_actual: LayerType[];
+  violations: LayerViolation[];
+}
+
+export interface LayerViolation {
+  from_module: string;
+  to_module: string;
+  from_layer: LayerType;
+  to_layer: LayerType;
+  severity: "error" | "warning";
+}
+
+export interface PackageAnalysis {
+  name: string;
+  path: string;
+  modules: string[];
+  external_dependencies: string[];
+  internal_dependencies: string[];
+  dependents: string[];
+  metrics: {
+    module_count: number;
+    symbol_count: number;
+    avg_coupling: number;
+    stability_score: number;
+  };
+}
+
+export interface ArchitectureFitness {
+  pattern: ArchitecturePattern;
+  score: number;           // 0-100
+  concerns: string[];
+  violations: ArchitectureViolation[];
+  recommendations: string[];
+}
+
+export interface ArchitectureViolation {
+  type: "dependency_direction" | "cycle" | "instability" | "coupling";
+  severity: "error" | "warning" | "info";
+  message: string;
+  modules: string[];
+}
+
+export interface ArchitectureAnalysisResult {
+  detected_pattern: ArchitecturePattern | null;
+  layers: ArchitectureLayer[];
+  packages: PackageAnalysis[];
+  fitness: ArchitectureFitness | null;
+  cross_boundary_dependencies: LayerViolation[];
+  overall_score: number;
+}
+
+export interface ImpactAnalysisResult {
+  target_module: string;
+  downstream_modules: string[];
+  downstream_symbols: string[];
+  upstream_modules: string[];
+  upstream_symbols: string[];
+  transitive_downstream: number;
+  transitive_upstream: number;
+  risk_level: "low" | "medium" | "high" | "critical";
+  estimated_change_impact: number;
+}
+
+export interface DependencyRiskAssessment {
+  module_name: string;
+  risk_score: number;           // 0-100
+  risk_factors: {
+    unstable_dependencies: number;
+    transitive_coupling: number;
+    hub_dependency: number;
+    change_frequency_estimate: number;
+  };
+  risk_level: "low" | "medium" | "high" | "critical";
+  recommendations: string[];
+}
+
+export interface KeyPathAnalysis {
+  critical_paths: DependencyPath[];
+  bridge_modules: string[];
+  hub_modules: string[];
+  bottleneck_modules: string[];
+}
+
 // ============== 知识图谱分析相关类型 ==============
 
 export interface CircularDependency {

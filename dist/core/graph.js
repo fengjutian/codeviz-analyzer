@@ -12,6 +12,13 @@ exports.analyzeModuleStabilities = analyzeModuleStabilities;
 exports.analyzeDependencyImportances = analyzeDependencyImportances;
 exports.calculateMaintainabilityIndex = calculateMaintainabilityIndex;
 exports.analyzeKnowledgeGraph = analyzeKnowledgeGraph;
+exports.detectArchitectureLayers = detectArchitectureLayers;
+exports.analyzePackages = analyzePackages;
+exports.evaluateArchitectureFitness = evaluateArchitectureFitness;
+exports.analyzeArchitecture = analyzeArchitecture;
+exports.analyzeModuleImpact = analyzeModuleImpact;
+exports.assessDependencyRisk = assessDependencyRisk;
+exports.analyzeKeyPaths = analyzeKeyPaths;
 const node_path_1 = __importDefault(require("node:path"));
 function uniq(arr) {
     return [...new Set(arr)];
@@ -451,6 +458,558 @@ function analyzeKnowledgeGraph(graph) {
             stability_score: stabilityScore,
             maintainability_index: maintainabilityIndex,
         },
+    };
+}
+const ALL_LAYER_DEPS = {
+    ui: ["presentation", "application", "service", "business", "domain", "infrastructure", "data", "shared", "entry"],
+    presentation: ["application", "service", "business", "domain", "infrastructure", "data", "shared", "entry"],
+    application: ["service", "business", "domain", "infrastructure", "data", "shared", "entry"],
+    service: ["business", "domain", "infrastructure", "data", "shared"],
+    business: ["domain", "infrastructure", "data", "shared"],
+    domain: ["infrastructure", "data", "shared"],
+    infrastructure: ["data"],
+    data: [],
+    shared: [],
+    entry: ["presentation", "application", "service", "business", "domain", "infrastructure", "data", "shared"],
+};
+const LAYER_PATTERNS = {
+    layered: {
+        layers: ["ui", "application", "business", "infrastructure", "data"],
+    },
+    hexagonal: {
+        layers: ["entry", "application", "domain", "infrastructure"],
+    },
+    onion: {
+        layers: ["ui", "application", "domain", "infrastructure"],
+    },
+    clean: {
+        layers: ["ui", "application", "domain", "infrastructure"],
+    },
+    modular: {
+        layers: ["ui", "service", "data", "shared"],
+    },
+    monolithic: {
+        layers: ["ui", "application", "business", "infrastructure", "data", "shared"],
+    },
+};
+const LAYER_DISPLAY_NAMES = {
+    ui: "用户界面层 (UI)",
+    presentation: "表现层 (Presentation)",
+    application: "应用层 (Application)",
+    service: "服务层 (Service)",
+    business: "业务逻辑层 (Business)",
+    domain: "领域层 (Domain)",
+    infrastructure: "基础设施层 (Infrastructure)",
+    data: "数据层 (Data)",
+    shared: "共享层 (Shared/Utils)",
+    entry: "入口层 (Entry)",
+};
+const LAYER_KEYWORDS = {
+    ui: ["ui", "view", "page", "screen", "component", "widget", "presenter"],
+    presentation: ["presentation", "render", "display", "viewmodel"],
+    application: ["application", "app", "service", "usecase", "usecase", "facade"],
+    service: ["service", "manager", "helper", "handler", "processor"],
+    business: ["business", "domain", "model", "entity", "aggregate", "valueobject"],
+    domain: ["domain", "entity", "aggregate", "valueobject", "domainevent"],
+    infrastructure: ["infrastructure", "persistence", "repository", "dao", "adapter", "gateway"],
+    data: ["data", "database", "db", "datasource", "orm", "migration"],
+    shared: ["shared", "util", "common", "constant", "config", "lib", "helper", "tool", "utils"],
+    entry: ["entry", "main", "bootstrap", "index", "app", "server"],
+};
+function detectModuleLayer(moduleName) {
+    const lowerName = moduleName.toLowerCase();
+    const segments = moduleName.toLowerCase().split(/[/\\._-]/);
+    for (const [layer, keywords] of Object.entries(LAYER_KEYWORDS)) {
+        for (const keyword of keywords) {
+            if (lowerName.includes(keyword) || segments.some(s => s.includes(keyword))) {
+                return layer;
+            }
+        }
+    }
+    if (segments.some(s => s === "src" || s === "lib" || s === "packages")) {
+        return "shared";
+    }
+    return "business";
+}
+function detectArchitectureLayers(modules) {
+    const moduleLayers = new Map();
+    for (const module of modules) {
+        moduleLayers.set(module.module_name, detectModuleLayer(module.module_name));
+    }
+    const layerModules = new Map();
+    for (const [moduleName, layer] of moduleLayers) {
+        if (!layerModules.has(layer)) {
+            layerModules.set(layer, new Set());
+        }
+        layerModules.get(layer).add(moduleName);
+    }
+    const moduleDeps = new Map();
+    for (const module of modules) {
+        const fromLayer = moduleLayers.get(module.module_name);
+        for (const dep of module.dependencies) {
+            const toLayer = moduleLayers.get(dep);
+            if (toLayer && toLayer !== fromLayer) {
+                if (!moduleDeps.has(fromLayer)) {
+                    moduleDeps.set(fromLayer, new Set());
+                }
+                moduleDeps.get(fromLayer).add(toLayer);
+            }
+        }
+    }
+    const layerViolations = new Map();
+    const layers = [];
+    const allLayerTypes = Array.from(layerModules.keys());
+    for (const layerType of allLayerTypes) {
+        const modulesInLayer = Array.from(layerModules.get(layerType) || []);
+        const actualDeps = Array.from(moduleDeps.get(layerType) || []);
+        const violations = [];
+        layers.push({
+            name: layerType,
+            display_name: LAYER_DISPLAY_NAMES[layerType] || layerType,
+            modules: modulesInLayer,
+            description: getLayerDescription(layerType),
+            dependencies_allowed: [],
+            dependencies_actual: actualDeps,
+            violations,
+        });
+    }
+    return layers.sort((a, b) => a.name.localeCompare(b.name));
+}
+function getLayerDescription(layer) {
+    const descriptions = {
+        ui: "处理用户界面和交互的模块",
+        presentation: "负责数据展示和视图控制的模块",
+        application: "协调用例和业务流程的模块",
+        service: "提供业务服务和工具的模块",
+        business: "包含核心业务逻辑和实体",
+        domain: "领域模型和领域事件",
+        infrastructure: "提供技术基础设施支持",
+        data: "数据持久化和访问",
+        shared: "共享工具、常量和通用代码",
+        entry: "应用入口和启动模块",
+    };
+    return descriptions[layer] || "";
+}
+function analyzePackages(graph) {
+    const packageMap = new Map();
+    const moduleToPackage = new Map();
+    for (const module of graph.modules) {
+        const segments = module.module_name.split(/[/\\._-]/);
+        const packageName = segments[0] || module.module_name;
+        if (!packageMap.has(packageName)) {
+            packageMap.set(packageName, {
+                name: packageName,
+                path: packageName,
+                modules: [],
+                external_dependencies: [],
+                internal_dependencies: [],
+                dependents: [],
+                metrics: {
+                    module_count: 0,
+                    symbol_count: 0,
+                    avg_coupling: 0,
+                    stability_score: 0,
+                },
+            });
+        }
+        const pkg = packageMap.get(packageName);
+        pkg.modules.push(module.module_name);
+        moduleToPackage.set(module.module_name, packageName);
+    }
+    const depSet = new Set();
+    const internalDepSet = new Set();
+    for (const module of graph.modules) {
+        const pkg = packageMap.get(moduleToPackage.get(module.module_name));
+        if (!pkg)
+            continue;
+        for (const dep of module.dependencies) {
+            const depPkg = moduleToPackage.get(dep);
+            if (depPkg && depPkg !== pkg.name) {
+                if (!pkg.internal_dependencies.includes(depPkg)) {
+                    pkg.internal_dependencies.push(depPkg);
+                }
+                internalDepSet.add(`${pkg.name}->${depPkg}`);
+            }
+            else if (!depPkg) {
+                if (!pkg.external_dependencies.includes(dep)) {
+                    pkg.external_dependencies.push(dep);
+                }
+            }
+        }
+        for (const edge of graph.edges) {
+            if (edge.from.startsWith(module.module_name)) {
+                const toPkg = moduleToPackage.get(edge.to);
+                if (toPkg && toPkg !== pkg.name) {
+                    depSet.add(`${pkg.name}->${toPkg}`);
+                }
+            }
+        }
+    }
+    for (const [pkgName, pkg] of packageMap) {
+        for (const otherPkg of packageMap.values()) {
+            if (otherPkg.internal_dependencies.includes(pkgName)) {
+                if (!pkg.dependents.includes(otherPkg.name)) {
+                    pkg.dependents.push(otherPkg.name);
+                }
+            }
+        }
+    }
+    const packages = [];
+    for (const [, pkg] of packageMap) {
+        const moduleCount = pkg.modules.length;
+        let symbolCount = 0;
+        for (const modName of pkg.modules) {
+            const mod = graph.modules.find(m => m.module_name === modName);
+            if (mod) {
+                symbolCount += mod.symbols.length;
+            }
+        }
+        const totalDeps = pkg.internal_dependencies.length + pkg.external_dependencies.length;
+        const avgCoupling = moduleCount > 0 ? totalDeps / moduleCount : 0;
+        let stabilitySum = 0;
+        let stableCount = 0;
+        for (const modName of pkg.modules) {
+            const mod = graph.modules.find(m => m.module_name === modName);
+            if (mod) {
+                stabilitySum += 1 - (mod.metrics.instability || 0);
+                stableCount++;
+            }
+        }
+        const stabilityScore = stableCount > 0 ? stabilitySum / stableCount : 0;
+        pkg.metrics = {
+            module_count: moduleCount,
+            symbol_count: symbolCount,
+            avg_coupling: Number(avgCoupling.toFixed(2)),
+            stability_score: Number(stabilityScore.toFixed(2)),
+        };
+        pkg.internal_dependencies.sort((a, b) => a.localeCompare(b));
+        pkg.external_dependencies.sort((a, b) => a.localeCompare(b));
+        pkg.dependents.sort((a, b) => a.localeCompare(b));
+        pkg.modules.sort((a, b) => a.localeCompare(b));
+        packages.push(pkg);
+    }
+    return packages.sort((a, b) => a.name.localeCompare(b.name));
+}
+function evaluateArchitectureFitness(modules, layers) {
+    if (layers.length === 0)
+        return null;
+    const violations = [];
+    const concerns = [];
+    const recommendations = [];
+    let bestPattern = "modular";
+    let bestScore = 0;
+    const layerTypes = new Set(layers.map(l => l.name));
+    for (const [pattern, config] of Object.entries(LAYER_PATTERNS)) {
+        const patternLayers = config.layers.filter(l => layerTypes.has(l));
+        const score = (patternLayers.length / config.layers.length) * 100;
+        if (score > bestScore) {
+            bestScore = score;
+            bestPattern = pattern;
+        }
+    }
+    const layerIndex = new Map();
+    const orderedLayers = ["ui", "presentation", "entry", "application", "service", "business", "domain", "infrastructure", "data", "shared"];
+    orderedLayers.forEach((layer, idx) => layerIndex.set(layer, idx));
+    const layerDeps = new Map();
+    for (const layer of layers) {
+        layerDeps.set(layer.name, new Set(layer.dependencies_actual));
+    }
+    const dependencyViolations = [];
+    for (const [fromLayer, deps] of layerDeps) {
+        const fromIdx = layerIndex.get(fromLayer) ?? 5;
+        for (const toLayer of deps) {
+            const toIdx = layerIndex.get(toLayer) ?? 5;
+            if (fromIdx < toIdx) {
+                dependencyViolations.push({
+                    type: "dependency_direction",
+                    severity: "warning",
+                    message: `层间依赖违规: ${fromLayer} -> ${toLayer}`,
+                    modules: [],
+                });
+            }
+        }
+    }
+    violations.push(...dependencyViolations);
+    const cycleViolations = [];
+    const visited = new Set();
+    const recursionStack = new Set();
+    function hasCycle(layer, path) {
+        if (recursionStack.has(layer)) {
+            return path.slice(path.indexOf(layer));
+        }
+        if (visited.has(layer))
+            return null;
+        visited.add(layer);
+        recursionStack.add(layer);
+        const deps = layerDeps.get(layer) || new Set();
+        for (const dep of deps) {
+            const cycle = hasCycle(dep, [...path, layer]);
+            if (cycle)
+                return cycle;
+        }
+        recursionStack.delete(layer);
+        return null;
+    }
+    for (const layer of layers) {
+        visited.clear();
+        recursionStack.clear();
+        const cycle = hasCycle(layer.name, []);
+        if (cycle) {
+            cycleViolations.push({
+                type: "cycle",
+                severity: "error",
+                message: `层间循环依赖: ${cycle.join(" -> ")} -> ${cycle[0]}`,
+                modules: cycle,
+            });
+        }
+    }
+    violations.push(...cycleViolations);
+    if (dependencyViolations.length > 0) {
+        concerns.push(`发现 ${dependencyViolations.length} 个层间依赖违规`);
+        recommendations.push("重构依赖方向，确保外层依赖内层");
+    }
+    if (cycleViolations.length > 0) {
+        concerns.push(`发现 ${cycleViolations.length} 个层间循环依赖`);
+        recommendations.push("消除层间循环依赖，使用依赖注入解耦");
+    }
+    const unstableModules = modules.filter(m => (m.metrics.instability || 0) > 0.7);
+    if (unstableModules.length > 0) {
+        concerns.push(`${unstableModules.length} 个模块不稳定`);
+        recommendations.push("将不稳定模块的接口抽象出来，减少对不稳定模块的直接依赖");
+    }
+    const highCoupling = modules.filter(m => (m.metrics.efferent_coupling || 0) > 10);
+    if (highCoupling.length > 0) {
+        concerns.push(`${highCoupling.length} 个模块耦合度过高`);
+        recommendations.push("考虑拆分高耦合模块，降低出向耦合");
+    }
+    let fitnessScore = 100;
+    fitnessScore -= dependencyViolations.length * 10;
+    fitnessScore -= cycleViolations.length * 20;
+    fitnessScore -= Math.min(unstableModules.length * 5, 25);
+    fitnessScore -= Math.min(highCoupling.length * 3, 15);
+    fitnessScore = Math.max(0, Math.min(100, fitnessScore));
+    return {
+        pattern: bestPattern,
+        score: fitnessScore,
+        concerns,
+        violations,
+        recommendations,
+    };
+}
+function analyzeArchitecture(graph) {
+    const layers = detectArchitectureLayers(graph.modules);
+    const packages = analyzePackages(graph);
+    const fitness = evaluateArchitectureFitness(graph.modules, layers);
+    return { layers, packages, fitness };
+}
+function analyzeModuleImpact(graph, targetModule) {
+    const moduleMap = new Map();
+    for (const mod of graph.modules) {
+        moduleMap.set(mod.module_name, mod);
+    }
+    const downstream = new Set();
+    const downstreamSymbols = new Set();
+    const upstream = new Set();
+    const upstreamSymbols = new Set();
+    function findDownstream(moduleName, visited) {
+        if (visited.has(moduleName))
+            return;
+        visited.add(moduleName);
+        const mod = moduleMap.get(moduleName);
+        if (!mod)
+            return;
+        for (const dep of mod.dependencies) {
+            downstream.add(dep);
+            findDownstream(dep, visited);
+        }
+    }
+    function findUpstream(moduleName, visited) {
+        if (visited.has(moduleName))
+            return;
+        visited.add(moduleName);
+        for (const mod of graph.modules) {
+            if (mod.dependencies.includes(moduleName)) {
+                upstream.add(mod.module_name);
+                findUpstream(mod.module_name, visited);
+            }
+        }
+    }
+    findDownstream(targetModule, new Set());
+    findUpstream(targetModule, new Set());
+    for (const modName of downstream) {
+        const mod = moduleMap.get(modName);
+        if (mod) {
+            for (const sym of mod.symbols) {
+                downstreamSymbols.add(sym);
+            }
+        }
+    }
+    for (const modName of upstream) {
+        const mod = moduleMap.get(modName);
+        if (mod) {
+            for (const sym of mod.symbols) {
+                upstreamSymbols.add(sym);
+            }
+        }
+    }
+    const totalAffected = downstream.size + upstream.size;
+    let riskLevel;
+    if (totalAffected <= 3)
+        riskLevel = "low";
+    else if (totalAffected <= 10)
+        riskLevel = "medium";
+    else if (totalAffected <= 20)
+        riskLevel = "high";
+    else
+        riskLevel = "critical";
+    const estimatedImpact = Math.min(100, Math.round((downstream.size * 0.4 + upstream.size * 0.6) *
+        (1 + (graph.modules.find(m => m.module_name === targetModule)?.metrics.instability || 0))));
+    return {
+        target_module: targetModule,
+        downstream_modules: Array.from(downstream).sort((a, b) => a.localeCompare(b)),
+        downstream_symbols: Array.from(downstreamSymbols).sort((a, b) => a.localeCompare(b)),
+        upstream_modules: Array.from(upstream).sort((a, b) => a.localeCompare(b)),
+        upstream_symbols: Array.from(upstreamSymbols).sort((a, b) => a.localeCompare(b)),
+        transitive_downstream: downstream.size,
+        transitive_upstream: upstream.size,
+        risk_level: riskLevel,
+        estimated_change_impact: estimatedImpact,
+    };
+}
+function assessDependencyRisk(graph) {
+    const assessments = [];
+    const moduleInstability = new Map();
+    for (const mod of graph.modules) {
+        moduleInstability.set(mod.module_name, mod.metrics.instability || 0);
+    }
+    for (const mod of graph.modules) {
+        let unstableDeps = 0;
+        let transitiveCoupling = 0;
+        const depSet = new Set();
+        function countTransitiveDeps(name, depth) {
+            if (depth > 3 || depSet.has(name))
+                return;
+            depSet.add(name);
+            const targetMod = graph.modules.find(m => m.module_name === name);
+            if (!targetMod)
+                return;
+            for (const dep of targetMod.dependencies) {
+                transitiveCoupling++;
+                countTransitiveDeps(dep, depth + 1);
+            }
+        }
+        for (const dep of mod.dependencies) {
+            const inst = moduleInstability.get(dep) || 0;
+            if (inst > 0.6)
+                unstableDeps++;
+            countTransitiveDeps(dep, 0);
+        }
+        const fanIn = mod.metrics.afferent_coupling || 0;
+        const fanOut = mod.metrics.efferent_coupling || 0;
+        const hubScore = fanIn > 0 ? fanOut / fanIn : 0;
+        const riskScore = Math.min(100, Math.round(unstableDeps * 15 +
+            Math.min(transitiveCoupling * 2, 30) +
+            Math.min(hubScore * 20, 25) +
+            (1 - (mod.metrics.instability || 0)) * 30));
+        let riskLevel;
+        if (riskScore <= 25)
+            riskLevel = "low";
+        else if (riskScore <= 50)
+            riskLevel = "medium";
+        else if (riskScore <= 75)
+            riskLevel = "high";
+        else
+            riskLevel = "critical";
+        const recommendations = [];
+        if (unstableDeps > 0) {
+            recommendations.push(`该模块依赖了 ${unstableDeps} 个不稳定模块，考虑抽象接口`);
+        }
+        if (transitiveCoupling > 10) {
+            recommendations.push(`传递依赖较多 (${transitiveCoupling})，建议简化依赖层级`);
+        }
+        if (hubScore > 0.5) {
+            recommendations.push(`该模块是中心枢纽模块，修改影响面大，需谨慎修改`);
+        }
+        assessments.push({
+            module_name: mod.module_name,
+            risk_score: riskScore,
+            risk_factors: {
+                unstable_dependencies: unstableDeps,
+                transitive_coupling: transitiveCoupling,
+                hub_dependency: Math.round(hubScore * 100) / 100,
+                change_frequency_estimate: Math.round((1 - (mod.metrics.instability || 0)) * 100) / 100,
+            },
+            risk_level: riskLevel,
+            recommendations,
+        });
+    }
+    return assessments.sort((a, b) => b.risk_score - a.risk_score);
+}
+function analyzeKeyPaths(graph) {
+    const criticalPaths = [];
+    const bridgeModules = new Set();
+    const hubModules = new Set();
+    const bottleneckModules = new Set();
+    const moduleDeps = new Map();
+    for (const mod of graph.modules) {
+        moduleDeps.set(mod.module_name, new Set(mod.dependencies));
+    }
+    const inDegree = new Map();
+    const outDegree = new Map();
+    for (const mod of graph.modules) {
+        inDegree.set(mod.module_name, mod.metrics.afferent_coupling || 0);
+        outDegree.set(mod.module_name, mod.metrics.efferent_coupling || 0);
+    }
+    const visited = new Set();
+    const currentPath = [];
+    function findLongestPath(start, depth) {
+        if (depth > 10 || visited.has(start))
+            return;
+        visited.add(start);
+        currentPath.push(start);
+        const deps = moduleDeps.get(start) || new Set();
+        if (deps.size === 0) {
+            if (currentPath.length >= 3) {
+                criticalPaths.push({
+                    from: currentPath[0],
+                    to: currentPath[currentPath.length - 1],
+                    path: [...currentPath],
+                    length: currentPath.length - 1,
+                });
+            }
+        }
+        else {
+            for (const dep of deps) {
+                findLongestPath(dep, depth + 1);
+            }
+        }
+        currentPath.pop();
+        visited.delete(start);
+    }
+    for (const mod of graph.modules) {
+        visited.clear();
+        currentPath.length = 0;
+        findLongestPath(mod.module_name, 0);
+    }
+    for (const mod of graph.modules) {
+        const fanIn = inDegree.get(mod.module_name) || 0;
+        const fanOut = outDegree.get(mod.module_name) || 0;
+        if (fanIn > 3 && fanOut > 3) {
+            bridgeModules.add(mod.module_name);
+        }
+        if (fanIn > 10 || fanOut > 10) {
+            hubModules.add(mod.module_name);
+        }
+        if (fanIn > 5 && (mod.metrics.instability || 0) > 0.7) {
+            bottleneckModules.add(mod.module_name);
+        }
+    }
+    criticalPaths.sort((a, b) => b.length - a.length);
+    return {
+        critical_paths: criticalPaths.slice(0, 10),
+        bridge_modules: Array.from(bridgeModules).sort((a, b) => a.localeCompare(b)),
+        hub_modules: Array.from(hubModules).sort((a, b) => a.localeCompare(b)),
+        bottleneck_modules: Array.from(bottleneckModules).sort((a, b) => a.localeCompare(b)),
     };
 }
 //# sourceMappingURL=graph.js.map

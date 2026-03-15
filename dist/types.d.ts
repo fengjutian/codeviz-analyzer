@@ -173,6 +173,88 @@ export interface ReactComponentFlow {
     nodes: RCFNode[];
     edges: RCFEdge[];
 }
+export type ArchitecturePattern = "layered" | "hexagonal" | "onion" | "clean" | "modular" | "monolithic";
+export type LayerType = "ui" | "presentation" | "application" | "service" | "business" | "domain" | "infrastructure" | "data" | "shared" | "entry";
+export interface ArchitectureLayer {
+    name: LayerType;
+    display_name: string;
+    modules: string[];
+    description: string;
+    dependencies_allowed: LayerType[];
+    dependencies_actual: LayerType[];
+    violations: LayerViolation[];
+}
+export interface LayerViolation {
+    from_module: string;
+    to_module: string;
+    from_layer: LayerType;
+    to_layer: LayerType;
+    severity: "error" | "warning";
+}
+export interface PackageAnalysis {
+    name: string;
+    path: string;
+    modules: string[];
+    external_dependencies: string[];
+    internal_dependencies: string[];
+    dependents: string[];
+    metrics: {
+        module_count: number;
+        symbol_count: number;
+        avg_coupling: number;
+        stability_score: number;
+    };
+}
+export interface ArchitectureFitness {
+    pattern: ArchitecturePattern;
+    score: number;
+    concerns: string[];
+    violations: ArchitectureViolation[];
+    recommendations: string[];
+}
+export interface ArchitectureViolation {
+    type: "dependency_direction" | "cycle" | "instability" | "coupling";
+    severity: "error" | "warning" | "info";
+    message: string;
+    modules: string[];
+}
+export interface ArchitectureAnalysisResult {
+    detected_pattern: ArchitecturePattern | null;
+    layers: ArchitectureLayer[];
+    packages: PackageAnalysis[];
+    fitness: ArchitectureFitness | null;
+    cross_boundary_dependencies: LayerViolation[];
+    overall_score: number;
+}
+export interface ImpactAnalysisResult {
+    target_module: string;
+    downstream_modules: string[];
+    downstream_symbols: string[];
+    upstream_modules: string[];
+    upstream_symbols: string[];
+    transitive_downstream: number;
+    transitive_upstream: number;
+    risk_level: "low" | "medium" | "high" | "critical";
+    estimated_change_impact: number;
+}
+export interface DependencyRiskAssessment {
+    module_name: string;
+    risk_score: number;
+    risk_factors: {
+        unstable_dependencies: number;
+        transitive_coupling: number;
+        hub_dependency: number;
+        change_frequency_estimate: number;
+    };
+    risk_level: "low" | "medium" | "high" | "critical";
+    recommendations: string[];
+}
+export interface KeyPathAnalysis {
+    critical_paths: DependencyPath[];
+    bridge_modules: string[];
+    hub_modules: string[];
+    bottleneck_modules: string[];
+}
 export interface CircularDependency {
     modules: string[];
     type: "direct" | "indirect";
