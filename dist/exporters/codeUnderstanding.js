@@ -338,17 +338,53 @@ function analyzeCodeUnderstanding(sourceCode, filePath, symbols) {
             const sideEffects = analyzeSideEffects(body);
             const complexity = body.length > 20 || sideEffects.length > 2 ? "complex" :
                 body.length > 10 || sideEffects.length > 0 ? "moderate" : "simple";
+            const isReactComponent = /^[A-Z]/.test(name) || name.includes('Component');
+            const symbolType = isReactComponent ? "react_function_component" : "function";
             symbolUnderstandings.push({
                 symbol_id: `${filePath}::${name}`,
                 symbol_name: name,
-                symbol_type: "function",
-                what_it_does: purpose,
-                how_it_works: `该函数接收${params.length}个参数，执行后${returns}`,
+                symbol_type: symbolType,
+                what_it_does: isReactComponent ? `React UI 组件，渲染${name}视图` : purpose,
+                how_it_works: isReactComponent
+                    ? `函数组件，接收 props，返回 JSX`
+                    : `该函数接收${params.length}个参数，执行后${returns}`,
                 parameters: params.map((p) => ({ name: p, purpose: `输入参数 ${p}` })),
-                returns,
+                returns: isReactComponent ? "React 元素 (JSX)" : returns,
                 side_effects: sideEffects,
                 complexity,
                 suggestions: complexity === "complex" ? ["考虑拆分为更小的函数", "添加单元测试"] : [],
+                is_async: path.node.async,
+            });
+        },
+        ArrowFunctionExpression(path) {
+            const name = path.node.id?.name;
+            const bodyNode = path.node.body;
+            const body = t.isBlockStatement(bodyNode) ? bodyNode.body : [];
+            const params = path.node.params.map((p) => t.isIdentifier(p) ? p.name : "param");
+            let returnType = "any";
+            if (path.node.returnType && t.isTSTypeAnnotation(path.node.returnType)) {
+                const rt = path.node.returnType.typeAnnotation;
+                if (t.isTSTypeReference(rt) && t.isIdentifier(rt.typeName)) {
+                    returnType = rt.typeName.name;
+                }
+            }
+            const purpose = name ? inferFunctionPurpose(name, params, body) : "执行箭头函数操作";
+            const returns = inferReturnPurpose(returnType);
+            const sideEffects = analyzeSideEffects(body);
+            const complexity = body.length > 10 || sideEffects.length > 2 ? "complex" :
+                body.length > 5 || sideEffects.length > 0 ? "moderate" : "simple";
+            symbolUnderstandings.push({
+                symbol_id: `${filePath}::arrow::${name || 'anonymous'}`,
+                symbol_name: name || '(arrow function)',
+                symbol_type: "arrow_function",
+                what_it_does: purpose,
+                how_it_works: `箭头函数，this 词法绑定，接收${params.length}个参数，执行后${returns}`,
+                parameters: params.map((p) => ({ name: p, purpose: `参数 ${p}` })),
+                returns,
+                side_effects: sideEffects,
+                complexity,
+                suggestions: [],
+                is_arrow: true,
             });
         },
         ClassDeclaration(path) {
@@ -357,18 +393,27 @@ function analyzeCodeUnderstanding(sourceCode, filePath, symbols) {
                 return;
             const methods = path.node.body.body.filter((m) => t.isClassMethod(m));
             const properties = path.node.body.body.filter((m) => t.isClassProperty(m));
-            const purpose = name.endsWith("Error") ? "表示错误或异常" :
-                name.endsWith("Event") ? "处理事件和数据" :
-                    name.endsWith("Manager") ? "管理特定资源或功能" :
-                        `定义${name}类的行为和数据`;
+            const superClass = path.node.superClass;
+            const isReactComponent = superClass &&
+                t.isIdentifier(superClass) &&
+                superClass.name === 'Component';
+            const purpose = isReactComponent
+                ? `React 类组件，渲染${name}视图`
+                : name.endsWith("Error") ? "表示错误或异常" :
+                    name.endsWith("Event") ? "处理事件和数据" :
+                        name.endsWith("Manager") ? "管理特定资源或功能" :
+                            `定义${name}类的行为和数据`;
+            const symbolType = isReactComponent ? "react_class_component" : "class";
             symbolUnderstandings.push({
                 symbol_id: `${filePath}::${name}`,
                 symbol_name: name,
-                symbol_type: "class",
+                symbol_type: symbolType,
                 what_it_does: purpose,
-                how_it_works: `该类包含${methods.length}个方法和${properties.length}个属性`,
+                how_it_works: isReactComponent
+                    ? `类组件，继承 React.Component，包含 render 方法和${methods.length}个其他方法`
+                    : `该类包含${methods.length}个方法和${properties.length}个属性`,
                 parameters: [],
-                returns: "无直接返回值，通过实例方法提供功能",
+                returns: isReactComponent ? "React 元素 (JSX)" : "无直接返回值，通过实例方法提供功能",
                 side_effects: methods.some(m => m.kind === "constructor") ? ["构造函数可能初始化资源"] : [],
                 complexity: methods.length > 10 ? "complex" : methods.length > 5 ? "moderate" : "simple",
                 suggestions: methods.length > 10 ? ["考虑拆分多个类或模块"] : [],
@@ -406,14 +451,68 @@ function analyzeCodeUnderstanding(sourceCode, filePath, symbols) {
                 side_effects: sideEffects,
                 complexity,
                 suggestions: complexity === "complex" ? ["考虑拆分为更小的方法"] : [],
+                is_async: path.node.async,
+            });
+        },
+        TSEnumDeclaration(path) {
+            const name = path.node.id.name;
+            const members = path.node.members.map((m) => ({
+                name: t.isIdentifier(m.id) ? m.id.name : 'unknown',
+                value: m.init && t.isNumericLiteral(m.init) ? String(m.init.value) : 'number'
+            }));
+            symbolUnderstandings.push({
+                symbol_id: `${filePath}::${name}`,
+                symbol_name: name,
+                symbol_type: "enum",
+                what_it_does: `定义枚举类型 ${name}，包含一组相关的常量值`,
+                how_it_works: `枚举包含 ${members.length} 个成员，用于表示固定的一组选项`,
+                parameters: [],
+                returns: '无',
+                side_effects: [],
+                complexity: members.length > 10 ? "moderate" : "simple",
+                suggestions: [],
+                enum_members: members,
             });
         },
         VariableDeclaration(path) {
+            const isConst = path.node.kind === 'const';
             for (const decl of path.node.declarations) {
                 if (t.isVariableDeclarator(decl) && t.isIdentifier(decl.id)) {
                     const name = decl.id.name;
                     if (name.length > 2 && !name.startsWith("_")) {
-                        usagePatterns.push(`使用变量 ${name} 存储数据`);
+                        if (isConst) {
+                            usagePatterns.push(`定义常量 ${name}`);
+                        }
+                        else {
+                            usagePatterns.push(`使用变量 ${name} 存储数据`);
+                        }
+                    }
+                    let constantValue;
+                    if (isConst && decl.init) {
+                        if (t.isStringLiteral(decl.init)) {
+                            constantValue = `"${decl.init.value}"`;
+                        }
+                        else if (t.isNumericLiteral(decl.init)) {
+                            constantValue = String(decl.init.value);
+                        }
+                        else if (t.isBooleanLiteral(decl.init)) {
+                            constantValue = String(decl.init.value);
+                        }
+                    }
+                    if (isConst && name.length > 2) {
+                        symbolUnderstandings.push({
+                            symbol_id: `${filePath}::${name}`,
+                            symbol_name: name,
+                            symbol_type: "constant",
+                            what_it_does: `定义常量 ${name}`,
+                            how_it_works: `常量值为 ${constantValue || 'unknown'}`,
+                            parameters: [],
+                            returns: constantValue || '无',
+                            side_effects: [],
+                            complexity: "simple",
+                            suggestions: [],
+                            constant_value: constantValue,
+                        });
                     }
                 }
             }

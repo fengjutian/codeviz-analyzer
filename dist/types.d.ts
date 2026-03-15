@@ -1,4 +1,4 @@
-export type SymbolType = "function" | "class" | "method" | "property" | "getter" | "setter" | "variable" | "interface" | "type_alias";
+export type SymbolType = "function" | "class" | "method" | "property" | "getter" | "setter" | "variable" | "interface" | "type_alias" | "enum" | "constant" | "react_function_component" | "react_class_component" | "arrow_function" | "async_function" | "namespace" | "module_export" | "type_reference" | "decorator";
 export type DependencyType = "call" | "import" | "inherit" | "implement" | "reference";
 export interface MetricMap {
     [key: string]: number;
@@ -59,6 +59,22 @@ export interface SymbolUnderstanding {
     side_effects: string[];
     complexity: "simple" | "moderate" | "complex";
     suggestions: string[];
+    props?: Record<string, {
+        type: string;
+        required: boolean;
+        description?: string;
+    }>;
+    state_type?: string;
+    hooks_used?: string[];
+    type_definition?: string;
+    enum_members?: {
+        name: string;
+        value: string | number;
+    }[];
+    constant_value?: string;
+    is_async?: boolean;
+    is_arrow?: boolean;
+    decorators?: string[];
 }
 export interface SourceLocation {
     start_line: number;

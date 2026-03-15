@@ -198,7 +198,9 @@ exports.jsTsPlugin = {
                 },
                 VariableDeclarator(p) {
                     if (t.isIdentifier(p.node.id)) {
-                        addSymbol(p.node.id.name, "variable", p.node);
+                        const parent = p.findParent((parent) => parent.isVariableDeclaration());
+                        const isConst = parent && parent.node.kind === 'const';
+                        addSymbol(p.node.id.name, isConst ? "constant" : "variable", p.node);
                     }
                 },
                 TSInterfaceDeclaration(p) {
@@ -206,6 +208,19 @@ exports.jsTsPlugin = {
                 },
                 TSTypeAliasDeclaration(p) {
                     addSymbol(p.node.id.name, "type_alias", p.node);
+                },
+                TSEnumDeclaration(p) {
+                    const enumName = p.node.id.name;
+                    if (enumName) {
+                        addSymbol(enumName, "enum", p.node);
+                    }
+                },
+                TSModuleDeclaration(p) {
+                    const moduleName = p.node.id;
+                    const namespaceName = t.isIdentifier(moduleName) ? moduleName.name : 'anonymous';
+                    if (namespaceName) {
+                        addSymbol(namespaceName, "namespace", p.node);
+                    }
                 },
                 ImportDeclaration(p) {
                     const importFrom = p.node.source.value;
