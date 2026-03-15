@@ -70,6 +70,50 @@ const api = {
     }>;
     error?: string;
   }> => ipcRenderer.invoke("extract-react-flow", payload),
+  // 复杂度分析 API
+  calculateComplexity: (payload: {
+    filePath: string;
+  }): Promise<{
+    success: boolean;
+    filePath?: string;
+    report?: {
+      file_path: string;
+      symbols: Array<{
+        symbol_id: string;
+        symbol_name: string;
+        complexity: number;
+        decision_points: number;
+        lines_of_code: number;
+        nesting_depth: number;
+      }>;
+      avg_complexity: number;
+      max_complexity: number;
+      high_complexity_count: number;
+    };
+    mermaidCode?: string;
+    error?: string;
+  }> => ipcRenderer.invoke("calculate-complexity", payload),
+  // 执行时间线 API
+  getExecutionTimeline: (payload: {
+    graph: ExecutionGraph;
+  }): Promise<{
+    success: boolean;
+    timeline?: {
+      execution_id: string;
+      total_duration: number;
+      max_depth: number;
+    };
+    depthTree?: {
+      symbol_id: string;
+      symbol_name: string;
+      max_depth: number;
+      call_count: number;
+      total_duration: number;
+    };
+    mermaidCode?: string;
+    depthMermaid?: string;
+    error?: string;
+  }> => ipcRenderer.invoke("get-execution-timeline", payload),
   onAnalysisProgress: (listener: (event: ProgressEventPayload) => void) => {
     const wrapped = (_event: Electron.IpcRendererEvent, data: ProgressEventPayload) => listener(data);
     ipcRenderer.on("analysis-progress", wrapped);

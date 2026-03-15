@@ -8,6 +8,7 @@ exports.runWithTrace = runWithTrace;
 const node_async_hooks_1 = __importDefault(require("node:async_hooks"));
 const node_crypto_1 = require("node:crypto");
 const node_events_1 = require("node:events");
+const executionVisualizer_1 = require("../exporters/executionVisualizer");
 class ExecutionTracer extends node_events_1.EventEmitter {
     constructor(projectPath, options) {
         super();
@@ -177,9 +178,10 @@ async function runWithTrace(fn, projectPath, options) {
         // 记录返回值
         tracer.recordExit("root", "entry", typeof result === "object" ? JSON.stringify(result) : result);
         const graph = tracer.stop();
+        const enrichedGraph = (0, executionVisualizer_1.enrichExecutionGraph)(graph);
         return {
             success: true,
-            graph,
+            graph: enrichedGraph,
         };
     }
     catch (error) {

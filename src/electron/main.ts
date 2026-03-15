@@ -10,7 +10,8 @@ import { exportMermaid } from "../exporters/mermaidExporter";
 import { exportExecutionGraph } from "../exporters/executionGraph";
 import { extractControlFlow, extractModuleControlFlow, toMermaidCFG } from "../exporters/controlFlowExporter";
 import { extractReactComponentFlow, toMermaidRCF, extractModuleReactFlows } from "../exporters/reactComponentFlowExporter";
-import { KnowledgeGraph } from "../types";
+import { calculateCyclomaticComplexity, toComplexityMermaid, toTimelineMermaid, toDepthTreeMermaid } from "../exporters/executionVisualizer";
+import { KnowledgeGraph, ExecutionGraph } from "../types";
 
 let mainWindow: BrowserWindow | null = null;
 let latestGraph: KnowledgeGraph | null = null;
@@ -432,6 +433,58 @@ ipcMain.handle("extract-react-flow", async (_event, payload: { filePath: string;
     return result;
   } catch (error) {
     debugLog("IPC extract-react-flow error", String(error));
+    return { success: false, error: String(error) };
+  }
+});
+
+ipcMain.handle("calculate-complexity", async (_event, payload: { filePath: string }) => {
+  const { filePath } = payload;
+  if (!filePath) {
+    throw new Error("filePath 不能为空");
+  }
+
+  debugLog("IPC calculate-complexity start", { filePath });
+
+  try {
+    const sourceCode = await readFile(filePath, "utf-8");
+    const report = calculateCyclomaticComplexity(sourceCode, filePath);
+    const mermaidCode = toComplexityMermaid(report);
+
+    debugLog("IPC calculate-complexity done", { symbols: report.symbols.length });
+    return {
+      success: true,
+      filePath,
+      report,
+      mermaidCode,
+    };
+  } catch (error) {
+    debugLog("IPC calculate-complexity error", String(error));
+    return { success: false, error: String(error) };
+  }
+});
+
+ipcMain.handle("get-execution-timeline", async (_event, payload: { graph: ExecutionGraph }) => {
+  const { graph } = payload;
+  if (!graph) {
+    throw new Error("没有可用的执行图");
+  }
+
+  debugLog("IPC get-execution-timeline start");
+
+  try {
+    const mermaidCode = graph.timeline ? toTimelineMermaid(graph.timeline) : "";
+    const depthMermaid = graph.depth_tree ? toDepthTreeMermaid(graph.depth_tree) : "";
+
+    debugLog("IPC get-execution-timeline done");
+    return {
+      success: true,
+      timeline: graph.timeline,
+      depthTree: graph.depth_tree,
+      mermaidCode,
+      depthMermaid,
+    };
+  } catch (error) {
+    debugLog("IPC get-execution-timeline error", String(error));
     return { success: false, error: String(error) };
   }
 });

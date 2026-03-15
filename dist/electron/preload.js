@@ -15,6 +15,10 @@ const api = {
     extractControlFlow: (payload) => electron_1.ipcRenderer.invoke("extract-control-flow", payload),
     // React 组件流程图 API
     extractReactFlow: (payload) => electron_1.ipcRenderer.invoke("extract-react-flow", payload),
+    // 复杂度分析 API
+    calculateComplexity: (payload) => electron_1.ipcRenderer.invoke("calculate-complexity", payload),
+    // 执行时间线 API
+    getExecutionTimeline: (payload) => electron_1.ipcRenderer.invoke("get-execution-timeline", payload),
     onAnalysisProgress: (listener) => {
         const wrapped = (_event, data) => listener(data);
         electron_1.ipcRenderer.on("analysis-progress", wrapped);

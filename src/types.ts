@@ -165,6 +165,53 @@ export interface ExecutionEdge {
   path: string[];
 }
 
+export interface ExecutionDepth {
+  symbol_id: string;
+  symbol_name: string;
+  max_depth: number;
+  call_count: number;
+  total_duration: number;
+  children: ExecutionDepth[];
+}
+
+export interface ExecutionTimelineEntry {
+  id: string;
+  symbol_id: string;
+  symbol_name: string;
+  event: TraceEventType;
+  depth: number;
+  start_time: number;
+  end_time: number;
+  duration: number;
+  parameters?: unknown[];
+  return_value?: unknown;
+  error?: string;
+}
+
+export interface ExecutionTimeline {
+  execution_id: string;
+  total_duration: number;
+  entries: ExecutionTimelineEntry[];
+  max_depth: number;
+}
+
+export interface CyclomaticComplexity {
+  symbol_id: string;
+  symbol_name: string;
+  complexity: number;
+  decision_points: number;
+  lines_of_code: number;
+  nesting_depth: number;
+}
+
+export interface ComplexityReport {
+  file_path: string;
+  symbols: CyclomaticComplexity[];
+  avg_complexity: number;
+  max_complexity: number;
+  high_complexity_count: number;
+}
+
 export interface ExecutionGraph {
   project_path: string;
   execution_id: string;
@@ -173,6 +220,9 @@ export interface ExecutionGraph {
   traces: ExecutionTrace[];
   stats: ExecutionStats[];
   edges: ExecutionEdge[];
+  timeline?: ExecutionTimeline;
+  depth_tree?: ExecutionDepth;
+  complexity_report?: ComplexityReport;
 }
 
 export interface TraceOptions {

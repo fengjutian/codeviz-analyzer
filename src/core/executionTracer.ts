@@ -11,6 +11,8 @@ import {
   TraceResult,
 } from "../types";
 
+import { enrichExecutionGraph } from "../exporters/executionVisualizer";
+
 interface CallFrame {
   symbolId: string;
   symbolName: string;
@@ -228,9 +230,10 @@ export async function runWithTrace<T>(
     );
 
     const graph = tracer.stop();
+    const enrichedGraph = enrichExecutionGraph(graph);
     return {
       success: true,
-      graph,
+      graph: enrichedGraph,
     };
   } catch (error) {
     if (tracer["enabled"]) {
