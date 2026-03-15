@@ -52,6 +52,29 @@ export interface CodeUnderstanding {
         external_apis: string[];
         side_effects: string[];
     };
+    semantic_analysis?: {
+        natural_summary: string;
+        business_logic: string[];
+        api_endpoints: ApiEndpoint[];
+        configurations: ConfigObject[];
+        imports_usage: ImportUsage[];
+    };
+}
+export interface ApiEndpoint {
+    method: string;
+    path: string;
+    handler: string;
+    description?: string;
+}
+export interface ConfigObject {
+    key: string;
+    value: string;
+    type: "string" | "number" | "boolean" | "object" | "array";
+}
+export interface ImportUsage {
+    module: string;
+    usage_type: "runtime" | "type" | "side_effect";
+    imported_items: string[];
 }
 export interface SymbolUnderstanding {
     symbol_id: string;

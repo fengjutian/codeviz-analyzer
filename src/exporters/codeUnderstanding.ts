@@ -2,7 +2,10 @@ import { parse } from "@babel/parser";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import {
+  ApiEndpoint,
   CodeUnderstanding,
+  ConfigObject,
+  ImportUsage,
   ParameterInfo,
   SymbolDocumentation,
   SymbolNode,
@@ -575,14 +578,14 @@ function analyzeSemanticUnderstanding(
 ): {
   naturalSummary: string;
   businessLogic: string[];
-  apiEndpoints: { method: string; path: string; handler: string; description?: string }[];
-  configurations: { key: string; value: string; type: string }[];
-  importsUsage: { module: string; usage_type: string; imported_items: string[] }[];
+  apiEndpoints: ApiEndpoint[];
+  configurations: ConfigObject[];
+  importsUsage: ImportUsage[];
 } {
   const businessLogic: string[] = [];
-  const apiEndpoints: { method: string; path: string; handler: string; description?: string }[] = [];
-  const configurations: { key: string; value: string; type: string }[] = [];
-  const importsUsage: { module: string; usage_type: string; imported_items: string[] }[] = [];
+  const apiEndpoints: ApiEndpoint[] = [];
+  const configurations: ConfigObject[] = [];
+  const importsUsage: ImportUsage[] = [];
 
   traverse(ast, {
     ImportDeclaration(path) {

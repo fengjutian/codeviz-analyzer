@@ -537,6 +537,206 @@ function analyzeDataFlow(ast, importMap) {
         variableFlows,
     };
 }
+function analyzeSemanticUnderstanding(ast, importMap, moduleName, symbolCount) {
+    const businessLogic = [];
+    const apiEndpoints = [];
+    const configurations = [];
+    const importsUsage = [];
+    (0, traverse_1.default)(ast, {
+        ImportDeclaration(path) {
+            const source = path.node.source.value;
+            const specifiers = path.node.specifiers.map(s => {
+                if (t.isImportSpecifier(s)) {
+                    return t.isIdentifier(s.imported) ? s.imported.name : s.imported.value;
+                }
+                return "default";
+            });
+            let usageType = "runtime";
+            if (path.node.importKind === "type") {
+                usageType = "type";
+            }
+            importsUsage.push({
+                module: source,
+                usage_type: usageType,
+                imported_items: specifiers,
+            });
+        },
+        VariableDeclaration(path) {
+            if (path.node.kind === "const") {
+                for (const decl of path.node.declarations) {
+                    if (t.isVariableDeclarator(decl) && t.isIdentifier(decl.id)) {
+                        const name = decl.id.name;
+                        if (name.includes("CONFIG") || name.includes("CONFIG") || name.includes("SETTING")) {
+                            if (decl.init) {
+                                if (t.isObjectExpression(decl.init)) {
+                                    configurations.push({
+                                        key: name,
+                                        value: "object",
+                                        type: "object",
+                                    });
+                                    businessLogic.push(`包含配置对象: ${name}`);
+                                }
+                                else if (t.isStringLiteral(decl.init)) {
+                                    configurations.push({
+                                        key: name,
+                                        value: decl.init.value,
+                                        type: "string",
+                                    });
+                                }
+                                else if (t.isNumericLiteral(decl.init)) {
+                                    configurations.push({
+                                        key: name,
+                                        value: String(decl.init.value),
+                                        type: "number",
+                                    });
+                                }
+                            }
+                        }
+                        if (name.match(/^(API|URL|ENDPOINT|PATH)$/i) && decl.init && t.isStringLiteral(decl.init)) {
+                            businessLogic.push(`定义 API 端点配置: ${decl.init.value}`);
+                        }
+                    }
+                }
+            }
+        },
+        FunctionDeclaration(path) {
+            const name = path.node.id?.name;
+            if (!name)
+                return;
+            if (name.match(/^(get|post|put|patch|delete|fetch|request)/i)) {
+                const params = path.node.params;
+                let pathParam = "";
+                let method = "GET";
+                if (name.match(/^post/i))
+                    method = "POST";
+                else if (name.match(/^put/i))
+                    method = "PUT";
+                else if (name.match(/^patch/i))
+                    method = "PATCH";
+                else if (name.match(/^delete/i))
+                    method = "DELETE";
+                for (const param of params) {
+                    if (t.isIdentifier(param)) {
+                        if (param.name.match(/^(id|uuid|token|data|body)$/i)) {
+                            pathParam = `/:${param.name}`;
+                        }
+                    }
+                }
+                apiEndpoints.push({
+                    method,
+                    path: pathParam || `/${name}`,
+                    handler: name,
+                    description: `${method} 请求处理函数`,
+                });
+                businessLogic.push(`处理 ${method} 请求: ${name}`);
+            }
+            if (name.match(/^(handle|process|execute|run)/i)) {
+                businessLogic.push(`业务处理逻辑: ${name}`);
+            }
+            if (name.match(/^(init|setup|configure|setup)/i)) {
+                businessLogic.push(`初始化/配置逻辑: ${name}`);
+            }
+            if (name.match(/^(validate|verify|check)/i)) {
+                businessLogic.push(`验证逻辑: ${name}`);
+            }
+            if (name.match(/^(transform|convert|parse|serialize)/i)) {
+                businessLogic.push(`数据转换逻辑: ${name}`);
+            }
+        },
+        ClassDeclaration(path) {
+            const name = path.node.id?.name;
+            if (!name)
+                return;
+            if (name.match(/^(Controller|Route|Handler|Service|Repository)$/)) {
+                businessLogic.push(`业务层类: ${name}`);
+            }
+            if (name.match(/^Middleware$/)) {
+                businessLogic.push(`中间件: ${name}`);
+            }
+            if (name.match(/^(Hook|Use)/)) {
+                businessLogic.push(`React Hook: ${name}`);
+            }
+            for (const method of path.node.body.body) {
+                if (t.isClassMethod(method) && t.isIdentifier(method.key)) {
+                    const methodName = method.key.name;
+                    if (methodName.match(/^(on|handle)/i)) {
+                        businessLogic.push(`事件处理: ${name}.${methodName}`);
+                    }
+                    if (method.kind === "get" && methodName.match(/^(data|list|items)/i)) {
+                        businessLogic.push(`数据获取: ${name}.${methodName}`);
+                    }
+                }
+            }
+        },
+        ObjectExpression(path) {
+            const parent = path.findParent(p => p.isVariableDeclarator());
+            if (parent && t.isVariableDeclarator(parent.node)) {
+                const name = t.isIdentifier(parent.node.id) ? parent.node.id.name : "";
+                if (name.match(/^(router|route|routes)/i)) {
+                    for (const prop of path.node.properties) {
+                        if (t.isObjectProperty(prop) && t.isIdentifier(prop.key)) {
+                            const method = prop.key.name.toUpperCase();
+                            const pathValue = t.isStringLiteral(prop.value) ? prop.value.value : "";
+                            if (["GET", "POST", "PUT", "DELETE", "PATCH"].includes(method)) {
+                                apiEndpoints.push({
+                                    method,
+                                    path: pathValue || `/${method}`,
+                                    handler: name,
+                                    description: `路由定义: ${method} ${pathValue}`,
+                                });
+                            }
+                        }
+                    }
+                    businessLogic.push(`路由配置: ${name}`);
+                }
+            }
+        },
+        StringLiteral(path) {
+            const value = path.node.value;
+            if (value.match(/^\/(api|v1|v2|rest|graphql)\//)) {
+                businessLogic.push(`API 路径: ${value}`);
+            }
+            if (value.match(/^(http|https):\/\//)) {
+                businessLogic.push(`外部 URL: ${value}`);
+            }
+        },
+        CallExpression(path) {
+            const callee = path.node.callee;
+            if (t.isIdentifier(callee)) {
+                if (callee.name === "express" || callee.name === "createServer") {
+                    businessLogic.push("创建 HTTP 服务器");
+                }
+                if (callee.name === "connect" || callee.name === "createConnection") {
+                    businessLogic.push("数据库连接");
+                }
+            }
+        },
+    });
+    let naturalSummary = `此文件是 ${moduleName} 模块`;
+    if (symbolCount > 0) {
+        naturalSummary += `，包含 ${symbolCount} 个符号定义`;
+    }
+    if (apiEndpoints.length > 0) {
+        naturalSummary += `，定义了 ${apiEndpoints.length} 个 API 端点`;
+    }
+    if (configurations.length > 0) {
+        naturalSummary += `，包含 ${configurations.length} 个配置项`;
+    }
+    if (businessLogic.length > 0) {
+        const uniqueLogic = [...new Set(businessLogic)];
+        naturalSummary += `。主要业务逻辑包括：${uniqueLogic.slice(0, 3).join("、")}`;
+    }
+    else {
+        naturalSummary += "。这是一个常规模块。";
+    }
+    return {
+        naturalSummary,
+        businessLogic: [...new Set(businessLogic)].slice(0, 10),
+        apiEndpoints: apiEndpoints.slice(0, 10),
+        configurations: configurations.slice(0, 20),
+        importsUsage: importsUsage.slice(0, 20),
+    };
+}
 function analyzeCodeUnderstanding(sourceCode, filePath, symbols) {
     let ast;
     try {
@@ -813,6 +1013,8 @@ function analyzeCodeUnderstanding(sourceCode, filePath, symbols) {
             }
         }
     });
+    const importMapForSemantic = new Map();
+    const semanticAnalysis = analyzeSemanticUnderstanding(ast, importMapForSemantic, moduleName, symbols.length);
     return {
         file_path: filePath,
         file_summary: `此文件是${moduleName}模块，包含${symbolUnderstandings.length}个可导出符号`,
@@ -827,6 +1029,13 @@ function analyzeCodeUnderstanding(sourceCode, filePath, symbols) {
             exit_points: dataFlow.exitPoints,
             external_apis: dataFlow.externalApis,
             side_effects: dataFlow.sideEffects,
+        },
+        semantic_analysis: {
+            natural_summary: semanticAnalysis.naturalSummary,
+            business_logic: semanticAnalysis.businessLogic,
+            api_endpoints: semanticAnalysis.apiEndpoints,
+            configurations: semanticAnalysis.configurations,
+            imports_usage: semanticAnalysis.importsUsage,
         },
     };
 }
