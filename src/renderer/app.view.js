@@ -687,7 +687,10 @@
                 } 
               },
                 e("div", { style: { fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 } }, 
-                  "使用鼠标拖拽旋转视角，滚轮缩放，右键拖拽平移"
+                  "🖱️ 拖拽旋转 | 🎯 滚轮缩放 | ⌨️ WASD/方向键控制 | 📱 触摸支持"
+                ),
+                e("div", { style: { fontSize: 10, color: "#999999" } }, 
+                  "鼠标左键拖拽旋转，滚轮缩放，右键平移 | Q/E键缩放，R键重置 | 单指旋转，双指缩放"
                 )
               ),
               e("div", { 

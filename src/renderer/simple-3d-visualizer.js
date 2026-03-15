@@ -62,8 +62,11 @@
       this.animationId = null;
       this.isDragging = false;
       this.lastMouse = { x: 0, y: 0 };
-      this.rotation = { x: 0, y: 0 };
-      this.zoom = 1;
+      this.rotation = { x: 0.2, y: 0.3 }; // 初始视角稍微倾斜
+      this.zoom = 1.0;
+      
+      // 添加自动居中功能
+      this.centerView();
       
       console.log('Simple3DVisualizer instance created');
     }
@@ -125,6 +128,14 @@
         
         this.setupEventListeners();
         
+        // 延迟调用居中函数
+        setTimeout(() => {
+          console.log('Auto-centering view...');
+          this.centerView();
+          console.log('View centered, rendering first frame...');
+          this.render();
+        }, 300);
+        
         console.log('=== initScene completed successfully ===');
         return this.canvas;
       } catch (error) {
@@ -166,9 +177,12 @@
     }
 
     setupEventListeners() {
+      // 鼠标拖拽旋转
       this.canvas.addEventListener('mousedown', (e) => {
         this.isDragging = true;
         this.lastMouse = { x: e.clientX, y: e.clientY };
+        this.canvas.style.cursor = 'grabbing';
+        console.log('Started dragging');
       });
 
       this.canvas.addEventListener('mousemove', (e) => {
@@ -177,31 +191,249 @@
         const deltaX = e.clientX - this.lastMouse.x;
         const deltaY = e.clientY - this.lastMouse.y;
         
-        this.rotation.y += deltaX * 0.01;
-        this.rotation.x += deltaY * 0.01;
+        // 调整旋转速度，使拖拽更流畅
+        this.rotation.y += deltaX * 0.008; // 降低旋转速度
+        this.rotation.x += deltaY * 0.008;
+        
+        // 限制X轴旋转范围，避免翻转
+        this.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, this.rotation.x));
         
         this.lastMouse = { x: e.clientX, y: e.clientY };
+        
+        // 实时更新显示
+        this.render();
       });
 
       this.canvas.addEventListener('mouseup', () => {
-        this.isDragging = false;
+        if (this.isDragging) {
+          this.isDragging = false;
+          this.canvas.style.cursor = 'grab';
+          console.log('Stopped dragging');
+        }
       });
 
+      // 鼠标离开Canvas时停止拖拽
+      this.canvas.addEventListener('mouseleave', () => {
+        if (this.isDragging) {
+          this.isDragging = false;
+          this.canvas.style.cursor = 'grab';
+        }
+      });
+
+      // 滚轮缩放
       this.canvas.addEventListener('wheel', (e) => {
         e.preventDefault();
-        this.zoom *= e.deltaY > 0 ? 0.9 : 1.1;
-        this.zoom = Math.max(0.1, Math.min(5, this.zoom));
+        
+        // 平滑缩放
+        const zoomFactor = e.deltaY > 0 ? 0.92 : 1.08;
+        this.zoom *= zoomFactor;
+        
+        // 限制缩放范围
+        this.zoom = Math.max(0.2, Math.min(3, this.zoom));
+        
+        console.log('Zoom changed to:', this.zoom);
+        
+        // 实时更新显示
+        this.render();
       });
 
+      // 右键拖拽平移（可选功能）
+      let isRightDragging = false;
+      let lastRightMouse = { x: 0, y: 0 };
+      
+      this.canvas.addEventListener('contextmenu', (e) => {
+        e.preventDefault(); // 阻止右键菜单
+      });
+      
+      this.canvas.addEventListener('mousedown', (e) => {
+        if (e.button === 2) { // 右键
+          isRightDragging = true;
+          lastRightMouse = { x: e.clientX, y: e.clientY };
+          this.canvas.style.cursor = 'move';
+        }
+      });
+      
+      this.canvas.addEventListener('mousemove', (e) => {
+        if (isRightDragging) {
+          const deltaX = e.clientX - lastRightMouse.x;
+          const deltaY = e.clientY - lastRightMouse.y;
+          
+          // 平移相机目标点
+          this.camera.target.x -= deltaX * 0.5;
+          this.camera.target.y += deltaY * 0.5;
+          
+          lastRightMouse = { x: e.clientX, y: e.clientY };
+          this.render();
+        }
+      });
+      
+      this.canvas.addEventListener('mouseup', (e) => {
+        if (e.button === 2) {
+          isRightDragging = false;
+          this.canvas.style.cursor = 'grab';
+        }
+      });
+
+      // 窗口大小变化
       window.addEventListener('resize', () => this.resize());
+      
+      // 设置初始鼠标样式
+      this.canvas.style.cursor = 'grab';
+      
+      console.log('Event listeners setup complete');
+      
+      // 添加键盘控制
+      this.setupKeyboardControls();
+    }
+
+    setupKeyboardControls() {
+      document.addEventListener('keydown', (e) => {
+        if (!this.canvas || document.activeElement !== this.canvas) return;
+        
+        const step = 0.1;
+        let needsRender = false;
+        
+        switch(e.key.toLowerCase()) {
+          case 'w':
+          case 'arrowup':
+            this.rotation.x -= step;
+            needsRender = true;
+            break;
+          case 's':
+          case 'arrowdown':
+            this.rotation.x += step;
+            needsRender = true;
+            break;
+          case 'a':
+          case 'arrowleft':
+            this.rotation.y -= step;
+            needsRender = true;
+            break;
+          case 'd':
+          case 'arrowright':
+            this.rotation.y += step;
+            needsRender = true;
+            break;
+          case 'q':
+            this.zoom *= 0.9;
+            this.zoom = Math.max(0.2, this.zoom);
+            needsRender = true;
+            break;
+          case 'e':
+            this.zoom *= 1.1;
+            this.zoom = Math.min(3, this.zoom);
+            needsRender = true;
+            break;
+          case 'r':
+            this.resetView();
+            needsRender = true;
+            break;
+        }
+        
+        if (needsRender) {
+          e.preventDefault();
+          this.render();
+        }
+      });
+      
+      console.log('Keyboard controls setup complete');
+      console.log('Available controls:');
+      console.log('- Mouse drag: Rotate view');
+      console.log('- Mouse wheel: Zoom in/out');
+      console.log('- Right mouse drag: Pan view');
+      console.log('- W/A/S/D or Arrow keys: Rotate view');
+      console.log('- Q/E: Zoom in/out');
+      console.log('- R: Reset view');
+      
+      // 添加触摸控制支持
+      this.setupTouchControls();
+    }
+
+    setupTouchControls() {
+      let lastTouchDistance = 0;
+      let lastTouchPoint = { x: 0, y: 0 };
+      let isTouchDragging = false;
+      
+      this.canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        
+        if (e.touches.length === 1) {
+          // 单指拖拽
+          isTouchDragging = true;
+          lastTouchPoint = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        } else if (e.touches.length === 2) {
+          // 双指缩放
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          lastTouchDistance = Math.sqrt(
+            Math.pow(touch2.clientX - touch1.clientX, 2) +
+            Math.pow(touch2.clientY - touch1.clientY, 2)
+          );
+        }
+      });
+      
+      this.canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        
+        if (e.touches.length === 1 && isTouchDragging) {
+          // 单指拖拽旋转
+          const touch = e.touches[0];
+          const deltaX = touch.clientX - lastTouchPoint.x;
+          const deltaY = touch.clientY - lastTouchPoint.y;
+          
+          this.rotation.y += deltaX * 0.01;
+          this.rotation.x += deltaY * 0.01;
+          
+          // 限制X轴旋转范围
+          this.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, this.rotation.x));
+          
+          lastTouchPoint = { x: touch.clientX, y: touch.clientY };
+          this.render();
+          
+        } else if (e.touches.length === 2) {
+          // 双指缩放
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          const currentDistance = Math.sqrt(
+            Math.pow(touch2.clientX - touch1.clientX, 2) +
+            Math.pow(touch2.clientY - touch1.clientY, 2)
+          );
+          
+          if (lastTouchDistance > 0) {
+            const scale = currentDistance / lastTouchDistance;
+            this.zoom *= scale;
+            this.zoom = Math.max(0.2, Math.min(3, this.zoom));
+            this.render();
+          }
+          
+          lastTouchDistance = currentDistance;
+        }
+      });
+      
+      this.canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        isTouchDragging = false;
+        lastTouchDistance = 0;
+      });
+      
+      console.log('Touch controls setup complete');
+      console.log('- Single finger: Rotate view');
+      console.log('- Two fingers: Zoom in/out');
     }
 
     project3D(point) {
       // 简化的3D到2D投影，确保不会出现负的scale值
-      const rotatedX = point.x * Math.cos(this.rotation.y) - point.z * Math.sin(this.rotation.y);
-      const rotatedZ = point.x * Math.sin(this.rotation.y) + point.z * Math.cos(this.rotation.y);
-      const rotatedY = point.y * Math.cos(this.rotation.x) - rotatedZ * Math.sin(this.rotation.x);
-      const finalZ = point.y * Math.sin(this.rotation.x) + rotatedZ * Math.cos(this.rotation.x);
+      // 相对于相机目标点进行变换
+      const relativePoint = {
+        x: point.x - this.camera.target.x,
+        y: point.y - this.camera.target.y,
+        z: point.z - this.camera.target.z
+      };
+      
+      const rotatedX = relativePoint.x * Math.cos(this.rotation.y) - relativePoint.z * Math.sin(this.rotation.y);
+      const rotatedZ = relativePoint.x * Math.sin(this.rotation.y) + relativePoint.z * Math.cos(this.rotation.y);
+      const rotatedY = relativePoint.y * Math.cos(this.rotation.x) - rotatedZ * Math.sin(this.rotation.x);
+      const finalZ = relativePoint.y * Math.sin(this.rotation.x) + rotatedZ * Math.cos(this.rotation.x);
       
       // 确保scale始终为正数，并限制在合理范围内
       const baseScale = 200 / Math.max(50, 200 + finalZ); // 最小距离50，避免除零
@@ -236,6 +468,9 @@
       const moduleNames = Array.from(modules.keys());
       const angleStep = (2 * Math.PI) / Math.max(1, moduleNames.length);
       
+      // 计算布局中心点
+      const centerY = 0; // Y轴居中
+      
       moduleNames.forEach((moduleName, moduleIndex) => {
         const moduleSymbols = modules.get(moduleName);
         const moduleAngle = moduleIndex * angleStep;
@@ -251,9 +486,10 @@
           const symbolAngle = (symbolIndex / Math.max(1, symbolsToDisplay.length)) * 2 * Math.PI;
           const symbolRadius = Math.min(80, 40 + symbolsToDisplay.length * 2); // 动态调整符号半径
           
+          // 计算3D位置，确保围绕中心点布局
           const position = new Vector3(
             Math.cos(moduleAngle) * moduleRadius + Math.cos(symbolAngle) * symbolRadius,
-            (symbolIndex - symbolsToDisplay.length / 2) * 15, // 减少Y轴间距
+            centerY + (symbolIndex - symbolsToDisplay.length / 2) * 8, // 减少Y轴间距并居中
             Math.sin(moduleAngle) * moduleRadius + Math.sin(symbolAngle) * symbolRadius
           );
           
@@ -282,51 +518,40 @@
       this.nodes = [];
       this.edges = [];
       
-      console.log('Creating test nodes...');
+      console.log('Creating centered test nodes...');
       
-      // 创建简单的测试节点
-      this.nodes.push({
-        id: 'test1',
-        name: 'Test Node 1',
-        type: 'function',
-        position: new Vector3(0, 0, 0),
-        color: '#4CAF50',
-        size: 20
-      });
+      // 创建居中的测试节点，围绕原点布局
+      const testNodes = [
+        { name: 'Test Node 1', type: 'function', x: 0, y: 0, z: 0, color: '#4CAF50', size: 20 },
+        { name: 'Test Node 2', type: 'class', x: 80, y: 0, z: 0, color: '#2196F3', size: 25 },
+        { name: 'Test Node 3', type: 'variable', x: 0, y: 0, z: 80, color: '#FF9800', size: 15 },
+        { name: 'Test Node 4', type: 'method', x: -80, y: 0, z: 0, color: '#9C27B0', size: 18 },
+        { name: 'Test Node 5', type: 'property', x: 0, y: 0, z: -80, color: '#00BCD4', size: 16 }
+      ];
       
-      this.nodes.push({
-        id: 'test2',
-        name: 'Test Node 2',
-        type: 'class',
-        position: new Vector3(100, 0, 0),
-        color: '#2196F3',
-        size: 25
-      });
-      
-      this.nodes.push({
-        id: 'test3',
-        name: 'Test Node 3',
-        type: 'variable',
-        position: new Vector3(0, 100, 0),
-        color: '#FF9800',
-        size: 15
+      testNodes.forEach((node, index) => {
+        this.nodes.push({
+          id: `test${index + 1}`,
+          name: node.name,
+          type: node.type,
+          position: new Vector3(node.x, node.y, node.z),
+          color: node.color,
+          size: node.size
+        });
       });
       
       console.log('Test nodes created:', this.nodes.length);
       
-      // 创建测试边
+      // 创建测试边，连接相邻节点
       console.log('Creating test edges...');
-      this.edges.push({
-        from: new Vector3(0, 0, 0),
-        to: new Vector3(100, 0, 0),
-        color: '#666666'
-      });
-      
-      this.edges.push({
-        from: new Vector3(0, 0, 0),
-        to: new Vector3(0, 100, 0),
-        color: '#666666'
-      });
+      for (let i = 0; i < this.nodes.length; i++) {
+        const nextIndex = (i + 1) % this.nodes.length;
+        this.edges.push({
+          from: this.nodes[i].position,
+          to: this.nodes[nextIndex].position,
+          color: '#666666'
+        });
+      }
       
       console.log('Test edges created:', this.edges.length);
       console.log('=== createTestScene completed ===');
@@ -528,9 +753,54 @@
     }
 
     resetView() {
-      this.rotation.x = 0;
-      this.rotation.y = 0;
-      this.zoom = 1;
+      console.log('Resetting 3D view');
+      this.rotation = { x: 0.2, y: 0.3 };
+      this.zoom = 1.0;
+      this.centerView();
+    }
+
+    // 自动居中视图
+    centerView() {
+      if (this.nodes.length === 0) {
+        console.log('No nodes to center view around');
+        return;
+      }
+      
+      console.log('Centering view around', this.nodes.length, 'nodes');
+      
+      // 计算所有节点的中心点
+      let centerX = 0, centerY = 0, centerZ = 0;
+      this.nodes.forEach(node => {
+        centerX += node.position.x;
+        centerY += node.position.y;
+        centerZ += node.position.z;
+      });
+      
+      centerX /= this.nodes.length;
+      centerY /= this.nodes.length;
+      centerZ /= this.nodes.length;
+      
+      console.log('Node center:', centerX, centerY, centerZ);
+      
+      // 调整相机位置以居中显示
+      this.camera.target = new Vector3(centerX, centerY, centerZ);
+      
+      // 计算合适的缩放级别
+      let maxDistance = 0;
+      this.nodes.forEach(node => {
+        const distance = Math.sqrt(
+          Math.pow(node.position.x - centerX, 2) +
+          Math.pow(node.position.y - centerY, 2) +
+          Math.pow(node.position.z - centerZ, 2)
+        );
+        maxDistance = Math.max(maxDistance, distance);
+      });
+      
+      // 根据最大距离调整缩放
+      if (maxDistance > 0) {
+        this.zoom = Math.min(2.0, Math.max(0.5, 300 / maxDistance));
+        console.log('Adjusted zoom to:', this.zoom, 'based on max distance:', maxDistance);
+      }
     }
   }
 
