@@ -410,15 +410,15 @@
             )
           )
         : null,
-      // 执行追踪抽屉
+      // 执行追踪抽屉 (右侧)
       ctx.traceDrawerOpen
         ? e(
             "div",
-            { className: "drawer-mask", onClick: () => ctx.setTraceDrawerOpen(false) },
+            { className: "drawer-mask drawer-mask-right", onClick: () => ctx.setTraceDrawerOpen(false) },
             e(
               "div",
               {
-                className: "drawer",
+                className: "drawer drawer-right",
                 style: { width: 500 },
                 onClick: (ev) => ev.stopPropagation(),
               },
