@@ -64,6 +64,7 @@ function aggregateGraph(input) {
             file_path: node_path_1.default.resolve(input.projectPath, symbol.module_name),
             symbols: [],
             dependencies: [],
+            dependents: [],
             metrics: {
                 afferent_coupling: 0,
                 efferent_coupling: 0,
@@ -129,6 +130,7 @@ function aggregateGraph(input) {
         total_edges: edges.length,
         uncertain_edges: edges.filter((e) => Boolean(e.uncertain)).length,
     };
+    const dependencyAnalysis = analyzeDependencies(modules, edges);
     return {
         project: {
             name: node_path_1.default.basename(input.projectPath),
@@ -149,7 +151,96 @@ function aggregateGraph(input) {
             deviations: [],
         },
         diagnostics: input.diagnostics,
+        dependency_analysis: dependencyAnalysis,
     };
+}
+function analyzeDependencies(modules, edges) {
+    const circularDeps = detectCircularDependencies(modules);
+    const dependencyDepthMap = calculateDependencyDepth(modules);
+    const moduleSymbols = new Map();
+    const symbolReferences = new Map();
+    for (const edge of edges) {
+        if (edge.dependency_type === "call" || edge.dependency_type === "reference") {
+            const refs = symbolReferences.get(edge.to) ?? [];
+            refs.push(edge.from);
+            symbolReferences.set(edge.to, refs);
+        }
+    }
+    const unusedExports = [];
+    for (const [symbolId, refs] of symbolReferences) {
+        if (refs.length === 0) {
+            const parts = symbolId.split("::");
+            if (parts.length >= 2) {
+                unusedExports.push({
+                    symbol_id: symbolId,
+                    symbol_name: parts[parts.length - 1],
+                    module_name: parts[0],
+                    export_type: "named",
+                });
+            }
+        }
+    }
+    const coreModules = [];
+    const leafModules = [];
+    for (const module of modules) {
+        const deps = module.dependencies ?? [];
+        const dependents = module.dependents ?? [];
+        if (dependents.length > deps.length && dependents.length > 2) {
+            coreModules.push(module.module_name);
+        }
+        if (deps.length === 0 && module.symbols.length > 0) {
+            leafModules.push(module.module_name);
+        }
+    }
+    for (const edge of edges) {
+        const fromModule = edge.from.split("::")[0];
+        const toModule = edge.to.split("::")[0];
+        if (fromModule !== toModule) {
+            const isCyclic = circularDeps.some(cd => cd.modules.includes(fromModule) && cd.modules.includes(toModule));
+            if (isCyclic) {
+                edge.is_cyclic = true;
+            }
+        }
+    }
+    return {
+        circular_dependencies: circularDeps.map((cd) => ({
+            modules: cd.modules,
+            path: cd.modules,
+            type: cd.type,
+        })),
+        dependency_depth: dependencyDepthMap,
+        unused_exports: unusedExports.slice(0, 20),
+        core_modules: coreModules.slice(0, 10),
+        leaf_modules: leafModules.slice(0, 10),
+    };
+}
+function calculateDependencyDepth(modules) {
+    const depthMap = new Map();
+    const adjacency = new Map();
+    for (const module of modules) {
+        adjacency.set(module.module_name, new Set(module.dependencies ?? []));
+    }
+    const calculateDepth = (moduleName, visited) => {
+        if (visited.has(moduleName)) {
+            return 0;
+        }
+        visited.add(moduleName);
+        const deps = adjacency.get(moduleName) ?? new Set();
+        if (deps.size === 0) {
+            return 0;
+        }
+        let maxDepth = 0;
+        for (const dep of deps) {
+            const depth = calculateDepth(dep, new Set(visited));
+            maxDepth = Math.max(maxDepth, depth + 1);
+        }
+        return maxDepth;
+    };
+    for (const module of modules) {
+        const depth = calculateDepth(module.module_name, new Set());
+        depthMap.set(module.module_name, depth);
+    }
+    return depthMap;
 }
 // ============== 知识图谱分析函数 ==============
 /**
@@ -198,8 +289,10 @@ function detectCircularDependencies(modules) {
             } while (stackNode !== node && stackNode !== undefined);
             if (scc.length > 1) {
                 const depType = scc.length === 2 && adjacency.get(scc[0])?.has(scc[1]) && adjacency.get(scc[1])?.has(scc[0]) ? "direct" : "indirect";
+                const sortedModules = scc.sort((a, b) => a.localeCompare(b));
                 circularDeps.push({
-                    modules: scc.sort((a, b) => a.localeCompare(b)),
+                    modules: sortedModules,
+                    path: sortedModules,
                     type: depType,
                 });
             }

@@ -104,6 +104,8 @@ export interface Edge {
     to: string;
     dependency_type: DependencyType;
     uncertain?: boolean;
+    weight?: number;
+    is_cyclic?: boolean;
 }
 export interface ModuleNode {
     id: string;
@@ -112,6 +114,10 @@ export interface ModuleNode {
     symbols: string[];
     dependencies: string[];
     metrics: MetricMap;
+    dependents: string[];
+    dependency_depth?: number;
+    is_core?: boolean;
+    is_leaf?: boolean;
 }
 export interface AnalyzerDiagnostic {
     level: "info" | "warning" | "error";
@@ -139,6 +145,20 @@ export interface KnowledgeGraph {
     metrics: MetricMap;
     meta: AnalyzerMeta;
     diagnostics: AnalyzerDiagnostic[];
+    dependency_analysis?: DependencyAnalysis;
+}
+export interface DependencyAnalysis {
+    circular_dependencies: CircularDependency[];
+    dependency_depth: Map<string, number>;
+    unused_exports: UnusedExport[];
+    core_modules: string[];
+    leaf_modules: string[];
+}
+export interface UnusedExport {
+    symbol_id: string;
+    symbol_name: string;
+    module_name: string;
+    export_type: "default" | "named";
 }
 export interface ScanProgress {
     scanned_dirs: number;
@@ -382,6 +402,7 @@ export interface KeyPathAnalysis {
 export interface CircularDependency {
     modules: string[];
     type: "direct" | "indirect";
+    path: string[];
 }
 export interface DependencyPath {
     from: string;

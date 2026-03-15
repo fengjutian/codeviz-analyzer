@@ -74,6 +74,32 @@ export interface CodeUnderstanding {
     external_apis: string[];
     side_effects: string[];
   };
+  semantic_analysis?: {
+    natural_summary: string;
+    business_logic: string[];
+    api_endpoints: ApiEndpoint[];
+    configurations: ConfigObject[];
+    imports_usage: ImportUsage[];
+  };
+}
+
+export interface ApiEndpoint {
+  method: string;
+  path: string;
+  handler: string;
+  description?: string;
+}
+
+export interface ConfigObject {
+  key: string;
+  value: string;
+  type: "string" | "number" | "boolean" | "object" | "array";
+}
+
+export interface ImportUsage {
+  module: string;
+  usage_type: "runtime" | "type" | "side_effect";
+  imported_items: string[];
 }
 
 export interface SymbolUnderstanding {
@@ -119,6 +145,8 @@ export interface Edge {
   to: string;
   dependency_type: DependencyType;
   uncertain?: boolean;
+  weight?: number;
+  is_cyclic?: boolean;
 }
 
 export interface ModuleNode {
@@ -128,6 +156,10 @@ export interface ModuleNode {
   symbols: string[];
   dependencies: string[];
   metrics: MetricMap;
+  dependents: string[];
+  dependency_depth?: number;
+  is_core?: boolean;
+  is_leaf?: boolean;
 }
 
 export interface AnalyzerDiagnostic {
@@ -158,6 +190,22 @@ export interface KnowledgeGraph {
   metrics: MetricMap;
   meta: AnalyzerMeta;
   diagnostics: AnalyzerDiagnostic[];
+  dependency_analysis?: DependencyAnalysis;
+}
+
+export interface DependencyAnalysis {
+  circular_dependencies: CircularDependency[];
+  dependency_depth: Map<string, number>;
+  unused_exports: UnusedExport[];
+  core_modules: string[];
+  leaf_modules: string[];
+}
+
+export interface UnusedExport {
+  symbol_id: string;
+  symbol_name: string;
+  module_name: string;
+  export_type: "default" | "named";
 }
 
 export interface ScanProgress {
@@ -473,6 +521,7 @@ export interface KeyPathAnalysis {
 export interface CircularDependency {
   modules: string[];
   type: "direct" | "indirect";
+  path: string[];
 }
 
 export interface DependencyPath {
